@@ -155,7 +155,7 @@ impl Client {
     }
 
     /// Endpoint: `submit-listens`
-    pub fn submit_listens(&mut self, token: &str, data: Submission) -> Result<SubmitListensResponse, Error> {
+    pub fn submit_listens(&mut self, token: &str, data: SubmitListens) -> Result<SubmitListensResponse, Error> {
         self.post(Endpoint::SubmitListens, token, data)
     }
 

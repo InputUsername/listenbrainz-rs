@@ -5,7 +5,7 @@ use serde::Serialize;
 // --------- submit-listens
 
 #[derive(Debug, Serialize)]
-pub struct Submission<'a> {
+pub struct SubmitListens<'a> {
     pub listen_type: ListenType,
     pub payload: Vec<Payload<'a>>,
 }
