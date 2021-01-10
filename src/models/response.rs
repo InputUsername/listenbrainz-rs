@@ -87,7 +87,23 @@ pub struct UserPlayingNowResponse {
 pub struct UserPlayingNowPayload {
     pub count: u8,
     pub user_id: String,
-    pub listens: Vec<()>,
+    pub listens: Vec<UserPlayingNowListen>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct UserPlayingNowListen {
+    pub user_name: String,
+    pub inserted_at: String,
+    pub recording_msid: String,
+    pub track_metadata: UserPlayingNowTrackMetadata,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct UserPlayingNowTrackMetadata {
+    pub artist_name: String,
+    pub track_name: String,
+    pub release_name: Option<String>,
+    pub additional_info: HashMap<String, serde_json::Value>,
 }
 
 // -------- user/{user_name}/listens
