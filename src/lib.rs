@@ -102,7 +102,6 @@ impl Client {
         self.get(Endpoint::UserListenCount(user_name))
     }
 
-    // UserPlayingNow(&'a str),
     /// Endpoint: `user/{user_name}/playing-now`
     pub fn user_playing_now(&mut self, user_name: &str) -> Result<UserPlayingNowResponse, Error> {
         self.get(Endpoint::UserPlayingNow(user_name))
@@ -157,13 +156,41 @@ impl Client {
         self.post(Endpoint::LatestImport, token, data)
     }
 
-    // StatsSitewideArtists,
-    // StatsUserListeningActivity(&'a str),
-    // StatsUserDailyActivity(&'a str),
-    // StatsUserRecordings(&'a str),
-    // StatsUserArtistMap(&'a str),
-    // StatsUserReleases(&'a str),
-    // StatsUserArtists(&'a str),
+    /// Endpoint: `stats/sitewide/artists`
+    pub fn stats_sitewide_artists(
+        &mut self,
+        count: Option<u64>,
+        offset: Option<u64>,
+        range: Option<&str>
+    ) -> Result<StatsSitewideArtistsResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsSitewideArtists);
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(count) = count {
+            request = request.query("count", &count.to_string());
+        }
+        if let Some(offset) = offset {
+            request = request.query("offset", &offset.to_string());
+        }
+        if let Some(range) = range {
+            request = request.query("range", range);
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
+
+    // /// Endpoint: `stats/user/{user_name}/listening-activity`
+
+    // /// Endpoint: `stats/user/{user_name}/daily-activity`
+
+    // /// Endpoint: `stats/user/{user_name}/recordings`
+
+    // /// Endpoint: `stats/user/{user_name}/artist-map`
+
+    // /// Endpoint: `stats/user/{user_name}/releases`
+
+    // /// Endpoint: `stats/user/{user_name}/artists`
 
     /// Endpoint: `status/get-dump-info`
     pub fn status_get_dump_info(

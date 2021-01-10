@@ -176,6 +176,44 @@ pub struct UpdateLatestImportResponse {
     pub status: String,
 }
 
+// --------- stats/sitewide/artists
+
+/// Response type for [`Client::stats_sitewide_artists`](crate::Client::stats_sitewide_artists).
+#[derive(Debug, Deserialize)]
+pub struct StatsSitewideArtistsResponse {
+    pub payload: StatsSitewideArtistsPayload,
+}
+
+/// Type of the [`StatsSitewideArtistsResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsSitewideArtistsPayload {
+    pub time_ranges: Vec<StatsSitewideArtistsTimeRange>,
+    pub offset: u64,
+    pub count: u64,
+    pub range: String,
+    pub last_updated: i64,
+    pub from_ts: i64,
+    pub to_ts: i64,
+}
+
+/// Type of the [`StatsSitewideArtistsPayload::time_ranges`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsSitewideArtistsTimeRange {
+    pub time_range: String,
+    pub artists: Vec<StatsSitewideArtistsArtist>,
+    pub from_ts: i64,
+    pub to_ts: i64,
+}
+
+/// Type of the [`StatsSitewideArtistsTimeRange::artists`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsSitewideArtistsArtist {
+    pub artist_mbids: Option<Vec<String>>,
+    pub artist_msid: String,
+    pub artist_name: String,
+    pub listen_count: u64,
+}
+
 // --------- status/get-dump-info
 
 /// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).
