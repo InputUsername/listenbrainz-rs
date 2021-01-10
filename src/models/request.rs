@@ -20,7 +20,7 @@ pub enum ListenType {
 #[derive(Debug, Serialize)]
 pub struct Payload<'a> {
     pub listened_at: i64,
-    pub track_metadata: TrackMetadata<'a>
+    pub track_metadata: TrackMetadata<'a>,
 }
 
 #[derive(Debug, Serialize)]
@@ -37,4 +37,11 @@ pub struct TrackMetadata<'a> {
 pub struct DeleteListen<'a> {
     pub listened_at: i64,
     pub recording_msid: &'a str,
+}
+
+// --------- latest-import (POST)
+
+#[derive(Debug, Serialize)]
+pub struct UpdateLatestImport {
+    pub ts: i64,
 }

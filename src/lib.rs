@@ -3,9 +3,9 @@
 use std::fmt;
 use std::io;
 
-use serde::{Serialize, Deserialize};
 use serde::de::DeserializeOwned;
-use thiserror::Error;
+use serde::{Deserialize, Serialize};
+
 use ureq::Agent;
 
 pub mod models;
@@ -19,11 +19,11 @@ enum Endpoint<'a> {
     SubmitListens,
     ValidateToken,
     DeleteListen,
-    //UsersRecentListens(&'a [&'a str]),
+    UsersRecentListens(&'a [&'a str]),
     UserListenCount(&'a str),
-    // UserPlayingNow(&'a str),
-    // UserListens(&'a str),
-    // LatestImport,
+    UserPlayingNow(&'a str),
+    UserListens(&'a str),
+    LatestImport,
     // StatsSitewideArtists,
     // StatsUserListeningActivity(&'a str),
     // StatsUserDailyActivity(&'a str),
@@ -40,14 +40,14 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::SubmitListens => "submit-listens",
             Self::ValidateToken => "validate-token",
             Self::DeleteListen => "delete-listen",
-            // Self::UsersRecentListens(users) => {
-            //     let users = users.join(",");
-            //     return write!(f, "users/{}/recent-listens", users);
-            // }
+            Self::UsersRecentListens(users) => {
+                // TODO: url-encode usernames with commas
+                return write!(f, "users/{}/recent-listens", users.join(","));
+            }
             Self::UserListenCount(user) => return write!(f, "user/{}/listen-count", user),
-            // Self::UserPlayingNow(user) => return write!(f, "user/{}/playing-now", user),
-            // Self::UserListens(user) => return write!(f, "user/{}/listens", user),
-            // Self::LatestImport => "latest-import",
+            Self::UserPlayingNow(user) => return write!(f, "user/{}/playing-now", user),
+            Self::UserListens(user) => return write!(f, "user/{}/listens", user),
+            Self::LatestImport => "latest-import",
             // Self::StatsSitewideArtists => "stats/sitewide/artists",
             // Self::StatsUserListeningActivity(user) => return write!(f, "stats/user/{}/listening-activity", user),
             // Self::StatsUserDailyActivity(user) => return write!(f, "stats/user/{}/daily-activity", user),
@@ -62,7 +62,7 @@ impl<'a> fmt::Display for Endpoint<'a> {
 }
 
 /// Represents errors that can occor while interacting with the API.
-#[derive(Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// The API returned a non-200 status code.
     #[error("API error ({code}): {error}")]
@@ -99,12 +99,10 @@ impl From<ApiError> for Error {
 impl From<ureq::Error> for Error {
     fn from(error: ureq::Error) -> Self {
         match error {
-            ureq::Error::Status(_code, response) => {
-                match response.into_json::<ApiError>() {
-                    Ok(api_error) => api_error.into(),
-                    Err(err) => Error::ResponseJson(err),
-                }
-            }
+            ureq::Error::Status(_code, response) => match response.into_json::<ApiError>() {
+                Ok(api_error) => api_error.into(),
+                Err(err) => Error::ResponseJson(err),
+            },
             ureq::Error::Transport(_) => Error::Http(error),
         }
     }
@@ -126,14 +124,12 @@ impl Client {
         }
     }
 
-   fn get<R: DeserializeOwned>(&mut self, endpoint: Endpoint, query: &[(&str, &str)]) -> Result<R, Error> {
+    fn get<R: DeserializeOwned>(&mut self, endpoint: Endpoint) -> Result<R, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
 
-        let mut request = self.agent.get(&endpoint);
-        for &(param, value) in query.iter() {
-            request = request.query(param, value);
-        }
-        request.call()?
+        self.agent
+            .get(&endpoint)
+            .call()?
             .into_json()
             .map_err(Error::ResponseJson)
     }
@@ -147,7 +143,8 @@ impl Client {
 
         let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
 
-        self.agent.post(&endpoint)
+        self.agent
+            .post(&endpoint)
             .set("Authorization", &format!("Token {}", token))
             .send_json(data)?
             .into_json()
@@ -155,32 +152,124 @@ impl Client {
     }
 
     /// Endpoint: `submit-listens`
-    pub fn submit_listens(&mut self, token: &str, data: SubmitListens) -> Result<SubmitListensResponse, Error> {
+    pub fn submit_listens(
+        &mut self,
+        token: &str,
+        data: SubmitListens,
+    ) -> Result<SubmitListensResponse, Error> {
         self.post(Endpoint::SubmitListens, token, data)
     }
 
     /// Endpoint: `validate-token`
     pub fn validate_token(&mut self, token: &str) -> Result<ValidateTokenResponse, Error> {
-        self.get(Endpoint::ValidateToken, &[("token", token)])
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::ValidateToken);
+
+        self.agent
+            .get(&endpoint)
+            .query("token", token)
+            .call()?
+            .into_json()
+            .map_err(Error::ResponseJson)
     }
 
     /// Endpoint: `delete-listen`
-    pub fn delete_listen(&mut self, token: &str, data: DeleteListen) -> Result<DeleteListenResponse, Error> {
+    pub fn delete_listen(
+        &mut self,
+        token: &str,
+        data: DeleteListen,
+    ) -> Result<DeleteListenResponse, Error> {
         self.post(Endpoint::DeleteListen, token, data)
     }
 
-    /// Endpoint: `user/{user_name}/listen-count`
-    pub fn user_listen_count(&mut self, user: &str) -> Result<UserListenCountResponse, Error> {
-        self.get(Endpoint::UserListenCount(user), &[])
+    /// Endpoint: `users/{user_list}/recent-listens
+    pub fn users_recent_listens(
+        &mut self,
+        user_list: &[&str],
+    ) -> Result<UsersRecentListensResponse, Error> {
+        self.get(Endpoint::UsersRecentListens(user_list))
     }
 
-    /// Endpoint: `status/get-dump-info`
-    pub fn status_get_dump_info(&mut self, id: Option<i64>) -> Result<StatusGetDumpInfoResponse, Error> {
-        if let Some(id) = id {
-            let id = id.to_string();
-            self.get(Endpoint::StatusGetDumpInfo, &[("id", &id)])
-        } else {
-            self.get(Endpoint::StatusGetDumpInfo, &[])
+    /// Endpoint: `user/{user_name}/listen-count`
+    pub fn user_listen_count(&mut self, user_name: &str) -> Result<UserListenCountResponse, Error> {
+        self.get(Endpoint::UserListenCount(user_name))
+    }
+
+    // UserPlayingNow(&'a str),
+    /// Endpoint: `user/{user_name}/playing-now`
+    pub fn user_playing_now(&mut self, user_name: &str) -> Result<UserPlayingNowResponse, Error> {
+        self.get(Endpoint::UserPlayingNow(user_name))
+    }
+
+    pub fn user_listens(
+        &mut self,
+        user_name: &str,
+        min_ts: Option<i64>,
+        max_ts: Option<i64>,
+        count: Option<u32>,
+        time_range: Option<u64>
+    ) -> Result<UserListensResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::UserListens(user_name));
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(min_ts) = min_ts {
+            request = request.query("min_ts", &min_ts.to_string());
         }
+        if let Some(max_ts) = max_ts {
+            request = request.query("max_ts", &max_ts.to_string());
+        }
+        if let Some(count) = count {
+            request = request.query("count", &count.to_string());
+        }
+        if let Some(time_range) = time_range {
+            request = request.query("time_range", &time_range.to_string());
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
+
+    /// Endpoint: `latest-import` (GET)
+    pub fn get_latest_import(&mut self, user_name: &str) -> Result<GetLatestImportResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::LatestImport);
+
+        self.agent
+            .get(&endpoint)
+            .query("user_name", user_name)
+            .call()?
+            .into_json()
+            .map_err(Error::ResponseJson)
+    }
+
+    /// Endpoint: `latest-import` (POST)
+    pub fn update_latest_import(
+        &mut self,
+        token: &str,
+        data: UpdateLatestImport,
+    ) -> Result<UpdateLatestImportResponse, Error> {
+        self.post(Endpoint::LatestImport, token, data)
+    }
+
+    // StatsSitewideArtists,
+    // StatsUserListeningActivity(&'a str),
+    // StatsUserDailyActivity(&'a str),
+    // StatsUserRecordings(&'a str),
+    // StatsUserArtistMap(&'a str),
+    // StatsUserReleases(&'a str),
+    // StatsUserArtists(&'a str),
+
+    /// Endpoint: `status/get-dump-info`
+    pub fn status_get_dump_info(
+        &mut self,
+        id: Option<i64>,
+    ) -> Result<StatusGetDumpInfoResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatusGetDumpInfo);
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(id) = id {
+            request = request.query("id", &id.to_string());
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
     }
 }
