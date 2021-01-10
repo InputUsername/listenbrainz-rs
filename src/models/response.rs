@@ -4,10 +4,13 @@ use std::collections::HashMap;
 
 use serde::Deserialize;
 
+/// Common field for some endpoints' response types.
+///
+/// Includes the HTTP status code and a message.
 #[derive(Debug, Deserialize)]
 pub struct ApiResponse {
-    code: u16,
-    message: String,
+    pub code: u16,
+    pub message: String,
 }
 
 // --------- submit-listens
@@ -48,6 +51,7 @@ pub struct UsersRecentListensResponse {
     pub payload: UsersRecentListensPayload,
 }
 
+/// Type of the [`UsersRecentListensResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct UsersRecentListensPayload {
     pub count: u64,
@@ -55,6 +59,7 @@ pub struct UsersRecentListensPayload {
     pub user_list: String,
 }
 
+/// Type of the [`UsersRecentListensPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UsersRecentListensListen {
     pub user_name: String,
@@ -64,6 +69,7 @@ pub struct UsersRecentListensListen {
     pub track_metadata: UsersRecentListensTrackMetadata,
 }
 
+/// Type of the [`UsersRecentListensListen::track_metadata`] field.
 #[derive(Debug, Deserialize)]
 pub struct UsersRecentListensTrackMetadata {
     pub artist_name: String,
@@ -91,6 +97,7 @@ pub struct UserPlayingNowResponse {
     pub payload: UserPlayingNowPayload,
 }
 
+/// Type of the [`UserPlayingNowResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowPayload {
     pub count: u8,
@@ -98,6 +105,7 @@ pub struct UserPlayingNowPayload {
     pub listens: Vec<UserPlayingNowListen>,
 }
 
+/// Type of the [`UserPlayingNowPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowListen {
     pub user_name: String,
@@ -106,6 +114,7 @@ pub struct UserPlayingNowListen {
     pub track_metadata: UserPlayingNowTrackMetadata,
 }
 
+/// Type of the [`UserPlayingNowListen::track_metadata`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowTrackMetadata {
     pub artist_name: String,
@@ -122,6 +131,7 @@ pub struct UserListensResponse {
     pub payload: UserListensPayload,
 }
 
+/// Type of the [`UserListensResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensPayload {
     pub count: u64,
@@ -130,6 +140,7 @@ pub struct UserListensPayload {
     pub listens: Vec<UserListensListen>,
 }
 
+/// Type of the [`UserListensPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensListen {
     pub user_name: String,
@@ -139,6 +150,7 @@ pub struct UserListensListen {
     pub track_metadata: UserListensTrackMetadata,
 }
 
+/// Type of the [`UserListensListen::track_metadata`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensTrackMetadata {
     pub artist_name: String,
