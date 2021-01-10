@@ -1,15 +1,19 @@
+//! Low-level request data models.
+
 use std::collections::HashMap;
 
 use serde::Serialize;
 
 // --------- submit-listens
 
+/// Request type for [`Client::submit_listens`](crate::Client::submit_listens).
 #[derive(Debug, Serialize)]
 pub struct SubmitListens<'a> {
     pub listen_type: ListenType,
     pub payload: Vec<Payload<'a>>,
 }
 
+/// Type of the [`SubmitListens::listen_type`] field.
 #[derive(Debug, Serialize)]
 pub enum ListenType {
     Single,
@@ -17,12 +21,14 @@ pub enum ListenType {
     Import,
 }
 
+/// Type of the [`SubmitListens::payload`] field.
 #[derive(Debug, Serialize)]
 pub struct Payload<'a> {
     pub listened_at: i64,
     pub track_metadata: TrackMetadata<'a>,
 }
 
+/// Type of the [`Payload::track_metadata`] field.
 #[derive(Debug, Serialize)]
 pub struct TrackMetadata<'a> {
     pub artist_name: &'a str,
@@ -33,6 +39,7 @@ pub struct TrackMetadata<'a> {
 
 // --------- delete-listen
 
+/// Request type for [`Client::delete_listen`](crate::Client::delete_listen).
 #[derive(Debug, Serialize)]
 pub struct DeleteListen<'a> {
     pub listened_at: i64,
@@ -41,6 +48,7 @@ pub struct DeleteListen<'a> {
 
 // --------- latest-import (POST)
 
+/// Request type for [`Client::update_latest_import`](crate::Client::update_latest_import).
 #[derive(Debug, Serialize)]
 pub struct UpdateLatestImport {
     pub ts: i64,

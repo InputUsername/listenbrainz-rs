@@ -1,3 +1,5 @@
+//! Low-level response data models.
+
 use std::collections::HashMap;
 
 use serde::Deserialize;
@@ -10,6 +12,7 @@ pub struct ApiResponse {
 
 // --------- submit-listens
 
+/// Response type for [`Client::submit_listens`](crate::Client::submit_listens).
 #[derive(Debug, Deserialize)]
 pub struct SubmitListensResponse {
     #[serde(flatten)]
@@ -18,6 +21,7 @@ pub struct SubmitListensResponse {
 
 // --------- validate-token
 
+/// Response type for [`Client::validate_token`](crate::Client::validate_token).
 #[derive(Debug, Deserialize)]
 pub struct ValidateTokenResponse {
     #[serde(flatten)]
@@ -29,6 +33,7 @@ pub struct ValidateTokenResponse {
 
 // --------- delete-listen
 
+/// Response type for [`Client::delete_listen`](crate::Client::delete_listen).
 #[derive(Debug, Deserialize)]
 pub struct DeleteListenResponse {
     #[serde(flatten)]
@@ -37,6 +42,7 @@ pub struct DeleteListenResponse {
 
 // --------- users/{user_list}/recent-listens
 
+/// Response type for [`Client::users_recent_listens`](crate::Client::users_recent_listens).
 #[derive(Debug, Deserialize)]
 pub struct UsersRecentListensResponse {
     pub payload: UsersRecentListensPayload,
@@ -68,6 +74,7 @@ pub struct UsersRecentListensTrackMetadata {
 
 // --------- user/{user_name}/listen-count
 
+/// Response type for [`Client::user_listen_count`](crate::Client::user_listen_count).
 #[derive(Debug, Deserialize)]
 pub struct UserListenCountResponse {
     #[serde(flatten)]
@@ -78,6 +85,7 @@ pub struct UserListenCountResponse {
 
 // -------- user/{user_name}/playing-now
 
+/// Response type for [`Client::user_playing_now`](crate::Client::user_playing_now).
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowResponse {
     pub payload: UserPlayingNowPayload,
@@ -108,6 +116,7 @@ pub struct UserPlayingNowTrackMetadata {
 
 // -------- user/{user_name}/listens
 
+/// Response type for [`Client::user_listens`](crate::Client::user_listens).
 #[derive(Debug, Deserialize)]
 pub struct UserListensResponse {
     pub payload: UserListensPayload,
@@ -140,6 +149,7 @@ pub struct UserListensTrackMetadata {
 
 // --------- latest-import (GET)
 
+/// Response type for [`Client::get_latest_import`](crate::Client::get_latest_import).
 #[derive(Debug, Deserialize)]
 pub struct GetLatestImportResponse {
     pub latest_import: i64,
@@ -148,6 +158,7 @@ pub struct GetLatestImportResponse {
 
 // --------- latest-import (POST)
 
+/// Response type for [`Client::update_latest_import`](crate::Client::update_latest_import).
 #[derive(Debug, Deserialize)]
 pub struct UpdateLatestImportResponse {
     pub status: String,
@@ -155,6 +166,7 @@ pub struct UpdateLatestImportResponse {
 
 // --------- status/get-dump-info
 
+/// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).
 #[derive(Debug, Deserialize)]
 pub struct StatusGetDumpInfoResponse {
     #[serde(flatten)]
