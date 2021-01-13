@@ -214,6 +214,64 @@ pub struct StatsSitewideArtistsArtist {
     pub listen_count: u64,
 }
 
+// --------- stats/user/{user_name}/listening-activity
+
+/// Response type for [`Client::stats_user_listening_activity`](crate::Client::stats_user_listening_activity).
+#[derive(Debug, Deserialize)]
+pub struct StatsUserListeningActivityResponse {
+    pub payload: StatsUserListeningActivityPayload,
+}
+
+/// Type of the [`StatsUserListeningActivityResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserListeningActivityPayload {
+    pub user_id: String,
+    pub listening_activity: Vec<StatsUserListeningActivityListeningActivity>,
+    pub from_ts: i64,
+    pub to_ts: i64,
+    pub last_updated: i64,
+}
+
+/// Type of the [`StatsUserListeningActivityPayload::listening_activity`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserListeningActivityListeningActivity {
+    pub listen_count: u64,
+    pub from_ts: i64,
+    pub to_ts: i64,
+    pub time_range: String,
+}
+
+// --------- stats/user/{user_name}/daily-activity
+
+/// Response type for [`Client::stats_user_daily_activity`](crate::Client::stats_user_daily_activity).
+#[derive(Debug, Deserialize)]
+pub struct StatsUserDailyActivityResponse {
+    pub payload: StatsUserDailyActivityPayload,
+}
+
+/// Type of the [`StatsUserDailyActivityResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserDailyActivityPayload {
+    pub user_id: String,
+    pub daily_activity: StatsUserDailyActivityDailyActivity,
+    pub from_ts: i64,
+    pub to_ts: i64,
+    pub stats_range: String,
+}
+
+/// Type of the [`StatsUserDailyActivityPayload::daily_activity`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserDailyActivityDailyActivity {
+    pub days: HashMap<String, Vec<StatsUserDailyActivityHour>>,
+}
+
+/// Type of the [`StatsUserDailyActivityDailyActivity::days`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserDailyActivityHour {
+    pub hour: u8,
+    pub listen_count: u64,
+}
+
 // --------- status/get-dump-info
 
 /// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).

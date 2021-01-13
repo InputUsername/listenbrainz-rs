@@ -10,7 +10,7 @@ use crate::models::response::*;
 
 const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 
-/// Low-level client that more-or-less directly wraps the ListenBrainz HTTP API.
+/// Low-level client that directly wraps the ListenBrainz HTTP API.
 ///
 /// Client exposes functions that map one-to-one to the API methods described
 /// in the [ListenBrainz API docs](https://listenbrainz.readthedocs.io/en/production/dev/api/).
@@ -175,9 +175,41 @@ impl Client {
         request.call()?.into_json().map_err(Error::ResponseJson)
     }
 
-    // /// Endpoint: `stats/user/{user_name}/listening-activity`
+    /// Endpoint: `stats/user/{user_name}/listening-activity`
+    pub fn stats_user_listening_activity(
+        &mut self,
+        user_name: &str,
+        range: Option<&str>,
+    ) -> Result<StatsUserListeningActivityResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL,
+            Endpoint::StatsUserListeningActivity(user_name));
 
-    // /// Endpoint: `stats/user/{user_name}/daily-activity`
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(range) = range {
+            request = request.query("range", range);
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
+
+    /// Endpoint: `stats/user/{user_name}/daily-activity`
+    pub fn stats_user_daily_activity(
+        &mut self,
+        user_name: &str,
+        range: Option<&str>,
+    ) -> Result<StatsUserDailyActivityResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL,
+            Endpoint::StatsUserDailyActivity(user_name));
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(range) = range {
+            request = request.query("range", range);
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
 
     // /// Endpoint: `stats/user/{user_name}/recordings`
 
