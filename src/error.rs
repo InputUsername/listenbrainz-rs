@@ -7,7 +7,13 @@ use serde::Deserialize;
 pub enum Error {
     /// The API returned a non-200 status code.
     #[error("API error ({code}): {error}")]
-    Api { code: u16, error: String },
+    Api {
+        /// The HTTP status code.
+        code: u16,
+
+        /// A message describing the error.
+        error: String
+    },
 
     /// The input data could not be converted into JSON.
     #[error("could not convert request input into JSON")]
