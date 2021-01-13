@@ -256,6 +256,7 @@ pub struct StatsUserDailyActivityPayload {
     pub daily_activity: StatsUserDailyActivityDailyActivity,
     pub from_ts: i64,
     pub to_ts: i64,
+    pub last_updated: i64,
     pub stats_range: String,
 }
 
@@ -270,6 +271,42 @@ pub struct StatsUserDailyActivityDailyActivity {
 pub struct StatsUserDailyActivityHour {
     pub hour: u8,
     pub listen_count: u64,
+}
+
+// --------- stats/user/{user_name}/recordings
+
+/// Response type of [`Client::stats_user_recordings`](crate::Client::stats_user_recordings).
+#[derive(Debug, Deserialize)]
+pub struct StatsUserRecordingsResponse {
+    pub payload: StatsUserRecordingsPayload,
+}
+
+/// Type of the [`StatsUserRecordingsResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserRecordingsPayload {
+    pub recordings: Vec<StatsUserRecordingsRecording>,
+    pub count: u64,
+    pub total_recording_count: u64,
+    pub user_id: String,
+    pub from_ts: i64,
+    pub to_ts: i64,
+    pub last_updated: i64,
+    pub range: String,
+}
+
+/// Type of the [`StatsUserRecordingsPayload::recordings`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserRecordingsRecording {
+    pub artist_mbids: Option<Vec<String>>,
+    pub artist_msid: Option<String>,
+    pub artist_name: String,
+    pub listen_count: u64,
+    pub recording_mbid: Option<String>,
+    pub recording_msid: Option<String>,
+    pub release_mbid: Option<String>,
+    pub release_msid: Option<String>,
+    pub release_name: Option<String>,
+    pub track_name: Option<String>,
 }
 
 // --------- status/get-dump-info
