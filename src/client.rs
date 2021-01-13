@@ -36,6 +36,30 @@ impl Client {
             .map_err(Error::ResponseJson)
     }
 
+    fn get_stats<R: DeserializeOwned>(
+        &mut self,
+        endpoint: Endpoint,
+        count: Option<u64>,
+        offset: Option<u64>,
+        range: Option<&str>,
+    ) -> Result<R, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(count) = count {
+            request = request.query("count", &count.to_string());
+        }
+        if let Some(offset) = offset {
+            request = request.query("offset", &offset.to_string());
+        }
+        if let Some(range) = range {
+            request = request.query("range", range);
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
+
     fn post<D, R>(&mut self, endpoint: Endpoint, token: &str, data: D) -> Result<R, Error>
     where
         D: Serialize,
@@ -107,7 +131,7 @@ impl Client {
         user_name: &str,
         min_ts: Option<i64>,
         max_ts: Option<i64>,
-        count: Option<u32>,
+        count: Option<u64>,
         time_range: Option<u64>,
     ) -> Result<UserListensResponse, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::UserListens(user_name));
@@ -158,21 +182,7 @@ impl Client {
         offset: Option<u64>,
         range: Option<&str>,
     ) -> Result<StatsSitewideArtistsResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsSitewideArtists);
-
-        let mut request = self.agent.get(&endpoint);
-
-        if let Some(count) = count {
-            request = request.query("count", &count.to_string());
-        }
-        if let Some(offset) = offset {
-            request = request.query("offset", &offset.to_string());
-        }
-        if let Some(range) = range {
-            request = request.query("range", range);
-        }
-
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        self.get_stats(Endpoint::StatsSitewideArtists, count, offset, range)
     }
 
     /// Endpoint: `stats/user/{user_name}/listening-activity`
@@ -225,25 +235,12 @@ impl Client {
         offset: Option<u64>,
         range: Option<&str>,
     ) -> Result<StatsUserRecordingsResponse, Error> {
-        let endpoint = format!(
-            "{}{}",
-            API_ROOT_URL,
-            Endpoint::StatsUserRecordings(user_name)
-        );
-
-        let mut request = self.agent.get(&endpoint);
-
-        if let Some(count) = count {
-            request = request.query("count", &count.to_string());
-        }
-        if let Some(offset) = offset {
-            request = request.query("offset", &offset.to_string());
-        }
-        if let Some(range) = range {
-            request = request.query("range", range);
-        }
-
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        self.get_stats(
+            Endpoint::StatsUserRecordings(user_name),
+            count,
+            offset,
+            range,
+        )
     }
 
     /// Endpoint: `stats/user/{user_name}/artist-map`
@@ -279,21 +276,7 @@ impl Client {
         offset: Option<u64>,
         range: Option<&str>,
     ) -> Result<StatsUserReleasesResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsUserReleases(user_name));
-
-        let mut request = self.agent.get(&endpoint);
-
-        if let Some(count) = count {
-            request = request.query("count", &count.to_string());
-        }
-        if let Some(offset) = offset {
-            request = request.query("offset", &offset.to_string());
-        }
-        if let Some(range) = range {
-            request = request.query("range", range);
-        }
-
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        self.get_stats(Endpoint::StatsUserReleases(user_name), count, offset, range)
     }
 
     /// Endpoint: `stats/user/{user_name}/artists`
@@ -304,21 +287,7 @@ impl Client {
         offset: Option<u64>,
         range: Option<&str>,
     ) -> Result<StatsUserArtistsResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsUserArtists(user_name));
-
-        let mut request = self.agent.get(&endpoint);
-
-        if let Some(count) = count {
-            request = request.query("count", &count.to_string());
-        }
-        if let Some(offset) = offset {
-            request = request.query("offset", &offset.to_string());
-        }
-        if let Some(range) = range {
-            request = request.query("range", range);
-        }
-
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        self.get_stats(Endpoint::StatsUserArtists(user_name), count, offset, range)
     }
 
     /// Endpoint: `status/get-dump-info`
