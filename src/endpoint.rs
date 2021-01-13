@@ -15,7 +15,7 @@ pub enum Endpoint<'a> {
     StatsUserRecordings(&'a str),
     StatsUserArtistMap(&'a str),
     StatsUserReleases(&'a str),
-    // StatsUserArtists(&'a str),
+    StatsUserArtists(&'a str),
     StatusGetDumpInfo,
 }
 
@@ -39,7 +39,7 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::StatsUserRecordings(user) => return write!(f, "stats/user/{}/recordings", user),
             Self::StatsUserArtistMap(user) => return write!(f, "stats/user/{}/artist-map", user),
             Self::StatsUserReleases(user) => return write!(f, "stats/user/{}/releases", user),
-            // Self::StatsUserArtists(user) => return write!(f, "stats/user/{}/artists", user),
+            Self::StatsUserArtists(user) => return write!(f, "stats/user/{}/artists", user),
             Self::StatusGetDumpInfo => "status/get-dump-info",
         };
         write!(f, "{}", s)
