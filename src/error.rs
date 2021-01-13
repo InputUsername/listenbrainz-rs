@@ -25,7 +25,7 @@ pub enum Error {
 
     /// There was some other HTTP error while interacting with the API.
     #[error("HTTP error")]
-    Http(#[source] ureq::Error),
+    Http(#[source] Box<ureq::Error>),
 }
 
 #[derive(Debug, Deserialize)]
@@ -50,7 +50,7 @@ impl From<ureq::Error> for Error {
                 Ok(api_error) => api_error.into(),
                 Err(err) => Error::ResponseJson(err),
             },
-            ureq::Error::Transport(_) => Error::Http(error),
+            ureq::Error::Transport(_) => Error::Http(Box::new(error)),
         }
     }
 }
