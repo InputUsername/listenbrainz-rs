@@ -4,9 +4,9 @@ use serde::Serialize;
 use ureq::Agent;
 
 use crate::endpoint::Endpoint;
-use crate::Error;
 use crate::models::request::*;
 use crate::models::response::*;
+use crate::Error;
 
 const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 
@@ -108,7 +108,7 @@ impl Client {
         min_ts: Option<i64>,
         max_ts: Option<i64>,
         count: Option<u32>,
-        time_range: Option<u64>
+        time_range: Option<u64>,
     ) -> Result<UserListensResponse, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::UserListens(user_name));
 
@@ -156,7 +156,7 @@ impl Client {
         &mut self,
         count: Option<u64>,
         offset: Option<u64>,
-        range: Option<&str>
+        range: Option<&str>,
     ) -> Result<StatsSitewideArtistsResponse, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsSitewideArtists);
 
@@ -181,8 +181,11 @@ impl Client {
         user_name: &str,
         range: Option<&str>,
     ) -> Result<StatsUserListeningActivityResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL,
-            Endpoint::StatsUserListeningActivity(user_name));
+        let endpoint = format!(
+            "{}{}",
+            API_ROOT_URL,
+            Endpoint::StatsUserListeningActivity(user_name)
+        );
 
         let mut request = self.agent.get(&endpoint);
 
@@ -199,8 +202,11 @@ impl Client {
         user_name: &str,
         range: Option<&str>,
     ) -> Result<StatsUserDailyActivityResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL,
-            Endpoint::StatsUserDailyActivity(user_name));
+        let endpoint = format!(
+            "{}{}",
+            API_ROOT_URL,
+            Endpoint::StatsUserDailyActivity(user_name)
+        );
 
         let mut request = self.agent.get(&endpoint);
 
@@ -219,7 +225,11 @@ impl Client {
         offset: Option<u64>,
         range: Option<&str>,
     ) -> Result<StatsUserRecordingsResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsUserRecordings(user_name));
+        let endpoint = format!(
+            "{}{}",
+            API_ROOT_URL,
+            Endpoint::StatsUserRecordings(user_name)
+        );
 
         let mut request = self.agent.get(&endpoint);
 
@@ -243,7 +253,11 @@ impl Client {
         range: Option<&str>,
         force_recalculate: Option<bool>,
     ) -> Result<StatsUserArtistMapResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsUserArtistMap(user_name));
+        let endpoint = format!(
+            "{}{}",
+            API_ROOT_URL,
+            Endpoint::StatsUserArtistMap(user_name)
+        );
 
         let mut request = self.agent.get(&endpoint);
 

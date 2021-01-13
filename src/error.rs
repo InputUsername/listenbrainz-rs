@@ -12,7 +12,7 @@ pub enum Error {
         code: u16,
 
         /// A message describing the error.
-        error: String
+        error: String,
     },
 
     /// The input data could not be converted into JSON.

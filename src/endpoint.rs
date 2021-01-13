@@ -34,8 +34,12 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::UserListens(user) => return write!(f, "user/{}/listens", user),
             Self::LatestImport => "latest-import",
             Self::StatsSitewideArtists => "stats/sitewide/artists",
-            Self::StatsUserListeningActivity(user) => return write!(f, "stats/user/{}/listening-activity", user),
-            Self::StatsUserDailyActivity(user) => return write!(f, "stats/user/{}/daily-activity", user),
+            Self::StatsUserListeningActivity(user) => {
+                return write!(f, "stats/user/{}/listening-activity", user)
+            }
+            Self::StatsUserDailyActivity(user) => {
+                return write!(f, "stats/user/{}/daily-activity", user)
+            }
             Self::StatsUserRecordings(user) => return write!(f, "stats/user/{}/recordings", user),
             Self::StatsUserArtistMap(user) => return write!(f, "stats/user/{}/artist-map", user),
             Self::StatsUserReleases(user) => return write!(f, "stats/user/{}/releases", user),
