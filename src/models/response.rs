@@ -309,6 +309,32 @@ pub struct StatsUserRecordingsRecording {
     pub track_name: Option<String>,
 }
 
+// --------- stats/user/{user_name}/artist-map
+
+/// Response type of [`Client::stats_user_artist_map`](crate::Client::stats_user_artist_map).
+#[derive(Debug, Deserialize)]
+pub struct StatsUserArtistMapResponse {
+    pub payload: StatsUserArtistMapPayload,
+}
+
+/// Type of the [`StatsUserArtistMapResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserArtistMapPayload {
+    pub artist_map: Vec<StatsUserArtistMapCountry>,
+    pub user_id: String,
+    pub from_ts: i64,
+    pub to_ts: i64,
+    pub last_updated: i64,
+    pub range: String,
+}
+
+/// Type of the [`StatsUserArtistMapPayload::artist_map`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserArtistMapCountry {
+    pub country: String,
+    pub artist_count: u64,
+}
+
 // --------- status/get-dump-info
 
 /// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).

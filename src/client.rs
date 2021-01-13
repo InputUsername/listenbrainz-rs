@@ -236,7 +236,26 @@ impl Client {
         request.call()?.into_json().map_err(Error::ResponseJson)
     }
 
-    // /// Endpoint: `stats/user/{user_name}/artist-map`
+    /// Endpoint: `stats/user/{user_name}/artist-map`
+    pub fn stats_user_artist_map(
+        &mut self,
+        user_name: &str,
+        range: Option<&str>,
+        force_recalculate: Option<bool>,
+    ) -> Result<StatsUserArtistMapResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsUserArtistMap(user_name));
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(range) = range {
+            request = request.query("range", range);
+        }
+        if let Some(force_recalculate) = force_recalculate {
+            request = request.query("force_recalculate", &force_recalculate.to_string());
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
 
     // /// Endpoint: `stats/user/{user_name}/releases`
 
