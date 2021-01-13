@@ -257,7 +257,30 @@ impl Client {
         request.call()?.into_json().map_err(Error::ResponseJson)
     }
 
-    // /// Endpoint: `stats/user/{user_name}/releases`
+    /// Endpoint: `stats/user/{user_name}/releases`
+    pub fn stats_user_releases(
+        &mut self,
+        user_name: &str,
+        count: Option<u64>,
+        offset: Option<u64>,
+        range: Option<&str>,
+    ) -> Result<StatsUserReleasesResponse, Error> {
+        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatsUserReleases(user_name));
+
+        let mut request = self.agent.get(&endpoint);
+
+        if let Some(count) = count {
+            request = request.query("count", &count.to_string());
+        }
+        if let Some(offset) = offset {
+            request = request.query("offset", &offset.to_string());
+        }
+        if let Some(range) = range {
+            request = request.query("range", range);
+        }
+
+        request.call()?.into_json().map_err(Error::ResponseJson)
+    }
 
     // /// Endpoint: `stats/user/{user_name}/artists`
 

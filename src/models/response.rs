@@ -335,6 +335,39 @@ pub struct StatsUserArtistMapCountry {
     pub artist_count: u64,
 }
 
+// --------- stats/user/{user_name}/releases
+
+/// Response type for [`Client::stats_user_releases`](crate::Client::stats_user_releases).
+#[derive(Debug, Deserialize)]
+pub struct StatsUserReleasesResponse {
+    pub payload: StatsUserReleasesPayload,
+}
+
+/// Type of the [`StatsUserReleasesResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserReleasesPayload {
+    pub releases: Vec<StatsUserReleasesRelease>,
+    pub count: u64,
+    pub total_release_count: u64,
+    pub user_id: String,
+    pub from_ts: i64,
+    pub to_ts: i64,
+    pub last_updated: i64,
+    pub range: String,
+}
+
+/// Type of the [`StatsUserReleasesPayload::releases`] field.
+#[derive(Debug, Deserialize)]
+pub struct StatsUserReleasesRelease {
+    pub artist_mbids: Option<Vec<String>>,
+    pub artist_msid: Option<String>,
+    pub artist_name: String,
+    pub listen_count: u64,
+    pub release_mbid: Option<String>,
+    pub release_msid: Option<String>,
+    pub release_name: String,
+}
+
 // --------- status/get-dump-info
 
 /// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).
