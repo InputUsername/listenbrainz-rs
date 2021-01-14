@@ -10,7 +10,7 @@ use serde::Serialize;
 #[derive(Debug, Serialize)]
 pub struct SubmitListens<'a> {
     pub listen_type: ListenType,
-    pub payload: &'a[Payload<'a>],
+    pub payload: &'a [Payload<'a>],
 }
 
 /// Type of the [`SubmitListens::listen_type`] field.

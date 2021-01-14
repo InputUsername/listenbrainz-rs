@@ -1,5 +1,5 @@
-use listenbrainz::Client;
 use listenbrainz::models::request::DeleteListen;
+use listenbrainz::Client;
 
 fn main() {
     let mut args = std::env::args().skip(1);

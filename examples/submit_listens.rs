@@ -1,10 +1,13 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use listenbrainz::models::request::{ListenType, Payload, SubmitListens, TrackMetadata};
 use listenbrainz::Client;
-use listenbrainz::models::request::{SubmitListens, ListenType, Payload, TrackMetadata};
 
 fn now() -> i64 {
-    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64
 }
 
 fn main() {
@@ -53,7 +56,7 @@ fn main() {
     // Submit imports
 
     let first = Payload {
-        listened_at: Some(now() - 60*5),
+        listened_at: Some(now() - 60 * 5),
         track_metadata: TrackMetadata {
             artist_name: "Lil Tecca",
             track_name: "All Star (with Lil Tjay)",
@@ -62,7 +65,7 @@ fn main() {
         },
     };
     let second = Payload {
-        listened_at: Some(now() - 60*15),
+        listened_at: Some(now() - 60 * 15),
         track_metadata: TrackMetadata {
             artist_name: "Queens of the Stone Age",
             track_name: "None One Knows",
@@ -71,13 +74,13 @@ fn main() {
         },
     };
     let third = Payload {
-        listened_at: Some(now() - 60*10),
+        listened_at: Some(now() - 60 * 10),
         track_metadata: TrackMetadata {
             artist_name: "Alkaline Trio",
             track_name: "Fall Victim",
             release_name: Some("Crimson"),
             additional_info: None,
-        }
+        },
     };
 
     let submission = SubmitListens {
