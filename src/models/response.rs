@@ -4,22 +4,12 @@ use std::collections::HashMap;
 
 use serde::Deserialize;
 
-/// Common field for some endpoints' response types.
-///
-/// Includes the HTTP status code and a message.
-#[derive(Debug, Deserialize)]
-pub struct ApiResponse {
-    pub code: u16,
-    pub message: String,
-}
-
 // --------- submit-listens
 
 /// Response type for [`Client::submit_listens`](crate::Client::submit_listens).
 #[derive(Debug, Deserialize)]
 pub struct SubmitListensResponse {
-    #[serde(flatten)]
-    pub api_response: ApiResponse,
+    pub status: String,
 }
 
 // --------- validate-token
@@ -27,8 +17,8 @@ pub struct SubmitListensResponse {
 /// Response type for [`Client::validate_token`](crate::Client::validate_token).
 #[derive(Debug, Deserialize)]
 pub struct ValidateTokenResponse {
-    #[serde(flatten)]
-    pub api_response: ApiResponse,
+    pub code: u16,
+    pub message: String,
 
     pub valid: bool,
     pub user_name: Option<String>,
@@ -39,8 +29,7 @@ pub struct ValidateTokenResponse {
 /// Response type for [`Client::delete_listen`](crate::Client::delete_listen).
 #[derive(Debug, Deserialize)]
 pub struct DeleteListenResponse {
-    #[serde(flatten)]
-    pub api_response: ApiResponse,
+    pub status: String,
 }
 
 // --------- users/{user_list}/recent-listens
@@ -83,9 +72,11 @@ pub struct UsersRecentListensTrackMetadata {
 /// Response type for [`Client::user_listen_count`](crate::Client::user_listen_count).
 #[derive(Debug, Deserialize)]
 pub struct UserListenCountResponse {
-    #[serde(flatten)]
-    pub api_response: ApiResponse,
+    pub payload: UserListenCountPayload,
+}
 
+#[derive(Debug, Deserialize)]
+pub struct UserListenCountPayload {
     pub count: u64,
 }
 
@@ -403,8 +394,8 @@ pub struct StatsUserArtistsArtist {
 /// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).
 #[derive(Debug, Deserialize)]
 pub struct StatusGetDumpInfoResponse {
-    #[serde(flatten)]
-    pub api_response: ApiResponse,
+    pub code: u16,
+    pub message: String,
 
     pub id: i64,
     pub timestamp: String,
