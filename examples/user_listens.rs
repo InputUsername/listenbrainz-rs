@@ -3,7 +3,7 @@ use listenbrainz::Client;
 fn main() {
     let user_name = std::env::args().nth(1).expect("No username provided");
 
-    let mut client = Client::new();
+    let client = Client::new();
 
     let result = client.user_listen_count(&user_name);
     println!("Listen count: {:#?}", result);

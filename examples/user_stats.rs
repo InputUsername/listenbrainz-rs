@@ -5,7 +5,7 @@ fn main() {
     let subject = args.next().expect("No subject provided");
     let user_name = args.next().expect("No username provided");
 
-    let mut client = Client::new();
+    let client = Client::new();
 
     match subject.as_str() {
         "recordings" => {

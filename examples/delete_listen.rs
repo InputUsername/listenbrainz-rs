@@ -7,7 +7,7 @@ fn main() {
     let listened_at = args.next().expect("No listened_at provided");
     let recording_msid = args.next().expect("No recording_msid provided");
 
-    let mut client = Client::new();
+    let client = Client::new();
 
     let delete = DeleteListen {
         listened_at: listened_at.parse().unwrap(),

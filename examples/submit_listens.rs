@@ -13,7 +13,7 @@ fn now() -> i64 {
 fn main() {
     let token = std::env::args().nth(1).expect("No token provided");
 
-    let mut client = Client::new();
+    let client = Client::new();
 
     // Submit single
 
