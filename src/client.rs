@@ -84,7 +84,7 @@ impl Client {
             .map_err(Error::ResponseJson)
     }
 
-    /// Endpoint: `submit-listens`
+    /// Endpoint: [`submit-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-submit-listens)
     pub fn submit_listens(
         &mut self,
         token: &str,
@@ -93,7 +93,7 @@ impl Client {
         self.post(Endpoint::SubmitListens, token, data)
     }
 
-    /// Endpoint: `validate-token`
+    /// Endpoint: [`validate-token`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-validate-token)
     pub fn validate_token(&mut self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::ValidateToken);
 
@@ -105,7 +105,7 @@ impl Client {
             .map_err(Error::ResponseJson)
     }
 
-    /// Endpoint: `delete-listen`
+    /// Endpoint: [`delete-listen`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-delete-listen)
     pub fn delete_listen(
         &mut self,
         token: &str,
@@ -114,7 +114,7 @@ impl Client {
         self.post(Endpoint::DeleteListen, token, data)
     }
 
-    /// Endpoint: `users/{user_list}/recent-listens
+    /// Endpoint: [`users/{user_list}/recent-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-users-(user_list)-recent-listens)
     pub fn users_recent_listens(
         &mut self,
         user_list: &[&str],
@@ -122,17 +122,17 @@ impl Client {
         self.get(Endpoint::UsersRecentListens(user_list))
     }
 
-    /// Endpoint: `user/{user_name}/listen-count`
+    /// Endpoint: [`user/{user_name}/listen-count`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listen-count)
     pub fn user_listen_count(&mut self, user_name: &str) -> Result<UserListenCountResponse, Error> {
         self.get(Endpoint::UserListenCount(user_name))
     }
 
-    /// Endpoint: `user/{user_name}/playing-now`
+    /// Endpoint: [`user/{user_name}/playing-now`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-playing-now)
     pub fn user_playing_now(&mut self, user_name: &str) -> Result<UserPlayingNowResponse, Error> {
         self.get(Endpoint::UserPlayingNow(user_name))
     }
 
-    /// Endpoint: `user/{user_name}/listens`
+    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listens)
     pub fn user_listens(
         &mut self,
         user_name: &str,
@@ -161,7 +161,7 @@ impl Client {
         request.call()?.into_json().map_err(Error::ResponseJson)
     }
 
-    /// Endpoint: `latest-import` (GET)
+    /// Endpoint: [`latest-import`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-latest-import) (`GET`)
     pub fn get_latest_import(&mut self, user_name: &str) -> Result<GetLatestImportResponse, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::LatestImport);
 
@@ -173,7 +173,7 @@ impl Client {
             .map_err(Error::ResponseJson)
     }
 
-    /// Endpoint: `latest-import` (POST)
+    /// Endpoint: [`latest-import`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-latest-import) (`POST`)
     pub fn update_latest_import(
         &mut self,
         token: &str,
@@ -182,7 +182,7 @@ impl Client {
         self.post(Endpoint::LatestImport, token, data)
     }
 
-    /// Endpoint: `stats/sitewide/artists`
+    /// Endpoint: [`stats/sitewide/artists`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-sitewide-artists)
     pub fn stats_sitewide_artists(
         &mut self,
         count: Option<u64>,
@@ -192,7 +192,7 @@ impl Client {
         self.get_stats(Endpoint::StatsSitewideArtists, count, offset, range)
     }
 
-    /// Endpoint: `stats/user/{user_name}/listening-activity`
+    /// Endpoint: [`stats/user/{user_name}/listening-activity`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-listening-activity)
     pub fn stats_user_listening_activity(
         &mut self,
         user_name: &str,
@@ -220,7 +220,7 @@ impl Client {
         }
     }
 
-    /// Endpoint: `stats/user/{user_name}/daily-activity`
+    /// Endpoint: [`stats/user/{user_name}/daily-activity`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-daily-activity)
     pub fn stats_user_daily_activity(
         &mut self,
         user_name: &str,
@@ -248,7 +248,7 @@ impl Client {
         }
     }
 
-    /// Endpoint: `stats/user/{user_name}/recordings`
+    /// Endpoint: [`stats/user/{user_name}/recordings`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-recordings)
     pub fn stats_user_recordings(
         &mut self,
         user_name: &str,
@@ -264,7 +264,7 @@ impl Client {
         )
     }
 
-    /// Endpoint: `stats/user/{user_name}/artist-map`
+    /// Endpoint: [`stats/user/{user_name}/artist-map`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-artist-map)
     pub fn stats_user_artist_map(
         &mut self,
         user_name: &str,
@@ -289,7 +289,7 @@ impl Client {
         request.call()?.into_json().map_err(Error::ResponseJson)
     }
 
-    /// Endpoint: `stats/user/{user_name}/releases`
+    /// Endpoint: [`stats/user/{user_name}/releases`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-releases)
     pub fn stats_user_releases(
         &mut self,
         user_name: &str,
@@ -300,7 +300,7 @@ impl Client {
         self.get_stats(Endpoint::StatsUserReleases(user_name), count, offset, range)
     }
 
-    /// Endpoint: `stats/user/{user_name}/artists`
+    /// Endpoint: [`stats/user/{user_name}/artists`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-artists)
     pub fn stats_user_artists(
         &mut self,
         user_name: &str,
@@ -311,7 +311,7 @@ impl Client {
         self.get_stats(Endpoint::StatsUserArtists(user_name), count, offset, range)
     }
 
-    /// Endpoint: `status/get-dump-info`
+    /// Endpoint: [`status/get-dump-info`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-status-get-dump-info)
     pub fn status_get_dump_info(
         &mut self,
         id: Option<i64>,
