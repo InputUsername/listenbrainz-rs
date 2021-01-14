@@ -26,8 +26,14 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::ValidateToken => "validate-token",
             Self::DeleteListen => "delete-listen",
             Self::UsersRecentListens(users) => {
-                // TODO: url-encode usernames with commas
-                return write!(f, "users/{}/recent-listens", users.join(","));
+                let users = users.iter().fold(String::new(), |mut result, user| {
+                    result.reserve(user.len() + 1);
+                    result.push_str(&user.replace(',', "%2C"));
+                    result.push(',');
+                    result
+                });
+                println!("{:?}", users);
+                return write!(f, "users/{}/recent-listens", users);
             }
             Self::UserListenCount(user) => return write!(f, "user/{}/listen-count", user),
             Self::UserPlayingNow(user) => return write!(f, "user/{}/playing-now", user),
