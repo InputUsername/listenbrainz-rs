@@ -5,5 +5,5 @@ mod endpoint;
 mod error;
 pub mod models;
 
-pub use client::Client;
-pub use error::Error;
+pub use crate::client::Client;
+pub use crate::error::Error;
