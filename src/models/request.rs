@@ -10,11 +10,12 @@ use serde::Serialize;
 #[derive(Debug, Serialize)]
 pub struct SubmitListens<'a> {
     pub listen_type: ListenType,
-    pub payload: Vec<Payload<'a>>,
+    pub payload: &'a[Payload<'a>],
 }
 
 /// Type of the [`SubmitListens::listen_type`] field.
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ListenType {
     Single,
     PlayingNow,
@@ -24,7 +25,8 @@ pub enum ListenType {
 /// Type of the [`SubmitListens::payload`] field.
 #[derive(Debug, Serialize)]
 pub struct Payload<'a> {
-    pub listened_at: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub listened_at: Option<i64>,
     pub track_metadata: TrackMetadata<'a>,
 }
 
@@ -33,8 +35,12 @@ pub struct Payload<'a> {
 pub struct TrackMetadata<'a> {
     pub artist_name: &'a str,
     pub track_name: &'a str,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub release_name: Option<&'a str>,
-    pub additional_info: Option<HashMap<&'a str, &'a str>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_info: Option<HashMap<&'a str, serde_json::Value>>,
 }
 
 // --------- delete-listen
