@@ -42,7 +42,7 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
         range: Option<&str>,
-    ) -> Result<R, Error> {
+    ) -> Result<Option<R>, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
 
         let mut request = self.agent.get(&endpoint);
@@ -57,7 +57,14 @@ impl Client {
             request = request.query("range", range);
         }
 
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        let response = request.call()?;
+
+        // API returns 204 and an empty document if there are no statistics
+        if response.status() == 204 {
+            Ok(None)
+        } else {
+            response.into_json().map(Some).map_err(Error::ResponseJson)
+        }
     }
 
     fn post<D, R>(&mut self, endpoint: Endpoint, token: &str, data: D) -> Result<R, Error>
@@ -181,7 +188,7 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
         range: Option<&str>,
-    ) -> Result<StatsSitewideArtistsResponse, Error> {
+    ) -> Result<Option<StatsSitewideArtistsResponse>, Error> {
         self.get_stats(Endpoint::StatsSitewideArtists, count, offset, range)
     }
 
@@ -190,7 +197,7 @@ impl Client {
         &mut self,
         user_name: &str,
         range: Option<&str>,
-    ) -> Result<StatsUserListeningActivityResponse, Error> {
+    ) -> Result<Option<StatsUserListeningActivityResponse>, Error> {
         let endpoint = format!(
             "{}{}",
             API_ROOT_URL,
@@ -203,7 +210,14 @@ impl Client {
             request = request.query("range", range);
         }
 
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        let response = request.call()?;
+
+        // API returns 204 and an empty document if there are no statistics
+        if response.status() == 204 {
+            Ok(None)
+        } else {
+            response.into_json().map(Some).map_err(Error::ResponseJson)
+        }
     }
 
     /// Endpoint: `stats/user/{user_name}/daily-activity`
@@ -211,7 +225,7 @@ impl Client {
         &mut self,
         user_name: &str,
         range: Option<&str>,
-    ) -> Result<StatsUserDailyActivityResponse, Error> {
+    ) -> Result<Option<StatsUserDailyActivityResponse>, Error> {
         let endpoint = format!(
             "{}{}",
             API_ROOT_URL,
@@ -224,7 +238,14 @@ impl Client {
             request = request.query("range", range);
         }
 
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        let response = request.call()?;
+
+        // API returns 204 and an empty document if there are no statistics
+        if response.status() == 204 {
+            Ok(None)
+        } else {
+            response.into_json().map(Some).map_err(Error::ResponseJson)
+        }
     }
 
     /// Endpoint: `stats/user/{user_name}/recordings`
@@ -234,7 +255,7 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
         range: Option<&str>,
-    ) -> Result<StatsUserRecordingsResponse, Error> {
+    ) -> Result<Option<StatsUserRecordingsResponse>, Error> {
         self.get_stats(
             Endpoint::StatsUserRecordings(user_name),
             count,
@@ -275,7 +296,7 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
         range: Option<&str>,
-    ) -> Result<StatsUserReleasesResponse, Error> {
+    ) -> Result<Option<StatsUserReleasesResponse>, Error> {
         self.get_stats(Endpoint::StatsUserReleases(user_name), count, offset, range)
     }
 
@@ -286,7 +307,7 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
         range: Option<&str>,
-    ) -> Result<StatsUserArtistsResponse, Error> {
+    ) -> Result<Option<StatsUserArtistsResponse>, Error> {
         self.get_stats(Endpoint::StatsUserArtists(user_name), count, offset, range)
     }
 
