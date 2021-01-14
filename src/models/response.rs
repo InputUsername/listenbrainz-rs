@@ -75,6 +75,7 @@ pub struct UserListenCountResponse {
     pub payload: UserListenCountPayload,
 }
 
+/// Type of the [`UserListenCountResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListenCountPayload {
     pub count: u64,
