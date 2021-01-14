@@ -7,10 +7,10 @@ license = "MIT"
 repository = "https://github.com/InputUsername/listenbrainz-rs.git"
 homepage = "https://github.com/InputUsername/listenbrainz-rs"
 readme = "README.md"
-description = "ListenBrainz API bindings for Rust."
+description = "ListenBrainz API bindings for Rust"
 keywords = ["listenbrainz", "api", "bindings"]
 categories = ["api-bindings"]
-publish = false
+publish = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
