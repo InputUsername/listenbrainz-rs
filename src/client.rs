@@ -14,6 +14,14 @@ const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 ///
 /// Client exposes functions that map one-to-one to the API methods described
 /// in the [ListenBrainz API docs](https://listenbrainz.readthedocs.io/en/production/dev/api/).
+///
+/// # Errors
+///
+/// Client's methods can return the following errors:
+/// - [`Error::Api`]: the API returned a non-`2XX` status.
+/// - [`Error::RequestJson`]: the request data could not be converted into JSON.
+/// - [`Error::ResponseJson`]: the response data could not be converted into JSON.
+/// - [`Error::Http`]: there was some other HTTP error while interacting with the API.
 pub struct Client {
     agent: Agent,
 }
@@ -26,6 +34,8 @@ impl Client {
         }
     }
 
+    /// Helper method to perform a GET request against an endpoint
+    /// without any query parameters.
     fn get<R: DeserializeOwned>(&self, endpoint: Endpoint) -> Result<R, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
 
@@ -36,6 +46,8 @@ impl Client {
             .map_err(Error::ResponseJson)
     }
 
+    /// Helper method to perform a GET request against (most) statistics
+    /// endpoints that share common query parameters.
     fn get_stats<R: DeserializeOwned>(
         &self,
         endpoint: Endpoint,
@@ -67,6 +79,8 @@ impl Client {
         }
     }
 
+    /// Helper method to perform a POST request against an endpoint
+    /// that expects `Serialize`-able input data.
     fn post<D, R>(&self, endpoint: Endpoint, token: &str, data: D) -> Result<R, Error>
     where
         D: Serialize,
