@@ -26,6 +26,10 @@ pub enum Error {
     /// There was some other HTTP error while interacting with the API.
     #[error("HTTP error")]
     Http(#[source] Box<ureq::Error>),
+
+    /// Tried to access a service that requires authentication.
+    #[error("not authenticated")]
+    NotAuthenticated,
 }
 
 #[derive(Debug, Deserialize)]
