@@ -1,4 +1,4 @@
-use listenbrainz::Client;
+use listenbrainz::raw::Client;
 
 fn main() {
     let users: Vec<String> = std::env::args().skip(1).collect();

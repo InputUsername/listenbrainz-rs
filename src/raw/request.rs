@@ -6,7 +6,7 @@ use serde::Serialize;
 
 // --------- submit-listens
 
-/// Request type for [`Client::submit_listens`](crate::Client::submit_listens).
+/// Request type for [`Client::submit_listens`](super::Client::submit_listens).
 #[derive(Debug, Serialize)]
 pub struct SubmitListens<'a> {
     pub listen_type: ListenType,
@@ -45,7 +45,7 @@ pub struct TrackMetadata<'a> {
 
 // --------- delete-listen
 
-/// Request type for [`Client::delete_listen`](crate::Client::delete_listen).
+/// Request type for [`Client::delete_listen`](super::Client::delete_listen).
 #[derive(Debug, Serialize)]
 pub struct DeleteListen<'a> {
     pub listened_at: i64,
@@ -54,7 +54,7 @@ pub struct DeleteListen<'a> {
 
 // --------- latest-import (POST)
 
-/// Request type for [`Client::update_latest_import`](crate::Client::update_latest_import).
+/// Request type for [`Client::update_latest_import`](super::Client::update_latest_import).
 #[derive(Debug, Serialize)]
 pub struct UpdateLatestImport {
     pub ts: i64,

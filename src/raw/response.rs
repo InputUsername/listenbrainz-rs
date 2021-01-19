@@ -6,7 +6,7 @@ use serde::Deserialize;
 
 // --------- submit-listens
 
-/// Response type for [`Client::submit_listens`](crate::Client::submit_listens).
+/// Response type for [`Client::submit_listens`](super::Client::submit_listens).
 #[derive(Debug, Deserialize)]
 pub struct SubmitListensResponse {
     pub status: String,
@@ -14,7 +14,7 @@ pub struct SubmitListensResponse {
 
 // --------- validate-token
 
-/// Response type for [`Client::validate_token`](crate::Client::validate_token).
+/// Response type for [`Client::validate_token`](super::Client::validate_token).
 #[derive(Debug, Deserialize)]
 pub struct ValidateTokenResponse {
     pub code: u16,
@@ -26,7 +26,7 @@ pub struct ValidateTokenResponse {
 
 // --------- delete-listen
 
-/// Response type for [`Client::delete_listen`](crate::Client::delete_listen).
+/// Response type for [`Client::delete_listen`](super::Client::delete_listen).
 #[derive(Debug, Deserialize)]
 pub struct DeleteListenResponse {
     pub status: String,
@@ -34,7 +34,7 @@ pub struct DeleteListenResponse {
 
 // --------- users/{user_list}/recent-listens
 
-/// Response type for [`Client::users_recent_listens`](crate::Client::users_recent_listens).
+/// Response type for [`Client::users_recent_listens`](super::Client::users_recent_listens).
 #[derive(Debug, Deserialize)]
 pub struct UsersRecentListensResponse {
     pub payload: UsersRecentListensPayload,
@@ -69,7 +69,7 @@ pub struct UsersRecentListensTrackMetadata {
 
 // --------- user/{user_name}/listen-count
 
-/// Response type for [`Client::user_listen_count`](crate::Client::user_listen_count).
+/// Response type for [`Client::user_listen_count`](super::Client::user_listen_count).
 #[derive(Debug, Deserialize)]
 pub struct UserListenCountResponse {
     pub payload: UserListenCountPayload,
@@ -83,7 +83,7 @@ pub struct UserListenCountPayload {
 
 // -------- user/{user_name}/playing-now
 
-/// Response type for [`Client::user_playing_now`](crate::Client::user_playing_now).
+/// Response type for [`Client::user_playing_now`](super::Client::user_playing_now).
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowResponse {
     pub payload: UserPlayingNowPayload,
@@ -117,7 +117,7 @@ pub struct UserPlayingNowTrackMetadata {
 
 // -------- user/{user_name}/listens
 
-/// Response type for [`Client::user_listens`](crate::Client::user_listens).
+/// Response type for [`Client::user_listens`](super::Client::user_listens).
 #[derive(Debug, Deserialize)]
 pub struct UserListensResponse {
     pub payload: UserListensPayload,
@@ -153,7 +153,7 @@ pub struct UserListensTrackMetadata {
 
 // --------- latest-import (GET)
 
-/// Response type for [`Client::get_latest_import`](crate::Client::get_latest_import).
+/// Response type for [`Client::get_latest_import`](super::Client::get_latest_import).
 #[derive(Debug, Deserialize)]
 pub struct GetLatestImportResponse {
     pub latest_import: i64,
@@ -162,7 +162,7 @@ pub struct GetLatestImportResponse {
 
 // --------- latest-import (POST)
 
-/// Response type for [`Client::update_latest_import`](crate::Client::update_latest_import).
+/// Response type for [`Client::update_latest_import`](super::Client::update_latest_import).
 #[derive(Debug, Deserialize)]
 pub struct UpdateLatestImportResponse {
     pub status: String,
@@ -170,7 +170,7 @@ pub struct UpdateLatestImportResponse {
 
 // --------- stats/sitewide/artists
 
-/// Response type for [`Client::stats_sitewide_artists`](crate::Client::stats_sitewide_artists).
+/// Response type for [`Client::stats_sitewide_artists`](super::Client::stats_sitewide_artists).
 #[derive(Debug, Deserialize)]
 pub struct StatsSitewideArtistsResponse {
     pub payload: StatsSitewideArtistsPayload,
@@ -208,7 +208,7 @@ pub struct StatsSitewideArtistsArtist {
 
 // --------- stats/user/{user_name}/listening-activity
 
-/// Response type for [`Client::stats_user_listening_activity`](crate::Client::stats_user_listening_activity).
+/// Response type for [`Client::stats_user_listening_activity`](super::Client::stats_user_listening_activity).
 #[derive(Debug, Deserialize)]
 pub struct StatsUserListeningActivityResponse {
     pub payload: StatsUserListeningActivityPayload,
@@ -235,7 +235,7 @@ pub struct StatsUserListeningActivityListeningActivity {
 
 // --------- stats/user/{user_name}/daily-activity
 
-/// Response type for [`Client::stats_user_daily_activity`](crate::Client::stats_user_daily_activity).
+/// Response type for [`Client::stats_user_daily_activity`](super::Client::stats_user_daily_activity).
 #[derive(Debug, Deserialize)]
 pub struct StatsUserDailyActivityResponse {
     pub payload: StatsUserDailyActivityPayload,
@@ -267,7 +267,7 @@ pub struct StatsUserDailyActivityHour {
 
 // --------- stats/user/{user_name}/recordings
 
-/// Response type of [`Client::stats_user_recordings`](crate::Client::stats_user_recordings).
+/// Response type of [`Client::stats_user_recordings`](super::Client::stats_user_recordings).
 #[derive(Debug, Deserialize)]
 pub struct StatsUserRecordingsResponse {
     pub payload: StatsUserRecordingsPayload,
@@ -303,7 +303,7 @@ pub struct StatsUserRecordingsRecording {
 
 // --------- stats/user/{user_name}/artist-map
 
-/// Response type of [`Client::stats_user_artist_map`](crate::Client::stats_user_artist_map).
+/// Response type of [`Client::stats_user_artist_map`](super::Client::stats_user_artist_map).
 #[derive(Debug, Deserialize)]
 pub struct StatsUserArtistMapResponse {
     pub payload: StatsUserArtistMapPayload,
@@ -329,7 +329,7 @@ pub struct StatsUserArtistMapCountry {
 
 // --------- stats/user/{user_name}/releases
 
-/// Response type for [`Client::stats_user_releases`](crate::Client::stats_user_releases).
+/// Response type for [`Client::stats_user_releases`](super::Client::stats_user_releases).
 #[derive(Debug, Deserialize)]
 pub struct StatsUserReleasesResponse {
     pub payload: StatsUserReleasesPayload,
@@ -362,7 +362,7 @@ pub struct StatsUserReleasesRelease {
 
 // --------- stats/user/{user_name}/artists
 
-/// Response type of [`Client::stats_user_artists`](crate::Client::stats_user_artists).
+/// Response type of [`Client::stats_user_artists`](super::Client::stats_user_artists).
 #[derive(Debug, Deserialize)]
 pub struct StatsUserArtistsResponse {
     pub payload: StatsUserArtistsPayload,
@@ -392,7 +392,7 @@ pub struct StatsUserArtistsArtist {
 
 // --------- status/get-dump-info
 
-/// Response type for [`Client::status_get_dump_info`](crate::Client::status_get_dump_info).
+/// Response type for [`Client::status_get_dump_info`](super::Client::status_get_dump_info).
 #[derive(Debug, Deserialize)]
 pub struct StatusGetDumpInfoResponse {
     pub code: u16,

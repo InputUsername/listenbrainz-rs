@@ -1,4 +1,4 @@
-use listenbrainz::Client;
+use listenbrainz::raw::Client;
 
 fn main() {
     let user_name = std::env::args().nth(1).expect("No username provided");
