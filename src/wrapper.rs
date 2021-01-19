@@ -46,22 +46,23 @@ impl ListenBrainz {
     }
 
     /// Authenticate this client with the given token.
-    /// If the token is valid, authenticates the client and returns true, otherwise returns false.
+    /// If the token is valid, authenticates the client and returns [`Ok`].
     ///
     /// # Errors
     ///
+    /// If the token was invalid, returns [`Error::InvalidToken`].
     /// If there was an error while validating the token, that error is returned.
     /// See the Errors section of [`Client`] for more info on what errors might occur.
-    pub fn authenticate(&mut self, token: &str) -> Result<bool, Error> {
+    pub fn authenticate(&mut self, token: &str) -> Result<(), Error> {
         let result = self.client.validate_token(token)?;
         if result.valid && result.user_name.is_some() {
             self.auth.replace(Auth {
                 token: token.to_string(),
                 user: result.user_name.unwrap(),
             });
-            return Ok(true);
+            return Ok(());
         }
-        Ok(false)
+        Err(Error::InvalidToken)
     }
 
     /// Helper method to submit a listen (either "single" or "playing now").
