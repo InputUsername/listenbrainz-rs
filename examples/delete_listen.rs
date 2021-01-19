@@ -1,4 +1,4 @@
-use listenbrainz::models::request::DeleteListen;
+use listenbrainz::raw::request::DeleteListen;
 use listenbrainz::Client;
 
 fn main() {

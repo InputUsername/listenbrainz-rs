@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use listenbrainz::models::request::{ListenType, Payload, SubmitListens, TrackMetadata};
+use listenbrainz::raw::request::{ListenType, Payload, SubmitListens, TrackMetadata};
 use listenbrainz::Client;
 
 fn now() -> i64 {

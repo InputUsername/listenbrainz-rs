@@ -3,7 +3,7 @@
 mod client;
 mod endpoint;
 mod error;
-pub mod models;
+pub mod raw;
 
 pub use crate::client::Client;
 pub use crate::error::Error;

@@ -4,8 +4,8 @@ use serde::Serialize;
 use ureq::Agent;
 
 use crate::endpoint::Endpoint;
-use crate::models::request::*;
-use crate::models::response::*;
+use crate::raw::request::*;
+use crate::raw::response::*;
 use crate::Error;
 
 const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
