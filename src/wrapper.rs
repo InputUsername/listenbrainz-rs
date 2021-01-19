@@ -119,6 +119,12 @@ impl ListenBrainz {
     }
 
     /// Submit a currently playing track.
+    ///
+    /// # Errors
+    ///
+    /// If not authenticated, returns [`Error::NotAuthenticated`].
+    /// Otherwise, see the Errors section of [`Client`] for more info on
+    /// what errors might occur.
     pub fn playing_now(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
         self.submit_listen(ListenType::PlayingNow, None, artist, track, release)
     }
