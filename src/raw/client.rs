@@ -3,8 +3,8 @@ use serde::Serialize;
 
 use ureq::Agent;
 
-use crate::endpoint::Endpoint;
 use crate::Error;
+use super::endpoint::Endpoint;
 use super::request::*;
 use super::response::*;
 

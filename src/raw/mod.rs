@@ -5,6 +5,7 @@
 //! for [request] and [response] data.
 
 mod client;
+mod endpoint;
 pub mod request;
 pub mod response;
 
