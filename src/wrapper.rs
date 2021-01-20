@@ -46,7 +46,7 @@ impl ListenBrainz {
     }
 
     /// Authenticate this client with the given token.
-    /// If the token is valid, authenticates the client and returns [`Ok`].
+    /// If the token is valid, authenticates the client.
     /// In case the client was already authenticated, the old information
     /// is discarded and the new token will be used.
     ///
