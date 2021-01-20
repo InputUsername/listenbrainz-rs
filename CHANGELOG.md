@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.0 (unreleased)
+## v0.2.0 (2021-01-20)
 
 - `Client` methods don't require `&mut self` anymore;
 - Moved `Client`, `models::request` and `models::response` modules to the `raw` module;
