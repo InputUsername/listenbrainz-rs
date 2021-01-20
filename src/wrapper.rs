@@ -2,8 +2,8 @@ use std::convert::TryInto;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::error::Error;
-use crate::raw::Client;
 use crate::raw::request::{ListenType, Payload, SubmitListens, TrackMetadata};
+use crate::raw::Client;
 
 /// Contains a ListenBrainz token and the associated username
 /// for authentication purposes.

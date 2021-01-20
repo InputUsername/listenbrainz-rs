@@ -3,10 +3,10 @@ use serde::Serialize;
 
 use ureq::Agent;
 
-use crate::Error;
 use super::endpoint::Endpoint;
 use super::request::*;
 use super::response::*;
+use crate::Error;
 
 const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 
