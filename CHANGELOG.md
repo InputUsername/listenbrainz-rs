@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.0 (unreleased)
+
+- Add rate limiting information to response types in the `rate_limit` field;
+  - See the [ListenBrainz API docs](https://listenbrainz.readthedocs.io/en/production/dev/api/#rate-limiting)
+    for more information on rate limiting.
+
 ## v0.2.0 (2021-01-20)
 
 - `Client` methods don't require `&mut self` anymore;
