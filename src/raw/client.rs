@@ -1,4 +1,3 @@
-use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use ureq::Agent;
@@ -36,19 +35,17 @@ impl Client {
 
     /// Helper method to perform a GET request against an endpoint
     /// without any query parameters.
-    fn get<R: DeserializeOwned>(&self, endpoint: Endpoint) -> Result<R, Error> {
+    fn get<R: ResponseType>(&self, endpoint: Endpoint) -> Result<R, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
 
-        self.agent
-            .get(&endpoint)
-            .call()?
-            .into_json()
-            .map_err(Error::ResponseJson)
+        let response = self.agent.get(&endpoint).call()?;
+
+        R::from_response(response)
     }
 
     /// Helper method to perform a GET request against (most) statistics
     /// endpoints that share common query parameters.
-    fn get_stats<R: DeserializeOwned>(
+    fn get_stats<R: ResponseType>(
         &self,
         endpoint: Endpoint,
         count: Option<u64>,
@@ -75,7 +72,7 @@ impl Client {
         if response.status() == 204 {
             Ok(None)
         } else {
-            response.into_json().map(Some).map_err(Error::ResponseJson)
+            R::from_response(response).map(Some)
         }
     }
 
@@ -84,18 +81,18 @@ impl Client {
     fn post<D, R>(&self, endpoint: Endpoint, token: &str, data: D) -> Result<R, Error>
     where
         D: Serialize,
-        R: DeserializeOwned,
+        R: ResponseType,
     {
         let data = serde_json::to_value(data).map_err(Error::RequestJson)?;
 
         let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
 
-        self.agent
+        let response = self.agent
             .post(&endpoint)
             .set("Authorization", &format!("Token {}", token))
-            .send_json(data)?
-            .into_json()
-            .map_err(Error::ResponseJson)
+            .send_json(data)?;
+
+        R::from_response(response)
     }
 
     /// Endpoint: [`submit-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-submit-listens)
@@ -111,12 +108,12 @@ impl Client {
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::ValidateToken);
 
-        self.agent
+        let response = self.agent
             .get(&endpoint)
             .query("token", token)
-            .call()?
-            .into_json()
-            .map_err(Error::ResponseJson)
+            .call()?;
+
+        ResponseType::from_response(response)
     }
 
     /// Endpoint: [`delete-listen`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-delete-listen)
@@ -172,7 +169,9 @@ impl Client {
             request = request.query("time_range", &time_range.to_string());
         }
 
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        let response = request.call()?;
+
+        ResponseType::from_response(response)
     }
 
     /// Endpoint: [`latest-import`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-latest-import) (`GET`)
@@ -230,7 +229,7 @@ impl Client {
         if response.status() == 204 {
             Ok(None)
         } else {
-            response.into_json().map(Some).map_err(Error::ResponseJson)
+            ResponseType::from_response(response).map(Some)
         }
     }
 
@@ -258,7 +257,7 @@ impl Client {
         if response.status() == 204 {
             Ok(None)
         } else {
-            response.into_json().map(Some).map_err(Error::ResponseJson)
+            ResponseType::from_response(response).map(Some)
         }
     }
 
@@ -300,7 +299,9 @@ impl Client {
             request = request.query("force_recalculate", &force_recalculate.to_string());
         }
 
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        let response = request.call()?;
+
+        ResponseType::from_response(response)
     }
 
     /// Endpoint: [`stats/user/{user_name}/releases`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-releases)
@@ -338,6 +339,8 @@ impl Client {
             request = request.query("id", &id.to_string());
         }
 
-        request.call()?.into_json().map_err(Error::ResponseJson)
+        let response = request.call()?;
+
+        ResponseType::from_response(response)
     }
 }

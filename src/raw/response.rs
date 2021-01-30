@@ -1,43 +1,133 @@
 //! Low-level response data models.
+//!
+//! Every response type has the `rate_limit` field, which contains rate limiting
+//! information. See the documentation of the [`RateLimit`] type for more
+//! details.
 
 use std::collections::HashMap;
 
+use serde::de::DeserializeOwned;
 use serde::Deserialize;
+use ureq::Response;
+
+use crate::Error;
+
+/// Contains rate limiting information.
+///
+/// ListenBrainz API rate limiting is described in the [API docs].
+/// Prefer using the [`RateLimit::reset_in`] field over [`RateLimit::reset`],
+/// as the former is resilient against clients with incorrect clocks.
+///
+/// [API docs]: https://listenbrainz.readthedocs.io/en/production/dev/api/#rate-limiting
+#[derive(Debug)]
+pub struct RateLimit {
+    pub limit: u64,
+    pub remaining: u64,
+    pub reset_in: u64,
+    pub reset: i64,
+}
+
+impl RateLimit {
+    /// Extract rate limiting information from the `X-RateLimit-` headers.
+    /// Only returns `Some` if all fields are present and valid.
+    fn from_headers(response: &Response) -> Option<Self> {
+        let limit = response.header("X-RateLimit-Limit")?
+            .parse().ok()?;
+        let remaining = response.header("X-RateLimit-Remaining")?
+            .parse().ok()?;
+        let reset_in = response.header("X-RateLimit-Reset-In")?
+            .parse().ok()?;
+        let reset = response.header("X-RateLimit-Reset")?
+            .parse().ok()?;
+
+        Some(Self {
+            limit,
+            remaining,
+            reset_in,
+            reset,
+        })
+    }
+}
+
+/// Internal trait for response types.
+/// Allows converting the response type from a `ureq::Response`,
+/// by deserializing the body into the response type and then
+/// adding the `rate_limit` field from headers.
+pub(crate) trait ResponseType: DeserializeOwned {
+    fn from_response(response: Response) -> Result<Self, Error>;
+}
+
+/// Internal macro for response types.
+/// Wraps the definition of a response type, adds the `rate_limit` field,
+/// and implements the `ResponseType` trait.
+macro_rules! response_type {
+    (
+        $(#[$meta:meta])*
+        pub struct $name:ident {
+            $(pub $field:ident: $field_ty:ty),*
+            $(,)?
+        }
+    ) => {
+        $(#[$meta])*
+        pub struct $name {
+            #[serde(skip)]
+            pub rate_limit: Option<RateLimit>,
+            $(pub $field: $field_ty),*
+        }
+
+        impl ResponseType for $name {
+            fn from_response(response: Response) -> Result<Self, Error> {
+                let rate_limit = RateLimit::from_headers(&response);
+                let mut result: Self = response.into_json().map_err(Error::ResponseJson)?;
+                result.rate_limit = rate_limit;
+                Ok(result)
+            }
+        }
+    }
+}
 
 // --------- submit-listens
 
-/// Response type for [`Client::submit_listens`](super::Client::submit_listens).
-#[derive(Debug, Deserialize)]
-pub struct SubmitListensResponse {
-    pub status: String,
+response_type! {
+    /// Response type for [`Client::submit_listens`](super::Client::submit_listens).
+    #[derive(Debug, Deserialize)]
+    pub struct SubmitListensResponse {
+        pub status: String,
+    }
 }
 
 // --------- validate-token
 
-/// Response type for [`Client::validate_token`](super::Client::validate_token).
-#[derive(Debug, Deserialize)]
-pub struct ValidateTokenResponse {
-    pub code: u16,
-    pub message: String,
+response_type! {
+    /// Response type for [`Client::validate_token`](super::Client::validate_token).
+    #[derive(Debug, Deserialize)]
+    pub struct ValidateTokenResponse {
+        pub code: u16,
+        pub message: String,
 
-    pub valid: bool,
-    pub user_name: Option<String>,
+        pub valid: bool,
+        pub user_name: Option<String>,
+    }
 }
 
 // --------- delete-listen
 
-/// Response type for [`Client::delete_listen`](super::Client::delete_listen).
-#[derive(Debug, Deserialize)]
-pub struct DeleteListenResponse {
-    pub status: String,
+response_type! {
+    /// Response type for [`Client::delete_listen`](super::Client::delete_listen).
+    #[derive(Debug, Deserialize)]
+    pub struct DeleteListenResponse {
+        pub status: String,
+    }
 }
 
 // --------- users/{user_list}/recent-listens
 
-/// Response type for [`Client::users_recent_listens`](super::Client::users_recent_listens).
-#[derive(Debug, Deserialize)]
-pub struct UsersRecentListensResponse {
-    pub payload: UsersRecentListensPayload,
+response_type! {
+    /// Response type for [`Client::users_recent_listens`](super::Client::users_recent_listens).
+    #[derive(Debug, Deserialize)]
+    pub struct UsersRecentListensResponse {
+        pub payload: UsersRecentListensPayload,
+    }
 }
 
 /// Type of the [`UsersRecentListensResponse::payload`] field.
@@ -69,10 +159,12 @@ pub struct UsersRecentListensTrackMetadata {
 
 // --------- user/{user_name}/listen-count
 
-/// Response type for [`Client::user_listen_count`](super::Client::user_listen_count).
-#[derive(Debug, Deserialize)]
-pub struct UserListenCountResponse {
-    pub payload: UserListenCountPayload,
+response_type! {
+    /// Response type for [`Client::user_listen_count`](super::Client::user_listen_count).
+    #[derive(Debug, Deserialize)]
+    pub struct UserListenCountResponse {
+        pub payload: UserListenCountPayload,
+    }
 }
 
 /// Type of the [`UserListenCountResponse::payload`] field.
@@ -83,10 +175,12 @@ pub struct UserListenCountPayload {
 
 // -------- user/{user_name}/playing-now
 
-/// Response type for [`Client::user_playing_now`](super::Client::user_playing_now).
-#[derive(Debug, Deserialize)]
-pub struct UserPlayingNowResponse {
-    pub payload: UserPlayingNowPayload,
+response_type! {
+    /// Response type for [`Client::user_playing_now`](super::Client::user_playing_now).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlayingNowResponse {
+        pub payload: UserPlayingNowPayload,
+    }
 }
 
 /// Type of the [`UserPlayingNowResponse::payload`] field.
@@ -117,10 +211,12 @@ pub struct UserPlayingNowTrackMetadata {
 
 // -------- user/{user_name}/listens
 
-/// Response type for [`Client::user_listens`](super::Client::user_listens).
-#[derive(Debug, Deserialize)]
-pub struct UserListensResponse {
-    pub payload: UserListensPayload,
+response_type! {
+    /// Response type for [`Client::user_listens`](super::Client::user_listens).
+    #[derive(Debug, Deserialize)]
+    pub struct UserListensResponse {
+        pub payload: UserListensPayload,
+    }
 }
 
 /// Type of the [`UserListensResponse::payload`] field.
@@ -153,27 +249,33 @@ pub struct UserListensTrackMetadata {
 
 // --------- latest-import (GET)
 
-/// Response type for [`Client::get_latest_import`](super::Client::get_latest_import).
-#[derive(Debug, Deserialize)]
-pub struct GetLatestImportResponse {
-    pub latest_import: i64,
-    pub musicbrainz_id: String,
+response_type! {
+    /// Response type for [`Client::get_latest_import`](super::Client::get_latest_import).
+    #[derive(Debug, Deserialize)]
+    pub struct GetLatestImportResponse {
+        pub latest_import: i64,
+        pub musicbrainz_id: String,
+    }
 }
 
 // --------- latest-import (POST)
 
-/// Response type for [`Client::update_latest_import`](super::Client::update_latest_import).
-#[derive(Debug, Deserialize)]
-pub struct UpdateLatestImportResponse {
-    pub status: String,
+response_type! {
+    /// Response type for [`Client::update_latest_import`](super::Client::update_latest_import).
+    #[derive(Debug, Deserialize)]
+    pub struct UpdateLatestImportResponse {
+        pub status: String,
+    }
 }
 
 // --------- stats/sitewide/artists
 
-/// Response type for [`Client::stats_sitewide_artists`](super::Client::stats_sitewide_artists).
-#[derive(Debug, Deserialize)]
-pub struct StatsSitewideArtistsResponse {
-    pub payload: StatsSitewideArtistsPayload,
+response_type! {
+    /// Response type for [`Client::stats_sitewide_artists`](super::Client::stats_sitewide_artists).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsSitewideArtistsResponse {
+        pub payload: StatsSitewideArtistsPayload,
+    }
 }
 
 /// Type of the [`StatsSitewideArtistsResponse::payload`] field.
@@ -208,10 +310,12 @@ pub struct StatsSitewideArtistsArtist {
 
 // --------- stats/user/{user_name}/listening-activity
 
-/// Response type for [`Client::stats_user_listening_activity`](super::Client::stats_user_listening_activity).
-#[derive(Debug, Deserialize)]
-pub struct StatsUserListeningActivityResponse {
-    pub payload: StatsUserListeningActivityPayload,
+response_type! {
+    /// Response type for [`Client::stats_user_listening_activity`](super::Client::stats_user_listening_activity).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsUserListeningActivityResponse {
+        pub payload: StatsUserListeningActivityPayload,
+    }
 }
 
 /// Type of the [`StatsUserListeningActivityResponse::payload`] field.
@@ -235,10 +339,12 @@ pub struct StatsUserListeningActivityListeningActivity {
 
 // --------- stats/user/{user_name}/daily-activity
 
-/// Response type for [`Client::stats_user_daily_activity`](super::Client::stats_user_daily_activity).
-#[derive(Debug, Deserialize)]
-pub struct StatsUserDailyActivityResponse {
-    pub payload: StatsUserDailyActivityPayload,
+response_type! {
+    /// Response type for [`Client::stats_user_daily_activity`](super::Client::stats_user_daily_activity).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsUserDailyActivityResponse {
+        pub payload: StatsUserDailyActivityPayload,
+    }
 }
 
 /// Type of the [`StatsUserDailyActivityResponse::payload`] field.
@@ -267,10 +373,12 @@ pub struct StatsUserDailyActivityHour {
 
 // --------- stats/user/{user_name}/recordings
 
-/// Response type of [`Client::stats_user_recordings`](super::Client::stats_user_recordings).
-#[derive(Debug, Deserialize)]
-pub struct StatsUserRecordingsResponse {
-    pub payload: StatsUserRecordingsPayload,
+response_type! {
+    /// Response type of [`Client::stats_user_recordings`](super::Client::stats_user_recordings).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsUserRecordingsResponse {
+        pub payload: StatsUserRecordingsPayload,
+    }
 }
 
 /// Type of the [`StatsUserRecordingsResponse::payload`] field.
@@ -303,10 +411,12 @@ pub struct StatsUserRecordingsRecording {
 
 // --------- stats/user/{user_name}/artist-map
 
-/// Response type of [`Client::stats_user_artist_map`](super::Client::stats_user_artist_map).
-#[derive(Debug, Deserialize)]
-pub struct StatsUserArtistMapResponse {
-    pub payload: StatsUserArtistMapPayload,
+response_type! {
+    /// Response type of [`Client::stats_user_artist_map`](super::Client::stats_user_artist_map).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsUserArtistMapResponse {
+        pub payload: StatsUserArtistMapPayload,
+    }
 }
 
 /// Type of the [`StatsUserArtistMapResponse::payload`] field.
@@ -329,10 +439,12 @@ pub struct StatsUserArtistMapCountry {
 
 // --------- stats/user/{user_name}/releases
 
-/// Response type for [`Client::stats_user_releases`](super::Client::stats_user_releases).
-#[derive(Debug, Deserialize)]
-pub struct StatsUserReleasesResponse {
-    pub payload: StatsUserReleasesPayload,
+response_type! {
+    /// Response type for [`Client::stats_user_releases`](super::Client::stats_user_releases).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsUserReleasesResponse {
+        pub payload: StatsUserReleasesPayload,
+    }
 }
 
 /// Type of the [`StatsUserReleasesResponse::payload`] field.
@@ -362,10 +474,12 @@ pub struct StatsUserReleasesRelease {
 
 // --------- stats/user/{user_name}/artists
 
-/// Response type of [`Client::stats_user_artists`](super::Client::stats_user_artists).
-#[derive(Debug, Deserialize)]
-pub struct StatsUserArtistsResponse {
-    pub payload: StatsUserArtistsPayload,
+response_type! {
+    /// Response type of [`Client::stats_user_artists`](super::Client::stats_user_artists).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsUserArtistsResponse {
+        pub payload: StatsUserArtistsPayload,
+    }
 }
 
 /// Type of the [`StatsUserArtistsResponse::payload`] field.
@@ -392,12 +506,14 @@ pub struct StatsUserArtistsArtist {
 
 // --------- status/get-dump-info
 
-/// Response type for [`Client::status_get_dump_info`](super::Client::status_get_dump_info).
-#[derive(Debug, Deserialize)]
-pub struct StatusGetDumpInfoResponse {
-    pub code: u16,
-    pub message: String,
+response_type! {
+    /// Response type for [`Client::status_get_dump_info`](super::Client::status_get_dump_info).
+    #[derive(Debug, Deserialize)]
+    pub struct StatusGetDumpInfoResponse {
+        pub code: u16,
+        pub message: String,
 
-    pub id: i64,
-    pub timestamp: String,
+        pub id: i64,
+        pub timestamp: String,
+    }
 }
