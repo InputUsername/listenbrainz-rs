@@ -121,7 +121,7 @@ impl ListenBrainz {
         self.submit_listen(ListenType::Single, Some(now), artist, track, release)
     }
 
-    /// Submit a currently playing track.
+    /// Submit a currently playing track. This requires authentication.
     ///
     /// # Errors
     ///
