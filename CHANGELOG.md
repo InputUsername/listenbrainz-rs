@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.0 (unreleased)
+## v0.3.0 (2021-02-02)
 
-- Add rate limiting information to response types in the `rate_limit` field;
+- Added rate limiting information to response types in the `rate_limit` field;
   - See the [ListenBrainz API docs](https://listenbrainz.readthedocs.io/en/production/dev/api/#rate-limiting)
     for more information on rate limiting.
 
