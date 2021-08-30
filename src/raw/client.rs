@@ -23,6 +23,7 @@ const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 /// - [`Error::Http`]: there was some other HTTP error while interacting with the API.
 pub struct Client {
     agent: Agent,
+    api_root_url: String,
 }
 
 impl Client {
@@ -30,13 +31,21 @@ impl Client {
     pub fn new() -> Self {
         Self {
             agent: ureq::agent(),
+            api_root_url: API_ROOT_URL.to_string(),
+        }
+    }
+
+    pub fn new_with_url(url: &str) -> Self {
+        Self {
+            agent: ureq::agent(),
+            api_root_url: url.to_string(),
         }
     }
 
     /// Helper method to perform a GET request against an endpoint
     /// without any query parameters.
     fn get<R: ResponseType>(&self, endpoint: Endpoint) -> Result<R, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
+        let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
         let response = self.agent.get(&endpoint).call()?;
 
@@ -52,7 +61,7 @@ impl Client {
         offset: Option<u64>,
         range: Option<&str>,
     ) -> Result<Option<R>, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
+        let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
         let mut request = self.agent.get(&endpoint);
 
@@ -85,7 +94,7 @@ impl Client {
     {
         let data = serde_json::to_value(data).map_err(Error::RequestJson)?;
 
-        let endpoint = format!("{}{}", API_ROOT_URL, endpoint);
+        let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
         let response = self.agent
             .post(&endpoint)
@@ -106,7 +115,7 @@ impl Client {
 
     /// Endpoint: [`validate-token`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-validate-token)
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::ValidateToken);
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::ValidateToken);
 
         let response = self.agent
             .get(&endpoint)
@@ -152,7 +161,7 @@ impl Client {
         count: Option<u64>,
         time_range: Option<u64>,
     ) -> Result<UserListensResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::UserListens(user_name));
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserListens(user_name));
 
         let mut request = self.agent.get(&endpoint);
 
@@ -176,7 +185,7 @@ impl Client {
 
     /// Endpoint: [`latest-import`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-latest-import) (`GET`)
     pub fn get_latest_import(&self, user_name: &str) -> Result<GetLatestImportResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::LatestImport);
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::LatestImport);
 
         self.agent
             .get(&endpoint)
@@ -331,7 +340,7 @@ impl Client {
         &self,
         id: Option<i64>,
     ) -> Result<StatusGetDumpInfoResponse, Error> {
-        let endpoint = format!("{}{}", API_ROOT_URL, Endpoint::StatusGetDumpInfo);
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::StatusGetDumpInfo);
 
         let mut request = self.agent.get(&endpoint);
 
