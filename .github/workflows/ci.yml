@@ -1,0 +1,19 @@
+name: CI builder
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: CI builder for listenbrainz-rs
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Perform build of listenbrainz-rs
+      run: cargo build --verbose
+    - name: Run unit tests for listenbrain-rs
+      run: cargo test --verbose
