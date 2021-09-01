@@ -109,9 +109,7 @@ impl Client {
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::ValidateToken);
 
-        let response = attohttpc::get(endpoint)
-            .param("token", token)
-            .send()?;
+        let response = attohttpc::get(endpoint).param("token", token).send()?;
 
         ResponseType::from_response(response)
     }

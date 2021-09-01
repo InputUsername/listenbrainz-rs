@@ -6,9 +6,9 @@
 
 use std::collections::HashMap;
 
+use attohttpc::Response;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
-use attohttpc::Response;
 
 use crate::Error;
 
@@ -33,18 +33,30 @@ impl RateLimit {
     fn from_headers(response: &Response) -> Option<Self> {
         let headers = response.headers();
 
-        let limit = headers.get("X-RateLimit-Limit")?
-            .to_str().ok()?
-            .parse().ok()?;
-        let remaining = headers.get("X-RateLimit-Remaining")?
-            .to_str().ok()?
-            .parse().ok()?;
-        let reset_in = headers.get("X-RateLimit-Reset-In")?
-            .to_str().ok()?
-            .parse().ok()?;
-        let reset = headers.get("X-RateLimit-Reset")?
-            .to_str().ok()?
-            .parse().ok()?;
+        let limit = headers
+            .get("X-RateLimit-Limit")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
+        let remaining = headers
+            .get("X-RateLimit-Remaining")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
+        let reset_in = headers
+            .get("X-RateLimit-Reset-In")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
+        let reset = headers
+            .get("X-RateLimit-Reset")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
 
         Some(Self {
             limit,
