@@ -6,9 +6,9 @@
 
 use std::collections::HashMap;
 
+use attohttpc::Response;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
-use ureq::Response;
 
 use crate::Error;
 
@@ -31,14 +31,32 @@ impl RateLimit {
     /// Extract rate limiting information from the `X-RateLimit-` headers.
     /// Only returns `Some` if all fields are present and valid.
     fn from_headers(response: &Response) -> Option<Self> {
-        let limit = response.header("X-RateLimit-Limit")?
-            .parse().ok()?;
-        let remaining = response.header("X-RateLimit-Remaining")?
-            .parse().ok()?;
-        let reset_in = response.header("X-RateLimit-Reset-In")?
-            .parse().ok()?;
-        let reset = response.header("X-RateLimit-Reset")?
-            .parse().ok()?;
+        let headers = response.headers();
+
+        let limit = headers
+            .get("X-RateLimit-Limit")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
+        let remaining = headers
+            .get("X-RateLimit-Remaining")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
+        let reset_in = headers
+            .get("X-RateLimit-Reset-In")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
+        let reset = headers
+            .get("X-RateLimit-Reset")?
+            .to_str()
+            .ok()?
+            .parse()
+            .ok()?;
 
         Some(Self {
             limit,
@@ -50,7 +68,7 @@ impl RateLimit {
 }
 
 /// Internal trait for response types.
-/// Allows converting the response type from a `ureq::Response`,
+/// Allows converting the response type from an `attohttpc::Response`,
 /// by deserializing the body into the response type and then
 /// adding the `rate_limit` field from headers.
 pub(crate) trait ResponseType: DeserializeOwned {
@@ -77,8 +95,9 @@ macro_rules! response_type {
 
         impl ResponseType for $name {
             fn from_response(response: Response) -> Result<Self, Error> {
+                let response = Error::try_from_error_response(response)?;
                 let rate_limit = RateLimit::from_headers(&response);
-                let mut result: Self = response.into_json().map_err(Error::ResponseJson)?;
+                let mut result: Self = response.json()?;
                 result.rate_limit = rate_limit;
                 Ok(result)
             }

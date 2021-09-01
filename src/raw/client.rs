@@ -1,7 +1,5 @@
 use serde::Serialize;
 
-use ureq::Agent;
-
 use super::endpoint::Endpoint;
 use super::request::*;
 use super::response::*;
@@ -18,11 +16,9 @@ const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 ///
 /// Client's methods can return the following errors:
 /// - [`Error::Api`]: the API returned a non-`2XX` status.
-/// - [`Error::RequestJson`]: the request data could not be converted into JSON.
-/// - [`Error::ResponseJson`]: the response data could not be converted into JSON.
+/// - [`Error::Json`]: the request or response data could not be converted from or into JSON.
 /// - [`Error::Http`]: there was some other HTTP error while interacting with the API.
 pub struct Client {
-    agent: Agent,
     api_root_url: String,
 }
 
@@ -30,14 +26,12 @@ impl Client {
     /// Construct a new client.
     pub fn new() -> Self {
         Self {
-            agent: ureq::agent(),
             api_root_url: API_ROOT_URL.to_string(),
         }
     }
 
     pub fn new_with_url(url: &str) -> Self {
         Self {
-            agent: ureq::agent(),
             api_root_url: url.to_string(),
         }
     }
@@ -47,7 +41,7 @@ impl Client {
     fn get<R: ResponseType>(&self, endpoint: Endpoint) -> Result<R, Error> {
         let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
-        let response = self.agent.get(&endpoint).call()?;
+        let response = attohttpc::get(endpoint).send()?;
 
         R::from_response(response)
     }
@@ -63,19 +57,19 @@ impl Client {
     ) -> Result<Option<R>, Error> {
         let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
-        let mut request = self.agent.get(&endpoint);
+        let mut request = attohttpc::get(endpoint);
 
         if let Some(count) = count {
-            request = request.query("count", &count.to_string());
+            request = request.param("count", count);
         }
         if let Some(offset) = offset {
-            request = request.query("offset", &offset.to_string());
+            request = request.param("offset", offset);
         }
         if let Some(range) = range {
-            request = request.query("range", range);
+            request = request.param("range", range);
         }
 
-        let response = request.call()?;
+        let response = request.send()?;
 
         // API returns 204 and an empty document if there are no statistics
         if response.status() == 204 {
@@ -92,14 +86,12 @@ impl Client {
         D: Serialize,
         R: ResponseType,
     {
-        let data = serde_json::to_value(data).map_err(Error::RequestJson)?;
-
         let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
-        let response = self.agent
-            .post(&endpoint)
-            .set("Authorization", &format!("Token {}", token))
-            .send_json(data)?;
+        let response = attohttpc::post(endpoint)
+            .header("Authorization", &format!("Token {}", token))
+            .json(&data)?
+            .send()?;
 
         R::from_response(response)
     }
@@ -117,10 +109,7 @@ impl Client {
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::ValidateToken);
 
-        let response = self.agent
-            .get(&endpoint)
-            .query("token", token)
-            .call()?;
+        let response = attohttpc::get(endpoint).param("token", token).send()?;
 
         ResponseType::from_response(response)
     }
@@ -163,22 +152,22 @@ impl Client {
     ) -> Result<UserListensResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserListens(user_name));
 
-        let mut request = self.agent.get(&endpoint);
+        let mut request = attohttpc::get(endpoint);
 
         if let Some(min_ts) = min_ts {
-            request = request.query("min_ts", &min_ts.to_string());
+            request = request.param("min_ts", min_ts);
         }
         if let Some(max_ts) = max_ts {
-            request = request.query("max_ts", &max_ts.to_string());
+            request = request.param("max_ts", max_ts);
         }
         if let Some(count) = count {
-            request = request.query("count", &count.to_string());
+            request = request.param("count", count);
         }
         if let Some(time_range) = time_range {
-            request = request.query("time_range", &time_range.to_string());
+            request = request.param("time_range", time_range);
         }
 
-        let response = request.call()?;
+        let response = request.send()?;
 
         ResponseType::from_response(response)
     }
@@ -187,12 +176,11 @@ impl Client {
     pub fn get_latest_import(&self, user_name: &str) -> Result<GetLatestImportResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::LatestImport);
 
-        self.agent
-            .get(&endpoint)
-            .query("user_name", user_name)
-            .call()?
-            .into_json()
-            .map_err(Error::ResponseJson)
+        let response = attohttpc::get(endpoint)
+            .param("user_name", user_name)
+            .send()?;
+
+        ResponseType::from_response(response)
     }
 
     /// Endpoint: [`latest-import`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-latest-import) (`POST`)
@@ -226,13 +214,13 @@ impl Client {
             Endpoint::StatsUserListeningActivity(user_name)
         );
 
-        let mut request = self.agent.get(&endpoint);
+        let mut request = attohttpc::get(endpoint);
 
         if let Some(range) = range {
-            request = request.query("range", range);
+            request = request.param("range", range);
         }
 
-        let response = request.call()?;
+        let response = request.send()?;
 
         // API returns 204 and an empty document if there are no statistics
         if response.status() == 204 {
@@ -254,13 +242,13 @@ impl Client {
             Endpoint::StatsUserDailyActivity(user_name)
         );
 
-        let mut request = self.agent.get(&endpoint);
+        let mut request = attohttpc::get(endpoint);
 
         if let Some(range) = range {
-            request = request.query("range", range);
+            request = request.param("range", range);
         }
 
-        let response = request.call()?;
+        let response = request.send()?;
 
         // API returns 204 and an empty document if there are no statistics
         if response.status() == 204 {
@@ -299,16 +287,16 @@ impl Client {
             Endpoint::StatsUserArtistMap(user_name)
         );
 
-        let mut request = self.agent.get(&endpoint);
+        let mut request = attohttpc::get(endpoint);
 
         if let Some(range) = range {
-            request = request.query("range", range);
+            request = request.param("range", range);
         }
         if let Some(force_recalculate) = force_recalculate {
-            request = request.query("force_recalculate", &force_recalculate.to_string());
+            request = request.param("force_recalculate", force_recalculate);
         }
 
-        let response = request.call()?;
+        let response = request.send()?;
 
         ResponseType::from_response(response)
     }
@@ -342,13 +330,13 @@ impl Client {
     ) -> Result<StatusGetDumpInfoResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::StatusGetDumpInfo);
 
-        let mut request = self.agent.get(&endpoint);
+        let mut request = attohttpc::get(endpoint);
 
         if let Some(id) = id {
-            request = request.query("id", &id.to_string());
+            request = request.param("id", id);
         }
 
-        let response = request.call()?;
+        let response = request.send()?;
 
         ResponseType::from_response(response)
     }

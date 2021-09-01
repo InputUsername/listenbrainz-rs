@@ -1,8 +1,8 @@
-use std::io;
-
 use serde::Deserialize;
 
-/// Represents errors that can occor while interacting with the API.
+use attohttpc::Response;
+
+/// Represents errors that can occur while interacting with the API.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     /// The API returned a non-200 status code.
@@ -15,17 +15,13 @@ pub enum Error {
         error: String,
     },
 
-    /// The input data could not be converted into JSON.
-    #[error("could not convert request input into JSON")]
-    RequestJson(#[source] serde_json::Error),
-
-    /// The HTTP response could not be converted into JSON.
-    #[error("could not convert HTTP response into JSON")]
-    ResponseJson(#[source] io::Error),
+    /// The request or response data could not be converted into or from JSON.
+    #[error("could not convert request or response data into or from JSON")]
+    Json(#[source] attohttpc::Error),
 
     /// There was some other HTTP error while interacting with the API.
     #[error("HTTP error")]
-    Http(#[source] Box<ureq::Error>),
+    Http(#[source] attohttpc::Error),
 
     /// The token that was attempted to be used for authentication is invalid.
     #[error("invalid authentication token")]
@@ -34,6 +30,20 @@ pub enum Error {
     /// Tried to access a service that requires authentication.
     #[error("not authenticated")]
     NotAuthenticated,
+}
+
+impl Error {
+    /// If the response is a client or server error (status [400-599]),
+    /// deserialize it into `Error::Api`. Otherwise, return the original response.
+    pub(crate) fn try_from_error_response(response: Response) -> Result<Response, Self> {
+        let status = response.status();
+        if status.is_client_error() || status.is_server_error() {
+            let api_error: ApiError = response.json()?;
+            Err(api_error.into())
+        } else {
+            Ok(response)
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -51,14 +61,11 @@ impl From<ApiError> for Error {
     }
 }
 
-impl From<ureq::Error> for Error {
-    fn from(error: ureq::Error) -> Self {
-        match error {
-            ureq::Error::Status(_code, response) => match response.into_json::<ApiError>() {
-                Ok(api_error) => api_error.into(),
-                Err(err) => Error::ResponseJson(err),
-            },
-            ureq::Error::Transport(_) => Error::Http(Box::new(error)),
+impl From<attohttpc::Error> for Error {
+    fn from(error: attohttpc::Error) -> Self {
+        match error.kind() {
+            attohttpc::ErrorKind::Json(_) => Self::Json(error),
+            _ => Self::Http(error),
         }
     }
 }
