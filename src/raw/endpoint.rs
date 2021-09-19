@@ -21,37 +21,38 @@ pub enum Endpoint<'a> {
 
 impl<'a> fmt::Display for Endpoint<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = match self {
-            Self::SubmitListens => "submit-listens",
-            Self::ValidateToken => "validate-token",
-            Self::DeleteListen => "delete-listen",
+        match self {
+            Self::SubmitListens => write!(f, "submit-listens"),
+            Self::ValidateToken => write!(f, "validate-token"),
+            Self::DeleteListen => write!(f, "delete-listen"),
             Self::UsersRecentListens(users) => {
-                let users = users.iter().fold(String::new(), |mut result, user| {
-                    result.reserve(user.len() + 1);
-                    result.push_str(&user.replace(',', "%2C"));
-                    result.push(',');
-                    result
-                });
-                println!("{:?}", users);
-                return write!(f, "users/{}/recent-listens", users);
+                write!(f, "users/")?;
+                for user in users.iter() {
+                    let mut parts = user.split(',');
+                    // Unwrap is fine since str::split always returns at least one item
+                    write!(f, "{}", parts.next().unwrap())?;
+                    for part in parts {
+                        write!(f, "%2C{}", part)?;
+                    }
+                }
+                write!(f, "/recent-listens")
             }
-            Self::UserListenCount(user) => return write!(f, "user/{}/listen-count", user),
-            Self::UserPlayingNow(user) => return write!(f, "user/{}/playing-now", user),
-            Self::UserListens(user) => return write!(f, "user/{}/listens", user),
-            Self::LatestImport => "latest-import",
-            Self::StatsSitewideArtists => "stats/sitewide/artists",
+            Self::UserListenCount(user) => write!(f, "user/{}/listen-count", user),
+            Self::UserPlayingNow(user) => write!(f, "user/{}/playing-now", user),
+            Self::UserListens(user) => write!(f, "user/{}/listens", user),
+            Self::LatestImport => write!(f, "latest-import"),
+            Self::StatsSitewideArtists => write!(f, "stats/sitewide/artists"),
             Self::StatsUserListeningActivity(user) => {
-                return write!(f, "stats/user/{}/listening-activity", user)
+                write!(f, "stats/user/{}/listening-activity", user)
             }
             Self::StatsUserDailyActivity(user) => {
-                return write!(f, "stats/user/{}/daily-activity", user)
+                write!(f, "stats/user/{}/daily-activity", user)
             }
-            Self::StatsUserRecordings(user) => return write!(f, "stats/user/{}/recordings", user),
-            Self::StatsUserArtistMap(user) => return write!(f, "stats/user/{}/artist-map", user),
-            Self::StatsUserReleases(user) => return write!(f, "stats/user/{}/releases", user),
-            Self::StatsUserArtists(user) => return write!(f, "stats/user/{}/artists", user),
-            Self::StatusGetDumpInfo => "status/get-dump-info",
-        };
-        write!(f, "{}", s)
+            Self::StatsUserRecordings(user) => write!(f, "stats/user/{}/recordings", user),
+            Self::StatsUserArtistMap(user) => write!(f, "stats/user/{}/artist-map", user),
+            Self::StatsUserReleases(user) => write!(f, "stats/user/{}/releases", user),
+            Self::StatsUserArtists(user) => write!(f, "stats/user/{}/artists", user),
+            Self::StatusGetDumpInfo => write!(f, "status/get-dump-info"),
+        }
     }
 }
