@@ -141,6 +141,60 @@ response_type! {
     }
 }
 
+// --------- users/{user_list}/recent-listens
+
+response_type! {
+    /// Response type for [`Client::users_recent_listens`](super::Client::users_recent_listens).
+    #[derive(Debug, Deserialize)]
+    pub struct UsersRecentListensResponse {
+        pub payload: UsersRecentListensPayload,
+    }
+}
+
+/// Type of the [`UsersRecentListensResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct UsersRecentListensPayload {
+    pub count: u64,
+    pub listens: Vec<UsersRecentListensListen>,
+    pub user_list: String,
+}
+
+/// Type of the [`UsersRecentListensPayload::listens`] field.
+#[derive(Debug, Deserialize)]
+pub struct UsersRecentListensListen {
+    pub user_name: String,
+    pub inserted_at: String,
+    pub listened_at: i64,
+    pub recording_msid: String,
+    pub track_metadata: UsersRecentListensTrackMetadata,
+}
+
+/// Type of the [`UsersRecentListensListen::track_metadata`] field.
+#[derive(Debug, Deserialize)]
+pub struct UsersRecentListensTrackMetadata {
+    pub artist_name: String,
+    pub track_name: String,
+    pub release_name: Option<String>,
+    pub additional_info: HashMap<String, serde_json::Value>,
+}
+
+// --------- user/{user_name}/similar-users
+
+response_type! {
+    /// Response type for [`Client::user_similar_users`](super::Client::user_similar_users).
+    #[derive(Debug, Deserialize)]
+    pub struct UserSimilarUsersResponse {
+        pub payload: Vec<UserSimilarUsersPayload>,
+    }
+}
+
+/// Type of the [`UserSimilarUsersResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct UserSimilarUsersPayload {
+    pub user_name: String,
+    pub similarity: f64,
+}
+
 // --------- user/{user_name}/listen-count
 
 response_type! {
@@ -190,6 +244,16 @@ pub struct UserPlayingNowTrackMetadata {
     pub track_name: String,
     pub release_name: Option<String>,
     pub additional_info: HashMap<String, serde_json::Value>,
+}
+
+// -------- user/{user_name}/similar-to/{other_user_name}
+
+response_type! {
+    #[derive(Debug, Deserialize)]
+    pub struct UserSimilarToResponse {
+        pub user_name: String,
+        pub similarity: f64,
+    }
 }
 
 // -------- user/{user_name}/listens
