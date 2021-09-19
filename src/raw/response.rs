@@ -13,6 +13,7 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
 use crate::Error;
+use super::jspf;
 
 /// Contains rate limiting information.
 ///
@@ -138,6 +139,32 @@ response_type! {
     #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
     pub struct DeleteListenResponse {
         pub status: String,
+    }
+}
+
+// --------- user/{user_name}/playlists/collaborator
+
+response_type! {
+    /// Response type for [`Client::user_playlists_collaborator`](super::Client::user_playlists_collaborator).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlaylistsCollaboratorResponse {
+        pub count: u64,
+        pub offset: u64,
+        pub playlist_count: u64,
+        pub playlists: Vec<jspf::Playlist>,
+    }
+}
+
+// --------- user/{user_name}/playlists/createdfor
+
+response_type! {
+    /// Response type for [`Client::user_playlists_created_for`](super::Client::user_playlists_created_for).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlaylistsCreatedForResponse {
+        pub count: u64,
+        pub offset: u64,
+        pub playlist_count: u64,
+        pub playlists: Vec<jspf::Playlist>,
     }
 }
 
