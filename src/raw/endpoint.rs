@@ -11,6 +11,7 @@ pub enum Endpoint<'a> {
     UserListenCount(&'a str),
     UserPlayingNow(&'a str),
     UserSimilarTo(&'a str, &'a str),
+    UserPlaylists(&'a str),
     UserListens(&'a str),
     LatestImport,
     StatsSitewideArtists,
@@ -51,6 +52,7 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::UserSimilarTo(user, other_user) => {
                 write!(f, "user/{}/similar-to/{}", user, other_user)
             }
+            Self::UserPlaylists(user) => write!(f, "user/{}/playlists", user),
             Self::UserListens(user) => write!(f, "user/{}/listens", user),
             Self::LatestImport => write!(f, "latest-import"),
             Self::StatsSitewideArtists => write!(f, "stats/sitewide/artists"),
