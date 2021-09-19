@@ -209,6 +209,33 @@ impl Client {
         self.get(Endpoint::UserSimilarTo(user_name, other_user_name))
     }
 
+    /// Endpoint: [`user/{user_name}/playlists`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(playlist_user_name)-playlists)
+    pub fn user_playlists(
+        &self,
+        token: Option<&str>,
+        user_name: &str,
+        count: Option<u64>,
+        offset: Option<u64>,
+    ) -> Result<UserPlaylistsResponse, Error> {
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserPlaylists(user_name));
+
+        let mut request = attohttpc::get(endpoint);
+
+        if let Some(token) = token {
+            request = request.header("Authorization", format!("Token {}", token));
+        }
+        if let Some(count) = count {
+            request = request.param("count", count);
+        }
+        if let Some(offset) = offset {
+            request = request.param("offset", offset);
+        }
+
+        let response = request.send()?;
+
+        ResponseType::from_response(response)
+    }
+
     /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listens)
     pub fn user_listens(
         &self,

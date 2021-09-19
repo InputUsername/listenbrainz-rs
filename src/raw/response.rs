@@ -282,6 +282,19 @@ response_type! {
     }
 }
 
+// -------- user/{user_name}/playlists
+
+response_type! {
+    /// Response type for [`Client::user_playlists`](super::Client::user_playlists).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlaylistsResponse {
+        pub count: u64,
+        pub offset: u64,
+        pub playlist_count: u64,
+        pub playlists: Vec<jspf::Playlist>,
+    }
+}
+
 // -------- user/{user_name}/listens
 
 response_type! {
