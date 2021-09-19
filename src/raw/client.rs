@@ -123,6 +123,60 @@ impl Client {
         self.post(Endpoint::DeleteListen, token, data)
     }
 
+    /// Endpoint: [`user/{user_name}/playlists/collaborator`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(playlist_user_name)-playlists-collaborator)
+    pub fn user_playlists_collaborator(
+        &self,
+        token: Option<&str>,
+        user_name: &str,
+        count: Option<u64>,
+        offset: Option<u64>,
+    ) -> Result<UserPlaylistsCollaboratorResponse, Error> {
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserPlaylistsCollaborator(user_name));
+
+        let mut request = attohttpc::get(endpoint);
+
+        if let Some(token) = token {
+            request = request.header("Authorization", format!("Token {}", token));
+        }
+        if let Some(count) = count {
+            request = request.param("count", count);
+        }
+        if let Some(offset) = offset {
+            request = request.param("offset", offset);
+        }
+
+        let response = request.send()?;
+
+        ResponseType::from_response(response)
+    }
+
+    /// Endpoint: [`user/{user_name}/playlists/createdfor`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(playlist_user_name)-playlists-createdfor)
+    pub fn user_playlists_created_for(
+        &self,
+        token: Option<&str>,
+        user_name: &str,
+        count: Option<u64>,
+        offset: Option<u64>,
+    ) -> Result<UserPlaylistsCollaboratorResponse, Error> {
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserPlaylistsCreatedFor(user_name));
+
+        let mut request = attohttpc::get(endpoint);
+
+        if let Some(token) = token {
+            request = request.header("Authorization", format!("Token {}", token));
+        }
+        if let Some(count) = count {
+            request = request.param("count", count);
+        }
+        if let Some(offset) = offset {
+            request = request.param("offset", offset);
+        }
+
+        let response = request.send()?;
+
+        ResponseType::from_response(response)
+    }
+
     /// Endpoint: [`users/{user_list}/recent-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-users-(user_list)-recent-listens)
     pub fn users_recent_listens(
         &self,

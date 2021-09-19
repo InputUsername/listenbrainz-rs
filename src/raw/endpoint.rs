@@ -4,6 +4,8 @@ pub enum Endpoint<'a> {
     SubmitListens,
     ValidateToken,
     DeleteListen,
+    UserPlaylistsCollaborator(&'a str),
+    UserPlaylistsCreatedFor(&'a str),
     UsersRecentListens(&'a [&'a str]),
     UserSimilarUsers(&'a str),
     UserListenCount(&'a str),
@@ -27,6 +29,10 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::SubmitListens => write!(f, "submit-listens"),
             Self::ValidateToken => write!(f, "validate-token"),
             Self::DeleteListen => write!(f, "delete-listen"),
+            Self::UserPlaylistsCollaborator(user) => {
+                write!(f, "user/{}/playlists/collaborator", user)
+            }
+            Self::UserPlaylistsCreatedFor(user) => write!(f, "user/{}/playlists/createdfor", user),
             Self::UsersRecentListens(users) => {
                 write!(f, "users/")?;
                 for user in users.iter() {
