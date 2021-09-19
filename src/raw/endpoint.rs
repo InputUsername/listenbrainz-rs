@@ -5,8 +5,10 @@ pub enum Endpoint<'a> {
     ValidateToken,
     DeleteListen,
     UsersRecentListens(&'a [&'a str]),
+    UserSimilarUsers(&'a str),
     UserListenCount(&'a str),
     UserPlayingNow(&'a str),
+    UserSimilarTo(&'a str, &'a str),
     UserListens(&'a str),
     LatestImport,
     StatsSitewideArtists,
@@ -37,8 +39,12 @@ impl<'a> fmt::Display for Endpoint<'a> {
                 }
                 write!(f, "/recent-listens")
             }
+            Self::UserSimilarUsers(user) => write!(f, "user/{}/similar-users", user),
             Self::UserListenCount(user) => write!(f, "user/{}/listen-count", user),
             Self::UserPlayingNow(user) => write!(f, "user/{}/playing-now", user),
+            Self::UserSimilarTo(user, other_user) => {
+                write!(f, "user/{}/similar-to/{}", user, other_user)
+            }
             Self::UserListens(user) => write!(f, "user/{}/listens", user),
             Self::LatestImport => write!(f, "latest-import"),
             Self::StatsSitewideArtists => write!(f, "stats/sitewide/artists"),

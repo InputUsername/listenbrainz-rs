@@ -131,6 +131,11 @@ impl Client {
         self.get(Endpoint::UsersRecentListens(user_list))
     }
 
+    /// Endpoint: [`user/{user_name}/similar-users`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-similar-users)
+    pub fn user_similar_users(&self, user_name: &str) -> Result<UserSimilarUsersResponse, Error> {
+        self.get(Endpoint::UserSimilarUsers(user_name))
+    }
+
     /// Endpoint: [`user/{user_name}/listen-count`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listen-count)
     pub fn user_listen_count(&self, user_name: &str) -> Result<UserListenCountResponse, Error> {
         self.get(Endpoint::UserListenCount(user_name))
@@ -139,6 +144,15 @@ impl Client {
     /// Endpoint: [`user/{user_name}/playing-now`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-playing-now)
     pub fn user_playing_now(&self, user_name: &str) -> Result<UserPlayingNowResponse, Error> {
         self.get(Endpoint::UserPlayingNow(user_name))
+    }
+
+    /// Endpoint: [`user/{user_name}/similar-to/{other_user_name}`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-similar-to-(other_user_name))
+    pub fn user_similar_to(
+        &self,
+        user_name: &str,
+        other_user_name: &str,
+    ) -> Result<UserSimilarToResponse, Error> {
+        self.get(Endpoint::UserSimilarTo(user_name, other_user_name))
     }
 
     /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listens)

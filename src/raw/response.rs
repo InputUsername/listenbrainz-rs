@@ -176,6 +176,23 @@ pub struct UsersRecentListensTrackMetadata {
     pub additional_info: HashMap<String, serde_json::Value>,
 }
 
+// --------- user/{user_name}/similar-users
+
+response_type! {
+    /// Response type for [`Client::user_similar_users`](super::Client::user_similar_users).
+    #[derive(Debug, Deserialize)]
+    pub struct UserSimilarUsersResponse {
+        pub payload: Vec<UserSimilarUsersPayload>,
+    }
+}
+
+/// Type of the [`UserSimilarUsersResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct UserSimilarUsersPayload {
+    pub user_name: String,
+    pub similarity: f64,
+}
+
 // --------- user/{user_name}/listen-count
 
 response_type! {
@@ -226,6 +243,16 @@ pub struct UserPlayingNowTrackMetadata {
     pub track_name: String,
     pub release_name: Option<String>,
     pub additional_info: HashMap<String, serde_json::Value>,
+}
+
+// -------- user/{user_name}/similar-to/{other_user_name}
+
+response_type! {
+    #[derive(Debug, Deserialize)]
+    pub struct UserSimilarToResponse {
+        pub user_name: String,
+        pub similarity: f64,
+    }
 }
 
 // -------- user/{user_name}/listens
