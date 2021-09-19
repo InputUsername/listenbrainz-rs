@@ -6,6 +6,7 @@
 
 mod client;
 mod endpoint;
+pub mod jspf;
 pub mod request;
 pub mod response;
 
