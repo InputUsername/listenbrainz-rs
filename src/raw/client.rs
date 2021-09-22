@@ -435,4 +435,36 @@ impl Client {
 
         ResponseType::from_response(response)
     }
+
+    /// Endpoint: [`user/{user_name}/followers`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-followers)
+    pub fn user_followers(&self, user_name: &str) -> Result<UserFollowersResponse, Error> {
+        self.get(Endpoint::UserFollowers(user_name))
+    }
+
+    /// Endpoint: [`user/{user_name}/following`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-following)
+    pub fn user_following(&self, user_name: &str) -> Result<UserFollowingResponse, Error> {
+        self.get(Endpoint::UserFollowing(user_name))
+    }
+
+    /// Endpoint: [`user/{user_name}/unfollow`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-user-(user_name)-unfollow)
+    pub fn user_unfollow(&self, token: &str, user_name: &str) -> Result<UserUnfollowResponse, Error> {
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserUnfollow(user_name));
+
+        let response = attohttpc::post(endpoint)
+            .header("Authorization", format!("Token {}", token))
+            .send()?;
+
+        ResponseType::from_response(response)
+    }
+
+    /// Endpoint: [`user/{user_name}/follow`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-user-(user_name)-follow)
+    pub fn user_follow(&self, token: &str, user_name: &str) -> Result<UserFollowResponse, Error> {
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserFollow(user_name));
+
+        let response = attohttpc::post(endpoint)
+            .header("Authorization", format!("Token {}", token))
+            .send()?;
+
+        ResponseType::from_response(response)
+    }
 }

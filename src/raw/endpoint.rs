@@ -22,6 +22,10 @@ pub enum Endpoint<'a> {
     StatsUserReleases(&'a str),
     StatsUserArtists(&'a str),
     StatusGetDumpInfo,
+    UserFollowers(&'a str),
+    UserFollowing(&'a str),
+    UserUnfollow(&'a str),
+    UserFollow(&'a str),
 }
 
 impl<'a> fmt::Display for Endpoint<'a> {
@@ -67,6 +71,10 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::StatsUserReleases(user) => write!(f, "stats/user/{}/releases", user),
             Self::StatsUserArtists(user) => write!(f, "stats/user/{}/artists", user),
             Self::StatusGetDumpInfo => write!(f, "status/get-dump-info"),
+            Self::UserFollowers(user) => write!(f, "user/{}/followers", user),
+            Self::UserFollowing(user) => write!(f, "user/{}/following", user),
+            Self::UserUnfollow(user) => write!(f, "user/{}/unfollow", user),
+            Self::UserFollow(user) => write!(f, "user/{}/follow", user),
         }
     }
 }

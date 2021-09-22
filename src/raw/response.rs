@@ -603,3 +603,45 @@ response_type! {
         pub timestamp: String,
     }
 }
+
+// --------- user/{user_name}/followers
+
+response_type! {
+    /// Response type for [`Client::user_followers`](super::Client::user_followers).
+    #[derive(Debug, Deserialize)]
+    pub struct UserFollowersResponse {
+        pub followers: Vec<String>,
+        pub user: String,
+    }
+}
+
+// --------- user/{user_name}/following
+
+response_type! {
+    /// Response type for [`Client::user_following`](super::Client::user_following).
+    #[derive(Debug, Deserialize)]
+    pub struct UserFollowingResponse {
+        pub following: Vec<String>,
+        pub user: String,
+    }
+}
+
+// --------- user/{user_name}/unfollow
+
+response_type! {
+    /// Response type for [`Client::user_unfollow`](super::Client::user_unfollow).
+    #[derive(Debug, Deserialize)]
+    pub struct UserUnfollowResponse {
+        pub status: String,
+    }
+}
+
+// --------- user/{user_name}/follow
+
+response_type! {
+    /// Response type for [`Client::user_follow`](super::Client::user_follow).
+    #[derive(Debug, Deserialize)]
+    pub struct UserFollowResponse {
+        pub status: String,
+    }
+}
