@@ -3,16 +3,16 @@
 //! [JSPF format]: https://xspf.org/jspf/
 //! [MusicBrainz's format]: https://musicbrainz.org/doc/jspf
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Top-level playlist type.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Playlist {
     pub playlist: PlaylistInfo,
 }
 
 /// Type of the [`Playlist::playlist`] field.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct PlaylistInfo {
     pub extension: PlaylistExtension,
     pub creator: String,
@@ -23,14 +23,14 @@ pub struct PlaylistInfo {
 }
 
 /// Type of the [`PlaylistInfo::extension`] field.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct PlaylistExtension {
     #[serde(rename = "https://musicbrainz.org/doc/jspf#playlist")]
     pub musicbrainz: MusicBrainzPlaylistExtension,
 }
 
 /// Type of the [`PlaylistExtension::musicbrainz`] field.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct MusicBrainzPlaylistExtension {
     pub created_for: String,
     pub creator: String,
@@ -42,7 +42,7 @@ pub struct MusicBrainzPlaylistExtension {
 }
 
 /// Type of the [`PlaylistInfo::track`] field.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Track {
     pub title: String,
     pub identifier: String,
@@ -52,14 +52,14 @@ pub struct Track {
 }
 
 /// Type of the [`Track::extension`] field.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct TrackExtension {
     #[serde(rename = "https://musicbrainz.org/doc/jspf#track")]
     pub musicbrainz: MusicBrainzTrackExtension,
 }
 
 /// Type of the [`TrackExtension::musicbrainz`] field.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct MusicBrainzTrackExtension {
     pub added_by: String,
     pub artist_mbids: Vec<String>,
