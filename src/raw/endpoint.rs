@@ -14,6 +14,9 @@ pub enum Endpoint<'a> {
     UserPlaylists(&'a str),
     UserListens(&'a str),
     LatestImport,
+    PlaylistCreate,
+    PlaylistDelete(&'a str),
+    PlaylistCopy(&'a str),
     StatsSitewideArtists,
     StatsUserListeningActivity(&'a str),
     StatsUserDailyActivity(&'a str),
@@ -59,6 +62,9 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::UserPlaylists(user) => write!(f, "user/{}/playlists", user),
             Self::UserListens(user) => write!(f, "user/{}/listens", user),
             Self::LatestImport => write!(f, "latest-import"),
+            Self::PlaylistCreate => write!(f, "playlist/create"),
+            Self::PlaylistDelete(playlist) => write!(f, "playlist/{}/delete", playlist),
+            Self::PlaylistCopy(playlist) => write!(f, "playlist/{}/copy", playlist),
             Self::StatsSitewideArtists => write!(f, "stats/sitewide/artists"),
             Self::StatsUserListeningActivity(user) => {
                 write!(f, "stats/user/{}/listening-activity", user)

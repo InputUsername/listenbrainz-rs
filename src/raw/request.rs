@@ -90,4 +90,23 @@ impl Borrow<str> for Empty {
     fn borrow(&self) -> &str {
         unreachable!("Should never be used as a value")
     }
+
+// --------- playlist/{playlist_mbid}/item/delete
+
+/// Request type for [`Client::playlist_item_delete`](super::Client::playlist_item_delete).
+#[derive(Debug, Serialize)]
+pub struct PlaylistItemDelete {
+    pub index: u64,
+    pub count: u64,
+}
+
+// --------- playlist/{playlist_mbid}/item/move
+
+/// Request type for [`Client::playlist_item_move`](super::Client::playlist_item_move).
+#[derive(Debug, Serialize)]
+pub struct PlaylistItemMove<'a> {
+    pub mbid: &'a str,
+    pub from: u64,
+    pub to: u64,
+    pub count: u64,
 }
