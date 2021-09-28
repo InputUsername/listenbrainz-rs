@@ -1,6 +1,7 @@
 use serde::Serialize;
 
 use super::endpoint::Endpoint;
+use super::jspf;
 use super::request::*;
 use super::response::*;
 use crate::Error;
@@ -285,6 +286,33 @@ impl Client {
         data: UpdateLatestImport,
     ) -> Result<UpdateLatestImportResponse, Error> {
         self.post(Endpoint::LatestImport, token, data)
+    }
+
+    /// Endpoint: [`playlist/create`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-playlist-create)
+    pub fn playlist_create(
+        &self,
+        token: &str,
+        playlist: jspf::Playlist,
+    ) -> Result<PlaylistCreateResponse, Error> {
+        self.post(Endpoint::PlaylistCreate, token, playlist)
+    }
+
+    /// Endpoint: [`playlist/{playlist_mbid}/delete`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-playlist-(playlist_mbid)-delete)
+    pub fn playlist_delete(
+        &self,
+        token: &str,
+        playlist_mbid: &str,
+    ) -> Result<PlaylistDeleteResponse, Error> {
+        self.post(Endpoint::PlaylistDelete(playlist_mbid), token, ())
+    }
+
+    /// Endpoint: [`playlist/{playlist_mbid}/copy`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-playlist-(playlist_mbid)-copy)
+    pub fn playlist_copy(
+        &self,
+        token: &str,
+        playlist_mbid: &str,
+    ) -> Result<PlaylistCopyResponse, Error> {
+        self.post(Endpoint::PlaylistCopy(playlist_mbid), token, ())
     }
 
     /// Endpoint: [`stats/sitewide/artists`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-sitewide-artists)
