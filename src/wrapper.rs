@@ -5,20 +5,47 @@ use crate::error::Error;
 use crate::raw::request::{ListenType, Payload, SubmitListens, TrackMetadata};
 use crate::raw::Client;
 
-/// Contains a ListenBrainz token and the associated username
-/// for authentication purposes.
-struct Auth {
-    token: String,
-    user: String,
+mod private {
+    pub trait Sealed {}
+    impl Sealed for super::NotAuthenticated {}
+    impl Sealed for super::Authenticated {}
 }
+
+/// A marker trait for authentication status.
+///
+/// It is used with the "typestate pattern", to enforce authentication of a [`ListenBrainz`] client
+/// at compile-time. For more information, see the documentation for the [`ListenBrainz`] type.
+///
+/// This is a [sealed trait], meaning you cannot implement it for your own types.
+///
+/// [sealed trait]: https://rust-lang.github.io/api-guidelines/future-proofing.html#sealed-traits-protect-against-downstream-implementations-c-sealed
+pub trait AuthStatus: private::Sealed {}
+
+/// The [status](AuthStatus) of an unauthenticated client.
+pub struct NotAuthenticated;
+
+/// The [status](AuthStatus) of an authenticated client.
+pub struct Authenticated {
+    token: String,
+}
+
+impl AuthStatus for NotAuthenticated {}
+impl AuthStatus for Authenticated {}
 
 /// An ergonomic ListenBrainz client.
 ///
 /// As opposed to [`Client`](crate::raw::Client), this aims to be a convenient and high-level
 /// wrapper of the ListenBrainz API.
-pub struct ListenBrainz {
+///
+/// This type uses a pattern commonly called the "[typestate pattern]". The `ListenBrainz` struct is
+/// generic over its authentication status ([`NotAuthenticated`] or [`Authenticated`]).
+/// Methods that require authentication are only available for `ListenBrainz<Authenticated>`.
+/// In this way, authentication is enforced at compile-time.
+///
+/// [typestate pattern]: http://cliffle.com/blog/rust-typestate/
+pub struct ListenBrainz<A: AuthStatus = NotAuthenticated> {
     client: Client,
-    auth: Option<Auth>,
+    auth: A,
 }
 
 impl ListenBrainz {
@@ -26,45 +53,49 @@ impl ListenBrainz {
     pub fn new() -> Self {
         Self {
             client: Client::new(),
-            auth: None,
+            auth: NotAuthenticated,
         }
     }
 
-    /// Check if this client is authenticated.
-    pub fn is_authenticated(&self) -> bool {
-        self.auth.is_some()
+    /// Construct a new ListenBrainz client that is not authenticated using a custom API URL.
+    pub fn new_with_url(url: &str) -> Self {
+        Self {
+            client: Client::new_with_url(url),
+            auth: NotAuthenticated,
+        }
     }
 
-    /// Return the token if authenticated or [`None`] if not.
-    pub fn authenticated_token(&self) -> Option<&str> {
-        self.auth.as_ref().map(|auth| auth.token.as_str())
-    }
-
-    /// Return the user if authenticated or [`None`] if not.
-    pub fn authenticated_user(&self) -> Option<&str> {
-        self.auth.as_ref().map(|auth| auth.user.as_str())
-    }
-
-    /// Authenticate this client with the given token.
-    /// If the token is valid, authenticates the client.
-    /// In case the client was already authenticated, the old information
-    /// is discarded and the new token will be used.
+    /// Attempt to authenticate this client with the given user token.
+    /// This consumes the client if successful, returning an authenticated client.
+    /// If unsuccessful, returns the original (unauthenticated) client.
     ///
     /// # Errors
     ///
     /// If the token was invalid, returns [`Error::InvalidToken`].
     /// If there was an error while validating the token, that error is returned.
     /// See the Errors section of [`Client`] for more info on what errors might occur.
-    pub fn authenticate(&mut self, token: &str) -> Result<(), Error> {
-        let result = self.client.validate_token(token)?;
-        if result.valid && result.user_name.is_some() {
-            self.auth.replace(Auth {
-                token: token.to_string(),
-                user: result.user_name.unwrap(),
-            });
-            return Ok(());
+    pub fn authenticate(self, token: &str) -> Result<ListenBrainz<Authenticated>, (Self, Error)> {
+        let response = match self.client.validate_token(token) {
+            Ok(response) => response,
+            Err(err) => return Err((self, err)),
+        };
+
+        if response.valid {
+            Ok(ListenBrainz {
+                client: self.client,
+                auth: Authenticated {
+                    token: token.to_string()
+                },
+            })
+        } else {
+            Err((self, Error::InvalidToken))
         }
-        Err(Error::InvalidToken)
+    }
+}
+
+impl ListenBrainz<Authenticated> {
+    pub fn token(&self) -> &str {
+        &self.auth.token
     }
 
     /// Helper method to submit a listen (either "single" or "playing now").
@@ -76,10 +107,6 @@ impl ListenBrainz {
         track: &str,
         release: &str,
     ) -> Result<(), Error> {
-        if !self.is_authenticated() {
-            return Err(Error::NotAuthenticated);
-        }
-
         let payload = Payload {
             listened_at: timestamp,
             track_metadata: TrackMetadata {
@@ -90,9 +117,8 @@ impl ListenBrainz {
             },
         };
 
-        let token = self.authenticated_token().unwrap();
         self.client.submit_listens(
-            token,
+            &self.auth.token,
             SubmitListens {
                 listen_type,
                 payload: &[payload],
@@ -107,13 +133,11 @@ impl ListenBrainz {
     ///
     /// # Errors
     ///
-    /// If not authenticated, returns [`Error::NotAuthenticated`].
-    /// Otherwise, see the Errors section of [`Client`] for more info on
-    /// what errors might occur.
+    /// See the Errors section of [`Client`] for more info on what errors might occur.
     pub fn listen(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .expect("Unix epoch is in the future")
             .as_secs()
             .try_into()
             .unwrap();
@@ -125,9 +149,7 @@ impl ListenBrainz {
     ///
     /// # Errors
     ///
-    /// If not authenticated, returns [`Error::NotAuthenticated`].
-    /// Otherwise, see the Errors section of [`Client`] for more info on
-    /// what errors might occur.
+    /// See the Errors section of [`Client`] for more info on what errors might occur.
     pub fn playing_now(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
         self.submit_listen(ListenType::PlayingNow, None, artist, track, release)
     }

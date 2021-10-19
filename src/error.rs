@@ -26,10 +26,6 @@ pub enum Error {
     /// The token that was attempted to be used for authentication is invalid.
     #[error("invalid authentication token")]
     InvalidToken,
-
-    /// Tried to access a service that requires authentication.
-    #[error("not authenticated")]
-    NotAuthenticated,
 }
 
 impl Error {
