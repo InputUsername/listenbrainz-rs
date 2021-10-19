@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.0 (unreleased)
+
+- Added CI builds support ([#1]);
+- Added support for alternative ListenBrainz hosts ([#6]);
+- Changed from [`ureq`] to [`attohttpc`] for performing HTTP requests ([#7]);
+
+[#1]: https://github.com/InputUsername/listenbrainz-rs/pull/1
+[#6]: https://github.com/InputUsername/listenbrainz-rs/pull/6
+[#7]: https://github.com/InputUsername/listenbrainz-rs/pull/7
+
 ## v0.3.0 (2021-02-02)
 
 - Added rate limiting information to response types in the `rate_limit` field;
