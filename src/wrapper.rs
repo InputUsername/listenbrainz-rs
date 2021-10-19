@@ -7,6 +7,7 @@ use crate::raw::Client;
 
 /// Contains a ListenBrainz token and the associated username
 /// for authentication purposes.
+#[derive(Debug)]
 struct Auth {
     token: String,
     user: String,
@@ -16,6 +17,7 @@ struct Auth {
 ///
 /// As opposed to [`Client`](crate::raw::Client), this aims to be a convenient and high-level
 /// wrapper of the ListenBrainz API.
+#[derive(Debug)]
 pub struct ListenBrainz {
     client: Client,
     auth: Option<Auth>,

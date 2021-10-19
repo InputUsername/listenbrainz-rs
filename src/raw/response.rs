@@ -4,6 +4,8 @@
 //! information. See the documentation of the [`RateLimit`] type for more
 //! details.
 
+#![allow(missing_docs)]
+
 use std::collections::HashMap;
 
 use attohttpc::Response;

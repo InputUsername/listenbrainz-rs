@@ -18,6 +18,7 @@ const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 /// - [`Error::Api`]: the API returned a non-`2XX` status.
 /// - [`Error::Json`]: the request or response data could not be converted from or into JSON.
 /// - [`Error::Http`]: there was some other HTTP error while interacting with the API.
+#[derive(Debug)]
 pub struct Client {
     api_root_url: String,
 }
@@ -30,6 +31,7 @@ impl Client {
         }
     }
 
+    /// Construct a new client with a custom API URL.
     pub fn new_with_url(url: &str) -> Self {
         Self {
             api_root_url: url.to_string(),

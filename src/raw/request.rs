@@ -1,5 +1,7 @@
 //! Low-level request data models.
 
+#![allow(missing_docs)]
+
 use std::collections::HashMap;
 
 use serde::Serialize;

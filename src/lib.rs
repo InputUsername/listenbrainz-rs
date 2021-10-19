@@ -24,6 +24,13 @@
 //!
 //! [ListenBrainz HTTP API]: https://listenbrainz.readthedocs.io/en/production/dev/api/
 
+#![deny(
+    missing_docs,
+    missing_debug_implementations,
+    unsafe_code,
+    unstable_features
+)]
+
 mod error;
 pub mod raw;
 mod wrapper;
