@@ -1,10 +1,10 @@
 # Changelog
 
-## v0.4.0 (unreleased)
+## v0.4.0 (2021-10-21)
 
 - Added CI builds support ([#1]);
 - Added support for alternative ListenBrainz hosts ([#6]);
-- Changed from [`ureq`] to [`attohttpc`] for performing HTTP requests ([#7]);
+- Changed from [`ureq`] to [`attohttpc`] for performing HTTP requests ([#7]).
 
 [#1]: https://github.com/InputUsername/listenbrainz-rs/pull/1
 [#6]: https://github.com/InputUsername/listenbrainz-rs/pull/6
