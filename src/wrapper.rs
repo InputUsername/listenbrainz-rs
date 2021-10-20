@@ -32,6 +32,14 @@ impl ListenBrainz {
         }
     }
 
+    /// Construct a new ListenBrainz client with a custom API URL that is not authenticated.
+    pub fn new_with_url(url: &str) -> Self {
+        Self {
+            client: Client::new_with_url(url),
+            auth: None,
+        }
+    }
+
     /// Check if this client is authenticated.
     pub fn is_authenticated(&self) -> bool {
         self.auth.is_some()

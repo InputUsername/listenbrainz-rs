@@ -4,12 +4,15 @@
 //! It contains functionality for direct access to the API in the [`raw`] module, as well
 //! as a more convenient [`ListenBrainz`] client which is easier to use.
 //!
+//! [ListenBrainz HTTP API]: https://listenbrainz.readthedocs.io/en/production/dev/api/
+//!
 //! Generally, using the `raw` functionality is more cumbersome, as its types and functions
 //! map one-to-one to the HTTP API's JSON input- and response data. Using the `ListenBrainz`
 //! type is therefore recommended.
 //!
 //! # Example
 //!
+//! Submit a currently playing song to ListenBrainz.org:
 //! ```no_run
 //! # use listenbrainz::ListenBrainz;
 //! #
@@ -22,7 +25,20 @@
 //!     .expect("Could not submit 'playing now' request");
 //! ```
 //!
-//! [ListenBrainz HTTP API]: https://listenbrainz.readthedocs.io/en/production/dev/api/
+//! Use a custom API URL, for example to submit songs to [Maloja]:
+//! ```no_run
+//! # use listenbrainz::ListenBrainz;
+//! #
+//! let mut client = ListenBrainz::new_with_url("http://maloja.example.com/apis/listenbrainz");
+//!
+//! client.authenticate("MALOJA API KEY")
+//!     .expect("Could not authenticate with Maloja");
+//!
+//! client.listen("Lymbyc Systym", "Split Stones", "Split Stones")
+//!     .expect("Could not submit listen");
+//! ```
+//!
+//! [Maloja](https://github.com/krateng/maloja)
 
 #![deny(
     missing_docs,
