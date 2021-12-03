@@ -40,6 +40,11 @@ impl ListenBrainz {
         }
     }
 
+    /// Get the API URL of this client.
+    pub fn api_url(&self) -> &str {
+        self.client.api_url()
+    }
+
     /// Check if this client is authenticated.
     pub fn is_authenticated(&self) -> bool {
         self.auth.is_some()

@@ -38,6 +38,11 @@ impl Client {
         }
     }
 
+    /// Get the API URL of this client.
+    pub fn api_url(&self) -> &str {
+        &self.api_root_url
+    }
+
     /// Helper method to perform a GET request against an endpoint
     /// without any query parameters.
     fn get<R: ResponseType>(&self, endpoint: Endpoint) -> Result<R, Error> {
