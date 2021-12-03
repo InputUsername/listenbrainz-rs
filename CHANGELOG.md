@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.1 (2021-12-03)
+
+- Fixed a broken link in the documentation;
+- Added the `api_url()` method to `raw::Client` and `ListenBrainz`;
+- Implemented `Default` for `raw::Client` and `ListenBrainz`;
+  - Returns the same as `Client::new()`/`ListenBrainz::new()`.
+
 ## v0.4.0 (2021-10-21)
 
 - Added CI builds support ([#1]);
