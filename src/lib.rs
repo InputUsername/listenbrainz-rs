@@ -38,7 +38,7 @@
 //!     .expect("Could not submit listen");
 //! ```
 //!
-//! [Maloja](https://github.com/krateng/maloja)
+//! [Maloja]: https://github.com/krateng/maloja
 
 #![deny(
     missing_docs,
