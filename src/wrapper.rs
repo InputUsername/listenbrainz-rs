@@ -147,3 +147,9 @@ impl ListenBrainz {
         self.submit_listen(ListenType::PlayingNow, None, artist, track, release)
     }
 }
+
+impl Default for ListenBrainz {
+    fn default() -> Self {
+        Self::new()
+    }
+}

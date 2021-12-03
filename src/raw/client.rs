@@ -348,3 +348,9 @@ impl Client {
         ResponseType::from_response(response)
     }
 }
+
+impl Default for Client {
+    fn default() -> Self {
+        Self::new()
+    }
+}
