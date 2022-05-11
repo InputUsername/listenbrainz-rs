@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.4.2 (2022-05-12)
+
+- Added the `ListenBrainz::import()` method to allow importing
+  listens at a specified timestamp.
+
 ## v0.4.1 (2021-12-03)
 
 - Fixed a broken link in the documentation;
