@@ -136,6 +136,18 @@ impl ListenBrainz {
         self.submit_listen(ListenType::Single, Some(now), artist, track, release)
     }
 
+    /// Submit a listened track with the given listen time, intended for importing
+    /// previously saved listens. This requires authentication.
+    ///
+    /// # Errors
+    ///
+    /// If not authenticated, returns [`Error::NotAuthenticated`].
+    /// Otherwise, see the Errors section of [`Client`] for more info on
+    /// what errors might occur.
+    pub fn import(&self, artist: &str, track: &str, release: &str, timestamp: i64) -> Result<(), Error> {
+        self.submit_listen(ListenType::Import, Some(timestamp), artist, track, release)
+    }
+
     /// Submit a currently playing track. This requires authentication.
     ///
     /// # Errors
