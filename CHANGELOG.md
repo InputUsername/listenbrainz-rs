@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.3 (2022-11-16)
+
+- Updated attohttpc dependency.
+
 ## v0.4.2 (2022-05-12)
 
 - Added the `ListenBrainz::import()` method to allow importing
