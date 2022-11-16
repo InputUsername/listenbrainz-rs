@@ -2,7 +2,7 @@
 name = "listenbrainz"
 version = "0.4.2"
 authors = ["Koen Bolhuis <koen.bolhuis@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 repository = "https://github.com/InputUsername/listenbrainz-rs.git"
 homepage = "https://github.com/InputUsername/listenbrainz-rs"
