@@ -1,6 +1,6 @@
 [package]
 name = "listenbrainz"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["Koen Bolhuis <koen.bolhuis@gmail.com>"]
 edition = "2021"
 license = "MIT"
