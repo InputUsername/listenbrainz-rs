@@ -21,7 +21,7 @@
 //! client.authenticate("LISTENBRAINZ TOKEN")
 //!     .expect("Could not authenticate with ListenBrainz");
 //!
-//! client.playing_now("The Beatles", "Here Comes the Sun", "Abbey Road")
+//! client.playing_now("The Beatles", "Here Comes the Sun", Some("Abbey Road"))
 //!     .expect("Could not submit 'playing now' request");
 //! ```
 //!
@@ -34,7 +34,7 @@
 //! client.authenticate("MALOJA API KEY")
 //!     .expect("Could not authenticate with Maloja");
 //!
-//! client.listen("Lymbyc Systym", "Split Stones", "Split Stones")
+//! client.listen("Lymbyc Systym", "Split Stones", None)
 //!     .expect("Could not submit listen");
 //! ```
 //!
