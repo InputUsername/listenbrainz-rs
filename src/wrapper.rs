@@ -89,7 +89,7 @@ impl ListenBrainz {
         timestamp: Option<i64>,
         artist: &str,
         track: &str,
-        release: &str,
+        release: Option<&str>,
     ) -> Result<(), Error> {
         if !self.is_authenticated() {
             return Err(Error::NotAuthenticated);
@@ -100,7 +100,7 @@ impl ListenBrainz {
             track_metadata: TrackMetadata {
                 artist_name: artist,
                 track_name: track,
-                release_name: Some(release),
+                release_name: release,
                 additional_info: None,
             },
         };
@@ -125,7 +125,7 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn listen(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
+    pub fn listen(&self, artist: &str, track: &str, release: Option<&str>) -> Result<(), Error> {
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -144,7 +144,7 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn import(&self, artist: &str, track: &str, release: &str, timestamp: i64) -> Result<(), Error> {
+    pub fn import(&self, artist: &str, track: &str, release: Option<&str>, timestamp: i64) -> Result<(), Error> {
         self.submit_listen(ListenType::Import, Some(timestamp), artist, track, release)
     }
 
@@ -155,7 +155,7 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn playing_now(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
+    pub fn playing_now(&self, artist: &str, track: &str, release: Option<&str>) -> Result<(), Error> {
         self.submit_listen(ListenType::PlayingNow, None, artist, track, release)
     }
 }
