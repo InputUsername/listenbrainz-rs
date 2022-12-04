@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.0 (2022-12-05)
+
+- Made the `release` parameter of `ListenBrainz` methods optional ([#11], [@mgziminsky]).
+  - This is a breaking change.
+
+[#11]: https://github.com/InputUsername/listenbrainz-rs/pull/11
+[@mgziminsky]: https://github.com/mgziminsky
+
 ## v0.4.3 (2022-11-16)
 
 - Updated attohttpc dependency.
