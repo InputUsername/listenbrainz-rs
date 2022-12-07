@@ -2,7 +2,7 @@
 
 #![allow(missing_docs)]
 
-use std::collections::HashMap;
+use std::borrow::Borrow;
 
 use serde::Serialize;
 
@@ -10,9 +10,9 @@ use serde::Serialize;
 
 /// Request type for [`Client::submit_listens`](super::Client::submit_listens).
 #[derive(Debug, Serialize)]
-pub struct SubmitListens<'a> {
+pub struct SubmitListens<'a, Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
     pub listen_type: ListenType,
-    pub payload: &'a [Payload<'a>],
+    pub payload: &'a [Payload<Track, Artist, Release>],
 }
 
 /// Type of the [`SubmitListens::listen_type`] field.
@@ -26,32 +26,34 @@ pub enum ListenType {
 
 /// Type of the [`SubmitListens::payload`] field.
 #[derive(Debug, Serialize)]
-pub struct Payload<'a> {
+pub struct Payload<Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub listened_at: Option<i64>,
-    pub track_metadata: TrackMetadata<'a>,
+    pub track_metadata: TrackMetadata<Track, Artist, Release>,
 }
 
 /// Type of the [`Payload::track_metadata`] field.
-#[derive(Debug, Serialize)]
-pub struct TrackMetadata<'a> {
-    pub artist_name: &'a str,
-    pub track_name: &'a str,
+///
+/// If [`release_name`](Self::release_name) will always be [None] and the type for `Release` cannot be inferred, set it to the [Empty] type
+#[derive(Debug, serde::Serialize)]
+pub struct TrackMetadata<Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
+    pub track_name: Track,
+    pub artist_name: Artist,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub release_name: Option<&'a str>,
+    pub release_name: Option<Release>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_info: Option<HashMap<&'a str, serde_json::Value>>,
+    pub additional_info: Option<serde_json::Map<String, serde_json::Value>>,
 }
 
 // --------- delete-listen
 
 /// Request type for [`Client::delete_listen`](super::Client::delete_listen).
 #[derive(Debug, Serialize)]
-pub struct DeleteListen<'a> {
+pub struct DeleteListen<T: StrType> {
     pub listened_at: i64,
-    pub recording_msid: &'a str,
+    pub recording_msid: T,
 }
 
 // --------- latest-import (POST)
@@ -60,4 +62,32 @@ pub struct DeleteListen<'a> {
 #[derive(Debug, Serialize)]
 pub struct UpdateLatestImport {
     pub ts: i64,
+}
+
+pub trait StrType: Borrow<str> + Serialize {}
+impl<T: Borrow<str> + Serialize> StrType for T {}
+
+/// Dummy type to use as explicit `Release` type if [`TrackMetadata::release_name`] is [None] and its type cannot be inferred.
+/// Creating an instance of this type is not allowed
+/// ```ignore
+/// TrackMetadata {
+///     ...,
+///     release_name: None::<Empty>,
+/// }
+/// ```
+/// or
+/// ```ignore
+/// TrackMetadata<_, _, Empty> {
+///     ...,
+///     release_name: None,
+/// }
+/// ```
+#[allow(missing_debug_implementations)]
+#[non_exhaustive]
+#[derive(Serialize)]
+pub struct Empty;
+impl Borrow<str> for Empty {
+    fn borrow(&self) -> &str {
+        unreachable!("Should never be used as a value")
+    }
 }

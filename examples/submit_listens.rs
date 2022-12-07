@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use listenbrainz::raw::request::{ListenType, Payload, SubmitListens, TrackMetadata};
+use listenbrainz::raw::request::{Empty, ListenType, Payload, SubmitListens, TrackMetadata};
 use listenbrainz::raw::Client;
 
 fn now() -> i64 {
@@ -17,7 +17,7 @@ fn main() {
 
     // Submit single
 
-    let listen = Payload {
+    let listen: Payload<_> = Payload {
         listened_at: Some(now()),
         track_metadata: TrackMetadata {
             artist_name: "Rick Astley",
@@ -41,7 +41,7 @@ fn main() {
         track_metadata: TrackMetadata {
             artist_name: "Rick Astley",
             track_name: "Never Gonna Give You Up",
-            release_name: None,
+            release_name: None::<Empty>,
             additional_info: None,
         },
     };

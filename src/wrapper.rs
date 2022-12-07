@@ -91,9 +91,7 @@ impl ListenBrainz {
         track: &str,
         release: Option<&str>,
     ) -> Result<(), Error> {
-        if !self.is_authenticated() {
-            return Err(Error::NotAuthenticated);
-        }
+        let token = self.authenticated_token().ok_or(Error::NotAuthenticated)?;
 
         let payload = Payload {
             listened_at: timestamp,
@@ -105,7 +103,6 @@ impl ListenBrainz {
             },
         };
 
-        let token = self.authenticated_token().unwrap();
         self.client.submit_listens(
             token,
             SubmitListens {
