@@ -1,3 +1,4 @@
+use attohttpc::header::AUTHORIZATION;
 use serde::Serialize;
 
 use super::endpoint::Endpoint;
@@ -96,7 +97,7 @@ impl Client {
         let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
         let response = attohttpc::post(endpoint)
-            .header("Authorization", &format!("Token {}", token))
+            .header(AUTHORIZATION, format!("Token {token}"))
             .json(&data)?
             .send()?;
 
@@ -116,7 +117,9 @@ impl Client {
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::ValidateToken);
 
-        let response = attohttpc::get(endpoint).param("token", token).send()?;
+        let response = attohttpc::get(endpoint)
+            .header(AUTHORIZATION, format!("Token {token}"))
+            .send()?;
 
         ResponseType::from_response(response)
     }
