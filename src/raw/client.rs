@@ -130,14 +130,6 @@ impl Client {
         self.post(Endpoint::DeleteListen, token, data)
     }
 
-    /// Endpoint: [`users/{user_list}/recent-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-users-(user_list)-recent-listens)
-    pub fn users_recent_listens(
-        &self,
-        user_list: &[&str],
-    ) -> Result<UsersRecentListensResponse, Error> {
-        self.get(Endpoint::UsersRecentListens(user_list))
-    }
-
     /// Endpoint: [`user/{user_name}/listen-count`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listen-count)
     pub fn user_listen_count(&self, user_name: &str) -> Result<UserListenCountResponse, Error> {
         self.get(Endpoint::UserListenCount(user_name))
