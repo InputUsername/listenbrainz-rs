@@ -215,9 +215,9 @@ pub struct UserPlayingNowPayload {
 /// Type of the [`UserPlayingNowPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowListen {
-    pub user_name: String,
-    pub inserted_at: String,
-    pub recording_msid: String,
+    pub user_name: Option<String>,
+    pub inserted_at: Option<String>,
+    pub recording_msid: Option<String>,
     pub track_metadata: UserPlayingNowTrackMetadata,
 }
 
