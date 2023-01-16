@@ -252,7 +252,7 @@ pub struct UserListensPayload {
 #[derive(Debug, Deserialize)]
 pub struct UserListensListen {
     pub user_name: String,
-    pub inserted_at: String,
+    pub inserted_at: i64,
     pub listened_at: i64,
     pub recording_msid: String,
     pub track_metadata: UserListensTrackMetadata,
