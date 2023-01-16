@@ -301,7 +301,7 @@ response_type! {
 /// Type of the [`StatsSitewideArtistsResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct StatsSitewideArtistsPayload {
-    pub time_ranges: Vec<StatsSitewideArtistsTimeRange>,
+    pub artists: Vec<StatsSitewideArtistsArtist>,
     pub offset: u64,
     pub count: u64,
     pub range: String,
@@ -310,20 +310,10 @@ pub struct StatsSitewideArtistsPayload {
     pub to_ts: i64,
 }
 
-/// Type of the [`StatsSitewideArtistsPayload::time_ranges`] field.
-#[derive(Debug, Deserialize)]
-pub struct StatsSitewideArtistsTimeRange {
-    pub time_range: String,
-    pub artists: Vec<StatsSitewideArtistsArtist>,
-    pub from_ts: i64,
-    pub to_ts: i64,
-}
-
 /// Type of the [`StatsSitewideArtistsTimeRange::artists`] field.
 #[derive(Debug, Deserialize)]
 pub struct StatsSitewideArtistsArtist {
     pub artist_mbids: Option<Vec<String>>,
-    pub artist_msid: String,
     pub artist_name: String,
     pub listen_count: u64,
 }
