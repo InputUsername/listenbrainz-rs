@@ -210,15 +210,14 @@ pub struct UserPlayingNowPayload {
     pub count: u8,
     pub user_id: String,
     pub listens: Vec<UserPlayingNowListen>,
+    pub playing_now: bool,
 }
 
 /// Type of the [`UserPlayingNowPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowListen {
-    pub user_name: String,
-    pub inserted_at: String,
-    pub recording_msid: String,
     pub track_metadata: UserPlayingNowTrackMetadata,
+    pub playing_now: bool,
 }
 
 /// Type of the [`UserPlayingNowListen::track_metadata`] field.
