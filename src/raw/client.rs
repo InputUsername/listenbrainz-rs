@@ -287,7 +287,7 @@ impl Client {
         user_name: &str,
         range: Option<&str>,
         force_recalculate: Option<bool>,
-    ) -> Result<StatsUserArtistMapResponse, Error> {
+    ) -> Result<Option<StatsUserArtistMapResponse>, Error> {
         let endpoint = format!(
             "{}{}",
             API_ROOT_URL,
@@ -305,7 +305,12 @@ impl Client {
 
         let response = request.send()?;
 
-        ResponseType::from_response(response)
+        // API returns 204 and an empty document if there are no statistics
+        if response.status() == 204 {
+            Ok(None)
+        } else {
+            ResponseType::from_response(response).map(Some)
+        }
     }
 
     /// Endpoint: [`stats/user/{user_name}/releases`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-releases)
