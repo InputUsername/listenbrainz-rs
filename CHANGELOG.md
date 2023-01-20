@@ -2,7 +2,8 @@
 
 ## v0.6.0 (unreleased)
 
-- Updated response schemas to match the ListenBrainz API:
+- Updated response schemas to match the ListenBrainz API ([#12], [@cellularnetwork]):
+  - **These are breaking changes.**
   - `user/{user_name}/playing-now`:
     - Added `UserPlayingNowPayload::playing_now`;
     - Added `UserPlayingNowListen::playing_now`;
@@ -25,10 +26,13 @@
     - Removed `UsersRecentListensTrackMetadata`;
     - Removed `examples/users_recent_listens.rs`.
 
+[#12]: https://github.com/InputUsername/listenbrainz-rs/pull/12
+[@cellularnetwork]: https://github.com/cellularnetwork
+
 ## v0.5.0 (2022-12-05)
 
 - Made the `release` parameter of `ListenBrainz` methods optional ([#11], [@mgziminsky]).
-  - This is a breaking change.
+  - **This is a breaking change.**
 
 [#11]: https://github.com/InputUsername/listenbrainz-rs/pull/11
 [@mgziminsky]: https://github.com/mgziminsky
