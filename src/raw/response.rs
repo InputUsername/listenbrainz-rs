@@ -141,43 +141,6 @@ response_type! {
     }
 }
 
-// --------- users/{user_list}/recent-listens
-
-response_type! {
-    /// Response type for [`Client::users_recent_listens`](super::Client::users_recent_listens).
-    #[derive(Debug, Deserialize)]
-    pub struct UsersRecentListensResponse {
-        pub payload: UsersRecentListensPayload,
-    }
-}
-
-/// Type of the [`UsersRecentListensResponse::payload`] field.
-#[derive(Debug, Deserialize)]
-pub struct UsersRecentListensPayload {
-    pub count: u64,
-    pub listens: Vec<UsersRecentListensListen>,
-    pub user_list: String,
-}
-
-/// Type of the [`UsersRecentListensPayload::listens`] field.
-#[derive(Debug, Deserialize)]
-pub struct UsersRecentListensListen {
-    pub user_name: String,
-    pub inserted_at: String,
-    pub listened_at: i64,
-    pub recording_msid: String,
-    pub track_metadata: UsersRecentListensTrackMetadata,
-}
-
-/// Type of the [`UsersRecentListensListen::track_metadata`] field.
-#[derive(Debug, Deserialize)]
-pub struct UsersRecentListensTrackMetadata {
-    pub artist_name: String,
-    pub track_name: String,
-    pub release_name: Option<String>,
-    pub additional_info: HashMap<String, serde_json::Value>,
-}
-
 // --------- user/{user_name}/listen-count
 
 response_type! {
@@ -210,15 +173,14 @@ pub struct UserPlayingNowPayload {
     pub count: u8,
     pub user_id: String,
     pub listens: Vec<UserPlayingNowListen>,
+    pub playing_now: bool,
 }
 
 /// Type of the [`UserPlayingNowPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserPlayingNowListen {
-    pub user_name: String,
-    pub inserted_at: String,
-    pub recording_msid: String,
     pub track_metadata: UserPlayingNowTrackMetadata,
+    pub playing_now: bool,
 }
 
 /// Type of the [`UserPlayingNowListen::track_metadata`] field.
@@ -253,7 +215,7 @@ pub struct UserListensPayload {
 #[derive(Debug, Deserialize)]
 pub struct UserListensListen {
     pub user_name: String,
-    pub inserted_at: String,
+    pub inserted_at: i64,
     pub listened_at: i64,
     pub recording_msid: String,
     pub track_metadata: UserListensTrackMetadata,
@@ -302,7 +264,7 @@ response_type! {
 /// Type of the [`StatsSitewideArtistsResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct StatsSitewideArtistsPayload {
-    pub time_ranges: Vec<StatsSitewideArtistsTimeRange>,
+    pub artists: Vec<StatsSitewideArtistsArtist>,
     pub offset: u64,
     pub count: u64,
     pub range: String,
@@ -311,20 +273,10 @@ pub struct StatsSitewideArtistsPayload {
     pub to_ts: i64,
 }
 
-/// Type of the [`StatsSitewideArtistsPayload::time_ranges`] field.
-#[derive(Debug, Deserialize)]
-pub struct StatsSitewideArtistsTimeRange {
-    pub time_range: String,
-    pub artists: Vec<StatsSitewideArtistsArtist>,
-    pub from_ts: i64,
-    pub to_ts: i64,
-}
-
 /// Type of the [`StatsSitewideArtistsTimeRange::artists`] field.
 #[derive(Debug, Deserialize)]
 pub struct StatsSitewideArtistsArtist {
     pub artist_mbids: Option<Vec<String>>,
-    pub artist_msid: String,
     pub artist_name: String,
     pub listen_count: u64,
 }

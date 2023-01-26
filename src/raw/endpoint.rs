@@ -4,7 +4,6 @@ pub enum Endpoint<'a> {
     SubmitListens,
     ValidateToken,
     DeleteListen,
-    UsersRecentListens(&'a [&'a str]),
     UserListenCount(&'a str),
     UserPlayingNow(&'a str),
     UserListens(&'a str),
@@ -25,16 +24,6 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::SubmitListens => "submit-listens",
             Self::ValidateToken => "validate-token",
             Self::DeleteListen => "delete-listen",
-            Self::UsersRecentListens(users) => {
-                let users = users.iter().fold(String::new(), |mut result, user| {
-                    result.reserve(user.len() + 1);
-                    result.push_str(&user.replace(',', "%2C"));
-                    result.push(',');
-                    result
-                });
-                println!("{:?}", users);
-                return write!(f, "users/{}/recent-listens", users);
-            }
             Self::UserListenCount(user) => return write!(f, "user/{}/listen-count", user),
             Self::UserPlayingNow(user) => return write!(f, "user/{}/playing-now", user),
             Self::UserListens(user) => return write!(f, "user/{}/listens", user),

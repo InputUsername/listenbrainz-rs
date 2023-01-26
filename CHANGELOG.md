@@ -1,9 +1,38 @@
 # Changelog
 
+## v0.6.0 (unreleased)
+
+- Updated response schemas to match the ListenBrainz API ([#12], [@cellularnetwork]):
+  - **These are breaking changes.**
+  - `user/{user_name}/playing-now`:
+    - Added `UserPlayingNowPayload::playing_now`;
+    - Added `UserPlayingNowListen::playing_now`;
+    - Removed `UserPlayingNowListen::{user_name, inserted_at, recording_msid}.
+  - `user/{user_name}/listens`:
+    - Changed the type of `UserListensListen::inserted_at` from `String` to `i64`.
+  - `stats/sitewide/artists`:
+    - Removed `StatsSitewideArtistsPayload::time_ranges`;
+    - Added `StatsSitewideArtistsPayload::artists`;
+    - Removed `StatsSitewideArtistsTimeRange`;
+    - Removed `StatsSitewideArtistsArtist::artist_msid`.
+  - `stats/user/{user_name}/artist-map`:
+    - Changed the return type of `Client::stats_user_artist_map` from `Result<StatsUserArtistMapResponse, Error>`
+      to `Result<Option<StatsUserArtistMapResponse>, Error>`.
+  - `users/{user_list}/recent-listens`:
+    - Removed `Client::users_recent_listens`;
+    - Removed `UsersRecentListensResponse`;
+    - Removed `UsersRecentListensPayload`;
+    - Removed `UsersRecentListensListen`;
+    - Removed `UsersRecentListensTrackMetadata`;
+    - Removed `examples/users_recent_listens.rs`.
+
+[#12]: https://github.com/InputUsername/listenbrainz-rs/pull/12
+[@cellularnetwork]: https://github.com/cellularnetwork
+
 ## v0.5.0 (2022-12-05)
 
 - Made the `release` parameter of `ListenBrainz` methods optional ([#11], [@mgziminsky]).
-  - This is a breaking change.
+  - **This is a breaking change.**
 
 [#11]: https://github.com/InputUsername/listenbrainz-rs/pull/11
 [@mgziminsky]: https://github.com/mgziminsky
