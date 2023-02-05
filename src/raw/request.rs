@@ -34,7 +34,7 @@ pub struct Payload<Track: StrType, Artist: StrType = Track, Release: StrType = T
 
 /// Type of the [`Payload::track_metadata`] field.
 ///
-/// If [`release_name`](Self::release_name) will always be [None] and the type for `Release` cannot be inferred, set it to the [Empty] type
+/// If [`release_name`](Self::release_name) will always be [None] and the type for `Release` cannot be inferred, set it to the [Empty] type.
 #[derive(Debug, serde::Serialize)]
 pub struct TrackMetadata<Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
     pub track_name: Track,
@@ -64,11 +64,12 @@ pub struct UpdateLatestImport {
     pub ts: i64,
 }
 
+/// Type for use in generic contexts that want a string. Technically, only [Serialize] is required by the api,
+/// but the [Borrow] constraint makes working with values more convenient in non-write contexts.
 pub trait StrType: Borrow<str> + Serialize {}
 impl<T: Borrow<str> + Serialize> StrType for T {}
 
 /// Dummy type to use as explicit `Release` type if [`TrackMetadata::release_name`] is [None] and its type cannot be inferred.
-/// Creating an instance of this type is not allowed
 /// ```ignore
 /// TrackMetadata {
 ///     ...,
@@ -83,9 +84,8 @@ impl<T: Borrow<str> + Serialize> StrType for T {}
 /// }
 /// ```
 #[allow(missing_debug_implementations)]
-#[non_exhaustive]
 #[derive(Serialize)]
-pub struct Empty;
+pub enum Empty {}
 impl Borrow<str> for Empty {
     fn borrow(&self) -> &str {
         unreachable!("Should never be used as a value")
