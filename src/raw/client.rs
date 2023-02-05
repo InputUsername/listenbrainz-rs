@@ -1,3 +1,4 @@
+use attohttpc::header::AUTHORIZATION;
 use serde::Serialize;
 
 use super::endpoint::Endpoint;
@@ -26,13 +27,11 @@ pub struct Client {
 impl Client {
     /// Construct a new client.
     pub fn new() -> Self {
-        Self {
-            api_root_url: API_ROOT_URL.to_string(),
-        }
+        Self::new_with_url(API_ROOT_URL)
     }
 
     /// Construct a new client with a custom API URL.
-    pub fn new_with_url(url: &str) -> Self {
+    pub fn new_with_url(url: impl ToString) -> Self {
         Self {
             api_root_url: url.to_string(),
         }
@@ -96,7 +95,7 @@ impl Client {
         let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
         let response = attohttpc::post(endpoint)
-            .header("Authorization", &format!("Token {}", token))
+            .header(AUTHORIZATION, format!("Token {token}"))
             .json(&data)?
             .send()?;
 
@@ -104,10 +103,10 @@ impl Client {
     }
 
     /// Endpoint: [`submit-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-submit-listens)
-    pub fn submit_listens(
+    pub fn submit_listens<Track: StrType, Artist: StrType, Release: StrType>(
         &self,
         token: &str,
-        data: SubmitListens,
+        data: SubmitListens<Track, Artist, Release>,
     ) -> Result<SubmitListensResponse, Error> {
         self.post(Endpoint::SubmitListens, token, data)
     }
@@ -116,16 +115,18 @@ impl Client {
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::ValidateToken);
 
-        let response = attohttpc::get(endpoint).param("token", token).send()?;
+        let response = attohttpc::get(endpoint)
+            .header(AUTHORIZATION, format!("Token {token}"))
+            .send()?;
 
         ResponseType::from_response(response)
     }
 
     /// Endpoint: [`delete-listen`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-delete-listen)
-    pub fn delete_listen(
+    pub fn delete_listen<T: StrType>(
         &self,
         token: &str,
-        data: DeleteListen,
+        data: DeleteListen<T>,
     ) -> Result<DeleteListenResponse, Error> {
         self.post(Endpoint::DeleteListen, token, data)
     }

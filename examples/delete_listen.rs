@@ -11,7 +11,7 @@ fn main() {
 
     let delete = DeleteListen {
         listened_at: listened_at.parse().unwrap(),
-        recording_msid: &recording_msid,
+        recording_msid,
     };
     let result = client.delete_listen(&token, delete);
     println!("{:#?}", result);
