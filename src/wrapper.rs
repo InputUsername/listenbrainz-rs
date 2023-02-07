@@ -141,7 +141,13 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn import(&self, artist: &str, track: &str, release: Option<&str>, timestamp: i64) -> Result<(), Error> {
+    pub fn import(
+        &self,
+        artist: &str,
+        track: &str,
+        release: Option<&str>,
+        timestamp: i64,
+    ) -> Result<(), Error> {
         self.submit_listen(ListenType::Import, Some(timestamp), artist, track, release)
     }
 
@@ -152,7 +158,12 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn playing_now(&self, artist: &str, track: &str, release: Option<&str>) -> Result<(), Error> {
+    pub fn playing_now(
+        &self,
+        artist: &str,
+        track: &str,
+        release: Option<&str>,
+    ) -> Result<(), Error> {
         self.submit_listen(ListenType::PlayingNow, None, artist, track, release)
     }
 }
