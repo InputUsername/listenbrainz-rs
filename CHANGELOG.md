@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.7.0 (2023-02-12)
+
+- Raw request types are now generic over their string types ([#14], [@mgziminsky]):
+  - **This is a breaking change.**
+  - Added the trait `StrType` which is implemented for all types that implement `Borrow<str> + Serialize`;
+  - Changed `SubmitListens<'a>` to `SubmitListens<'a, Track: StrType, Artist: StrType, Release: StrType>`;
+  - Changed `Payload<'a>` to `Payload<Track: StrType, Artist: StrType, Release: StrType>`;
+  - Changed `TrackMetadata<'a>` to `TrackMetadata<Track: StrType, Artist: StrType, Release: StrType>`;
+  - Added the `Empty` type, which can be used to disambiguate the type of `TrackMetadata::release`;
+    - If the `release` field is `None`, use `None::<Empty>`.
+  - Changed `DeleteListen<'a>` to `DeleteListen<T: StrType>`;
+  - Changed `Client::submit_listens` to `Client::submit_listens<Track: StrType, Artist: StrType, Release: StrType>`;
+  - Changed `Client::delete_listen` to `Client::delete_listen<T: StrType>`;
+  - The `ListenBrainz` API remains unchanged.
+- Changed `Client::new_with_url(url: &str)` to `Client::new_with_url(url: impl ToString)`.
+
+[#14]: https://github.com/InputUsername/listenbrainz-rs/pull/14
+[@mgziminsky]: https://github.com/mgziminsky
+
 ## v0.6.0 (2023-01-26)
 
 - Updated response schemas to match the ListenBrainz API ([#12], [#13], [@cellularnetwork]):
