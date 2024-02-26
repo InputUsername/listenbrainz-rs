@@ -283,6 +283,13 @@ impl Client {
         ResponseType::from_response(response)
     }
 
+    /// Endpoint:
+    /// [`playlist`](https://listenbrainz.readthedocs.io/en/latest/users/api/playlist.html#get--1-playlist-(playlist_mbid))
+    /// (`GET`)
+    pub fn get_playlist(&self, playlist: &str) -> Result<GetPlaylistResponse, Error> {
+        self.get(Endpoint::Playlist(playlist))
+    }
+
     /// Endpoint: [`latest-import`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-latest-import) (`POST`)
     pub fn update_latest_import(
         &self,

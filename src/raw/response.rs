@@ -374,6 +374,16 @@ response_type! {
     }
 }
 
+// --------- playlist
+
+response_type! {
+    /// Response type for [`Client::playlist`](super::Client::get_playlist).
+    #[derive(Debug, Deserialize)]
+    pub struct GetPlaylistResponse {
+        pub playlist: jspf::PlaylistInfo,
+    }
+}
+
 // --------- playlist/create
 
 response_type! {
