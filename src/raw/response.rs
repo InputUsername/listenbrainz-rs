@@ -526,5 +526,3 @@ pub struct StatsReleaseGroupListenersListeners {
     pub listen_count: u64,
     pub username_name: String
 }
-
-// This file is more than 500 lines long! Perhaps it would be better to split it into multiple ones?
