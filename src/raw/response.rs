@@ -573,8 +573,6 @@ response_type!{
     }
 }
 
-// FIXME: The docs don't have the JSON Structure of the payload.
-// When we do, please fix any broken fields!
 /// Type of the [`StatsReleaseGroupListenersResponse::payload`] field.
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct StatsReleaseGroupListenerssPayload {
