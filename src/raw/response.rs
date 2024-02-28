@@ -495,7 +495,7 @@ response_type! {
 
 response_type!{
     /// Response type for [`Client::stats_release_group_listeners`](super::Client::stats_release_group_listeners).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+    #[derive(Debug, Deserialize)]
     pub struct StatsReleaseGroupListenersResponse {
         pub payload: StatsReleaseGroupListenerssPayload
     }
