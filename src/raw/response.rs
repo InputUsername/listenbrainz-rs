@@ -280,13 +280,26 @@ pub struct UserListensMBIDMapping {
     artist_mbids: Vec<String>,
 
     /// Data about the artists of the recording
-    artists: Vec<()>,
+    artists: Vec<UserListensMappingArtist>,
 
     /// The MBID of the recording
     recording_mbid: String,
 
     /// The name of the recording
     recording_name: String   
+}
+
+/// Type of the [`UserListensMBIDMapping::artists`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct UserListensMappingArtist {
+    /// The MBID of the artists of the recording
+    artist_mbid: String,
+
+    /// The name of the artist as it is credited for the recording
+    artist_credit_name: String,
+
+    /// The join phrase for the artist
+    join_phrase: String,
 }
 
 // --------- latest-import (GET)
