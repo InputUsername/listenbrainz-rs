@@ -249,17 +249,17 @@ pub struct UserListensListen {
 pub struct UserListensTrackMetadata {
     /// The name of the artist as it was submited.
     ///
-    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for mapping information!
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for trusted information!
     pub artist_name: String,
     
     /// The name of the track as it was submited.
     ///
-    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for mapping information!
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for trusted information!
     pub track_name: String,
     
     /// The name of the release as it was submited.
     ///
-    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for mapping information!
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for trusted information!
     pub release_name: Option<String>,
     
     /// Additional info that the client submited alongside the request
@@ -269,7 +269,24 @@ pub struct UserListensTrackMetadata {
     
     /// The mapping information between Listenbrainz and Musicbrainz.
     /// If no mapping could be done, this field will `None`
-    pub mbid_mapping: Option<()>
+    pub mbid_mapping: Option<UserListensMBIDMapping>
+}
+
+
+/// Type of the [`UserListensTrackMetadata::mbid_mapping`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct UserListensMBIDMapping {
+    /// The MBIDs of the artists of the recording
+    artist_mbids: Vec<String>,
+
+    /// Data about the artists of the recording
+    artists: Vec<()>,
+
+    /// The MBID of the recording
+    recording_mbid: String,
+
+    /// The name of the recording
+    recording_name: String   
 }
 
 // --------- latest-import (GET)
