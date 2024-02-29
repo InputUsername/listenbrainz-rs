@@ -16,4 +16,4 @@ jobs:
     - name: Perform build of listenbrainz-rs
       run: cargo build --verbose
     - name: Run unit tests for listenbrain-rs
-      run: cargo test --verbose
+      run: cargo test --verbose -- --test-threads=1
