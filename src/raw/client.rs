@@ -251,9 +251,11 @@ impl Client {
         if let Some(min_ts) = min_ts {
             request = request.param("min_ts", min_ts);
         }
+
         if let Some(max_ts) = max_ts {
             request = request.param("max_ts", max_ts);
         }
+
         if let Some(count) = count {
             request = request.param("count", count);
         }
