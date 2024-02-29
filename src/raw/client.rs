@@ -141,7 +141,7 @@ impl Client {
         self.get(Endpoint::UserPlayingNow(user_name))
     }
 
-    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listens)
+    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/latest/users/api/core.html#get--1-user-(user_name)-listens)
     pub fn user_listens(
         &self,
         user_name: &str,
