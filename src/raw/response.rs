@@ -280,13 +280,13 @@ pub struct UserListensMBIDMapping {
     artist_mbids: Option<Vec<String>>,
 
     /// Data about the artists of the recording
-    artists: Vec<UserListensMappingArtist>,
+    artists: Option<Vec<UserListensMappingArtist>>,
 
     /// The MBID of the recording
     recording_mbid: String,
 
     /// The name of the recording
-    recording_name: String   
+    recording_name: Option<String>   
 }
 
 /// Type of the [`UserListensMBIDMapping::artists`] field.
