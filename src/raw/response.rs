@@ -207,6 +207,7 @@ response_type! {
 pub struct UserListensPayload {
     pub count: u64,
     pub latest_listen_ts: i64,
+    pub oldest_listen_ts: i64,
     pub user_id: String,
     pub listens: Vec<UserListensListen>,
 }
