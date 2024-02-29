@@ -205,10 +205,23 @@ response_type! {
 /// Type of the [`UserListensResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensPayload {
+    /// The count of listen retrived from the database. 
     pub count: u64,
+
+    /// The timestamp of the latest listen of the user.
+    ///
+    /// ⚠️ This isn't necessarly the latest listen of [`UserListensPayload::listens`] !
     pub latest_listen_ts: i64,
+    
+    /// The timestamp of the oldest listen of the user.
+    ///
+    /// ⚠️ This isn't necessarly the oldest listen of [`UserListensPayload::listens`] !
     pub oldest_listen_ts: i64,
+    
+    /// The user id of the listener. 
     pub user_id: String,
+
+    /// The listens of the listener
     pub listens: Vec<UserListensListen>,
 }
 
