@@ -277,7 +277,7 @@ pub struct UserListensTrackMetadata {
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct UserListensMBIDMapping {
     /// The MBIDs of the artists of the recording
-    artist_mbids: Vec<String>,
+    artist_mbids: Option<Vec<String>>,
 
     /// Data about the artists of the recording
     artists: Vec<UserListensMappingArtist>,
