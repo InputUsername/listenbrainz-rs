@@ -497,30 +497,51 @@ response_type!{
     /// Response type for [`Client::stats_release_group_listeners`](super::Client::stats_release_group_listeners).
     #[derive(Debug, Deserialize)]
     pub struct StatsReleaseGroupListenersResponse {
-        pub payload: StatsReleaseGroupListenerssPayload
+        pub payload: StatsReleaseGroupListenersPayload
     }
 }
 
 /// Type of the [`StatsReleaseGroupListenersResponse::payload`] field.
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct StatsReleaseGroupListenerssPayload {
+pub struct StatsReleaseGroupListenersPayload {
+    /// The MBIDs of the artists of the release
     pub artist_mbids: Vec<String>,
+
+    /// The names of the artist(s) of the release.
     pub artist_name: String,
+
+    /// Id of the coverart in the coverart archive
     pub caa_id: Option<i64>,
+
+    /// Id of the release in the coverart archive
     pub caa_release_mbid: Option<String>,
+
     pub from_ts: i64,
     pub last_updated: i64,
+
+    /// The top listeners of the release
     pub listeners: Vec<StatsReleaseGroupListenersListeners>,
+    
+    /// The MBID of the release group
     pub release_group_mbid: String,
+
+    /// The name of the release group
     pub release_group_name: String,
+
+    /// The range of the stats used in the request
     pub stats_range: String,
     pub to_ts: i64,
+
+    /// The total number of listens of a release
     pub total_listen_count: i64
 }
 
 /// Type of the [`StatsReleaseGroupListenerssPayload::listeners`] field.
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct StatsReleaseGroupListenersListeners {
+    /// Number of times the user have listened to the track
     pub listen_count: u64,
+
+    /// Name of the listening user
     pub username_name: String
 }
