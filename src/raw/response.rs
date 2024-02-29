@@ -208,12 +208,12 @@ pub struct UserListensPayload {
     /// The count of listen retrived from the database. 
     pub count: u64,
 
-    /// The timestamp of the latest listen of the user.
+    /// The UNIX timestamp of the latest listen of the user.
     ///
     /// ⚠️ This isn't necessarly the latest listen of [`UserListensPayload::listens`] !
     pub latest_listen_ts: i64,
     
-    /// The timestamp of the oldest listen of the user.
+    /// The UNIX timestamp of the oldest listen of the user.
     ///
     /// ⚠️ This isn't necessarly the oldest listen of [`UserListensPayload::listens`] !
     pub oldest_listen_ts: i64,
@@ -228,20 +228,48 @@ pub struct UserListensPayload {
 /// Type of the [`UserListensPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensListen {
+    /// The username of the listener.
     pub user_name: String,
+
+    /// The UNIX timestamp of when the listen have been inserted in the database
     pub inserted_at: i64,
+
+    /// The UNIX timestamp of when the recording have been listened to
     pub listened_at: i64,
+    
+    /// Messybrainz ID
     pub recording_msid: String,
+
+    /// Metadata of the track
     pub track_metadata: UserListensTrackMetadata,
 }
 
 /// Type of the [`UserListensListen::track_metadata`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensTrackMetadata {
+    /// The name of the artist as it was submited.
+    ///
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for mapping information!
     pub artist_name: String,
+    
+    /// The name of the track as it was submited.
+    ///
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for mapping information!
     pub track_name: String,
+    
+    /// The name of the release as it was submited.
+    ///
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for mapping information!
     pub release_name: Option<String>,
+    
+    /// Additional info that the client submited alongside the request
+    ///
+    /// This can be anything, but see [the listenbrainz documentation](https://listenbrainz.readthedocs.io/en/latest/users/json.html#payload-json-details) for official fields
     pub additional_info: HashMap<String, serde_json::Value>,
+    
+    /// The mapping information between Listenbrainz and Musicbrainz.
+    /// If no mapping could be done, this field will `None`
+    pub mbid_mapping: Option<()>
 }
 
 // --------- latest-import (GET)
