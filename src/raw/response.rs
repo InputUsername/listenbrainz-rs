@@ -536,7 +536,7 @@ pub struct StatsReleaseGroupListenersPayload {
     pub total_listen_count: i64
 }
 
-/// Type of the [`StatsReleaseGroupListenerssPayload::listeners`] field.
+/// Type of the [`StatsReleaseGroupListenersPayload::listeners`] field.
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct StatsReleaseGroupListenersListeners {
     /// Number of times the user have listened to the track
