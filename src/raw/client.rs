@@ -148,7 +148,6 @@ impl Client {
         min_ts: Option<i64>,
         max_ts: Option<i64>,
         count: Option<u64>,
-        time_range: Option<u64>,
     ) -> Result<UserListensResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserListens(user_name));
 
@@ -157,14 +156,13 @@ impl Client {
         if let Some(min_ts) = min_ts {
             request = request.param("min_ts", min_ts);
         }
+        
         if let Some(max_ts) = max_ts {
             request = request.param("max_ts", max_ts);
         }
+
         if let Some(count) = count {
             request = request.param("count", count);
-        }
-        if let Some(time_range) = time_range {
-            request = request.param("time_range", time_range);
         }
 
         let response = request.send()?;
