@@ -53,3 +53,7 @@ mod wrapper;
 
 pub use crate::error::Error;
 pub use crate::wrapper::ListenBrainz;
+
+
+#[cfg(test)]
+pub mod tests;
