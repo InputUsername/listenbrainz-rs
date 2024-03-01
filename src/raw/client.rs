@@ -141,14 +141,13 @@ impl Client {
         self.get(Endpoint::UserPlayingNow(user_name))
     }
 
-    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listens)
+    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/latest/users/api/core.html#get--1-user-(user_name)-listens)
     pub fn user_listens(
         &self,
         user_name: &str,
         min_ts: Option<i64>,
         max_ts: Option<i64>,
         count: Option<u64>,
-        time_range: Option<u64>,
     ) -> Result<UserListensResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserListens(user_name));
 
@@ -157,14 +156,13 @@ impl Client {
         if let Some(min_ts) = min_ts {
             request = request.param("min_ts", min_ts);
         }
+        
         if let Some(max_ts) = max_ts {
             request = request.param("max_ts", max_ts);
         }
+
         if let Some(count) = count {
             request = request.param("count", count);
-        }
-        if let Some(time_range) = time_range {
-            request = request.param("time_range", time_range);
         }
 
         let response = request.send()?;
@@ -326,6 +324,20 @@ impl Client {
         range: Option<&str>,
     ) -> Result<Option<StatsUserArtistsResponse>, Error> {
         self.get_stats(Endpoint::StatsUserArtists(user_name), count, offset, range)
+    }
+
+    /// Endpoint: [`GET /1/stats/release-group/(release_group_mbid)/listeners`](https://listenbrainz.readthedocs.io/en/latest/users/api/statistics.html#get--1-stats-release-group-(release_group_mbid)-listeners)
+    /// Get the top listeners for a release group, as well as getting the total number of listens for it
+    pub fn stats_release_group_listeners(
+        &self, 
+        release_group_mbid: &str, 
+        range: Option<&str>) -> Result<Option<StatsReleaseGroupListenersResponse>, Error> {
+        self.get_stats(
+            Endpoint::StatsReleaseGroupListeners(release_group_mbid), 
+            None, 
+            None,
+            range
+        )    
     }
 
     /// Endpoint: [`status/get-dump-info`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-status-get-dump-info)

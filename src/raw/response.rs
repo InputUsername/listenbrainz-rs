@@ -205,29 +205,101 @@ response_type! {
 /// Type of the [`UserListensResponse::payload`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensPayload {
+    /// The count of listen retrived from the database. 
     pub count: u64,
+
+    /// The UNIX timestamp of the latest listen of the user.
+    ///
+    /// ⚠️ This isn't necessarly the latest listen of [`UserListensPayload::listens`] !
     pub latest_listen_ts: i64,
+    
+    /// The UNIX timestamp of the oldest listen of the user.
+    ///
+    /// ⚠️ This isn't necessarly the oldest listen of [`UserListensPayload::listens`] !
+    pub oldest_listen_ts: i64,
+    
+    /// The user id of the listener. 
     pub user_id: String,
+
+    /// The listens of the listener
     pub listens: Vec<UserListensListen>,
 }
 
 /// Type of the [`UserListensPayload::listens`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensListen {
+    /// The username of the listener.
     pub user_name: String,
+
+    /// The UNIX timestamp of when the listen have been inserted in the database
     pub inserted_at: i64,
+
+    /// The UNIX timestamp of when the recording have been listened to
     pub listened_at: i64,
+    
+    /// Messybrainz ID
     pub recording_msid: String,
+
+    /// Metadata of the track
     pub track_metadata: UserListensTrackMetadata,
 }
 
 /// Type of the [`UserListensListen::track_metadata`] field.
 #[derive(Debug, Deserialize)]
 pub struct UserListensTrackMetadata {
+    /// The name of the artist as it was submited.
+    ///
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for trusted information!
     pub artist_name: String,
+    
+    /// The name of the track as it was submited.
+    ///
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for trusted information!
     pub track_name: String,
+    
+    /// The name of the release as it was submited.
+    ///
+    /// ⚠️ User data is unreliable! This may not be correct artist! Check [`UserListensTrackMetadata::mbid_mapping`] for trusted information!
     pub release_name: Option<String>,
+    
+    /// Additional info that the client submited alongside the request
+    ///
+    /// This can be anything, but see [the listenbrainz documentation](https://listenbrainz.readthedocs.io/en/latest/users/json.html#payload-json-details) for official fields
     pub additional_info: HashMap<String, serde_json::Value>,
+    
+    /// The mapping information between Listenbrainz and Musicbrainz.
+    /// If no mapping could be done, this field will `None`
+    pub mbid_mapping: Option<UserListensMBIDMapping>
+}
+
+
+/// Type of the [`UserListensTrackMetadata::mbid_mapping`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct UserListensMBIDMapping {
+    /// The MBIDs of the artists of the recording
+    artist_mbids: Option<Vec<String>>,
+
+    /// Data about the artists of the recording
+    artists: Option<Vec<UserListensMappingArtist>>,
+
+    /// The MBID of the recording
+    recording_mbid: String,
+
+    /// The name of the recording
+    recording_name: Option<String>   
+}
+
+/// Type of the [`UserListensMBIDMapping::artists`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct UserListensMappingArtist {
+    /// The MBID of the artists of the recording
+    artist_mbid: String,
+
+    /// The name of the artist as it is credited for the recording
+    artist_credit_name: String,
+
+    /// The join phrase for the artist
+    join_phrase: String,
 }
 
 // --------- latest-import (GET)
@@ -489,4 +561,59 @@ response_type! {
         pub id: i64,
         pub timestamp: String,
     }
+}
+
+// ---------- stats/release-group/(release_group_mbid)/listeners
+
+response_type!{
+    /// Response type for [`Client::stats_release_group_listeners`](super::Client::stats_release_group_listeners).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsReleaseGroupListenersResponse {
+        pub payload: StatsReleaseGroupListenersPayload
+    }
+}
+
+/// Type of the [`StatsReleaseGroupListenersResponse::payload`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct StatsReleaseGroupListenersPayload {
+    /// The MBIDs of the artists of the release
+    pub artist_mbids: Vec<String>,
+
+    /// The names of the artist(s) of the release.
+    pub artist_name: String,
+
+    /// Id of the coverart in the coverart archive
+    pub caa_id: Option<i64>,
+
+    /// Id of the release in the coverart archive
+    pub caa_release_mbid: Option<String>,
+
+    pub from_ts: i64,
+    pub last_updated: i64,
+
+    /// The top listeners of the release
+    pub listeners: Vec<StatsReleaseGroupListenersListeners>,
+    
+    /// The MBID of the release group
+    pub release_group_mbid: String,
+
+    /// The name of the release group
+    pub release_group_name: String,
+
+    /// The range of the stats used in the request
+    pub stats_range: String,
+    pub to_ts: i64,
+
+    /// The total number of listens of a release
+    pub total_listen_count: i64
+}
+
+/// Type of the [`StatsReleaseGroupListenerssPayload::listeners`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct StatsReleaseGroupListenersListeners {
+    /// Number of times the user have listened to the track
+    pub listen_count: u64,
+
+    /// Name of the listening user
+    pub username_name: String
 }

@@ -11,6 +11,6 @@ fn main() {
     let result = client.user_playing_now(&user_name);
     println!("Playing now: {:#?}", result);
 
-    let result = client.user_listens(&user_name, None, None, Some(5), None);
+    let result = client.user_listens(&user_name, None, None, Some(5));
     println!("Recent listens: {:#?}", result);
 }
