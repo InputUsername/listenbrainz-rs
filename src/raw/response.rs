@@ -493,7 +493,7 @@ response_type! {
 
 // ---------- stats/release-group/(release_group_mbid)/listeners
 
-response_type!{
+response_type! {
     /// Response type for [`Client::stats_release_group_listeners`](super::Client::stats_release_group_listeners).
     #[derive(Debug, Deserialize)]
     pub struct StatsReleaseGroupListenersResponse {
@@ -521,7 +521,7 @@ pub struct StatsReleaseGroupListenersPayload {
 
     /// The top listeners of the release
     pub listeners: Vec<StatsReleaseGroupListenersListeners>,
-    
+
     /// The MBID of the release group
     pub release_group_mbid: String,
 
@@ -533,7 +533,7 @@ pub struct StatsReleaseGroupListenersPayload {
     pub to_ts: i64,
 
     /// The total number of listens of a release
-    pub total_listen_count: i64
+    pub total_listen_count: i64,
 }
 
 /// Type of the [`StatsReleaseGroupListenersPayload::listeners`] field.
@@ -543,5 +543,5 @@ pub struct StatsReleaseGroupListenersListeners {
     pub listen_count: u64,
 
     /// Name of the listening user
-    pub username_name: String
+    pub username_name: String,
 }
