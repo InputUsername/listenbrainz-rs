@@ -34,11 +34,26 @@ pub struct PlaylistExtension {
 pub struct MusicBrainzPlaylistExtension {
     pub created_for: String,
     pub creator: String,
+    #[serde(default)]
     pub collaborators: Vec<String>,
-    pub copied_from: String,
+    pub copied_from: Option<String>,
+    #[serde(default)]
     pub copied_from_deleted: bool,
     pub public: bool,
     pub last_modified_at: String,
+    pub additional_metadata: AdditionalMetadata,
+}
+
+/// Type of the [`MusicBrainzPlaylistExtension::additional_metadata`] field.
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AdditionalMetadata {
+    pub algorithm_metadata: Option<AlgorithmMetadata>,
+}
+
+/// Type of the [`AdditionalMetadata::algorithm_metadata`] field.
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AlgorithmMetadata {
+    pub source_patch: Option<String>,
 }
 
 /// Type of the [`PlaylistInfo::track`] field.
@@ -62,7 +77,8 @@ pub struct TrackExtension {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MusicBrainzTrackExtension {
     pub added_by: String,
+    #[serde(default)]
     pub artist_mbids: Vec<String>,
     pub added_at: String,
-    pub release_identifier: String,
+    pub release_identifier: Option<String>,
 }
