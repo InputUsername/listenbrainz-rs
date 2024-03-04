@@ -3,6 +3,8 @@
 //! [JSPF format]: https://xspf.org/jspf/
 //! [MusicBrainz's format]: https://musicbrainz.org/doc/jspf
 
+#![allow(missing_docs)]
+
 use serde::{Deserialize, Serialize};
 
 /// Top-level playlist type.
