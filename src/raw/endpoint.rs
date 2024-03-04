@@ -6,7 +6,6 @@ pub enum Endpoint<'a> {
     DeleteListen,
     UserPlaylistsCollaborator(&'a str),
     UserPlaylistsCreatedFor(&'a str),
-    UsersRecentListens(&'a [&'a str]),
     UserSimilarUsers(&'a str),
     UserListenCount(&'a str),
     UserPlayingNow(&'a str),
@@ -42,18 +41,6 @@ impl<'a> fmt::Display for Endpoint<'a> {
                 write!(f, "user/{}/playlists/collaborator", user)
             }
             Self::UserPlaylistsCreatedFor(user) => write!(f, "user/{}/playlists/createdfor", user),
-            Self::UsersRecentListens(users) => {
-                write!(f, "users/")?;
-                for user in users.iter() {
-                    let mut parts = user.split(',');
-                    // Unwrap is fine since str::split always returns at least one item
-                    write!(f, "{}", parts.next().unwrap())?;
-                    for part in parts {
-                        write!(f, "%2C{}", part)?;
-                    }
-                }
-                write!(f, "/recent-listens")
-            }
             Self::UserSimilarUsers(user) => write!(f, "user/{}/similar-users", user),
             Self::UserListenCount(user) => write!(f, "user/{}/listen-count", user),
             Self::UserPlayingNow(user) => write!(f, "user/{}/playing-now", user),

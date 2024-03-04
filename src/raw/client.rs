@@ -186,14 +186,6 @@ impl Client {
         ResponseType::from_response(response)
     }
 
-    /// Endpoint: [`users/{user_list}/recent-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-users-(user_list)-recent-listens)
-    pub fn users_recent_listens(
-        &self,
-        user_list: &[&str],
-    ) -> Result<UsersRecentListensResponse, Error> {
-        self.get(Endpoint::UsersRecentListens(user_list))
-    }
-
     /// Endpoint: [`user/{user_name}/similar-users`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-similar-users)
     pub fn user_similar_users(&self, user_name: &str) -> Result<UserSimilarUsersResponse, Error> {
         self.get(Endpoint::UserSimilarUsers(user_name))
