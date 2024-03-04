@@ -7,6 +7,7 @@ use crate::raw::Client;
 
 /// Contains a ListenBrainz token and the associated username
 /// for authentication purposes.
+#[derive(Debug)]
 struct Auth {
     token: String,
     user: String,
@@ -16,6 +17,7 @@ struct Auth {
 ///
 /// As opposed to [`Client`](crate::raw::Client), this aims to be a convenient and high-level
 /// wrapper of the ListenBrainz API.
+#[derive(Debug)]
 pub struct ListenBrainz {
     client: Client,
     auth: Option<Auth>,
@@ -28,6 +30,19 @@ impl ListenBrainz {
             client: Client::new(),
             auth: None,
         }
+    }
+
+    /// Construct a new ListenBrainz client with a custom API URL that is not authenticated.
+    pub fn new_with_url(url: &str) -> Self {
+        Self {
+            client: Client::new_with_url(url),
+            auth: None,
+        }
+    }
+
+    /// Get the API URL of this client.
+    pub fn api_url(&self) -> &str {
+        self.client.api_url()
     }
 
     /// Check if this client is authenticated.
@@ -74,23 +89,20 @@ impl ListenBrainz {
         timestamp: Option<i64>,
         artist: &str,
         track: &str,
-        release: &str,
+        release: Option<&str>,
     ) -> Result<(), Error> {
-        if !self.is_authenticated() {
-            return Err(Error::NotAuthenticated);
-        }
+        let token = self.authenticated_token().ok_or(Error::NotAuthenticated)?;
 
         let payload = Payload {
             listened_at: timestamp,
             track_metadata: TrackMetadata {
                 artist_name: artist,
                 track_name: track,
-                release_name: Some(release),
+                release_name: release,
                 additional_info: None,
             },
         };
 
-        let token = self.authenticated_token().unwrap();
         self.client.submit_listens(
             token,
             SubmitListens {
@@ -110,7 +122,7 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn listen(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
+    pub fn listen(&self, artist: &str, track: &str, release: Option<&str>) -> Result<(), Error> {
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
@@ -121,6 +133,24 @@ impl ListenBrainz {
         self.submit_listen(ListenType::Single, Some(now), artist, track, release)
     }
 
+    /// Submit a listened track with the given listen time, intended for importing
+    /// previously saved listens. This requires authentication.
+    ///
+    /// # Errors
+    ///
+    /// If not authenticated, returns [`Error::NotAuthenticated`].
+    /// Otherwise, see the Errors section of [`Client`] for more info on
+    /// what errors might occur.
+    pub fn import(
+        &self,
+        artist: &str,
+        track: &str,
+        release: Option<&str>,
+        timestamp: i64,
+    ) -> Result<(), Error> {
+        self.submit_listen(ListenType::Import, Some(timestamp), artist, track, release)
+    }
+
     /// Submit a currently playing track. This requires authentication.
     ///
     /// # Errors
@@ -128,7 +158,18 @@ impl ListenBrainz {
     /// If not authenticated, returns [`Error::NotAuthenticated`].
     /// Otherwise, see the Errors section of [`Client`] for more info on
     /// what errors might occur.
-    pub fn playing_now(&self, artist: &str, track: &str, release: &str) -> Result<(), Error> {
+    pub fn playing_now(
+        &self,
+        artist: &str,
+        track: &str,
+        release: Option<&str>,
+    ) -> Result<(), Error> {
         self.submit_listen(ListenType::PlayingNow, None, artist, track, release)
+    }
+}
+
+impl Default for ListenBrainz {
+    fn default() -> Self {
+        Self::new()
     }
 }

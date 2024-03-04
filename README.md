@@ -2,6 +2,7 @@
 
 [![Crate](https://img.shields.io/crates/v/listenbrainz)](https://crates.io/crates/listenbrainz)
 [![Documentation](https://docs.rs/listenbrainz/badge.svg)](https://docs.rs/listenbrainz)
+[![CI builder](https://github.com/InputUsername/listenbrainz-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/InputUsername/listenbrainz-rs/actions/workflows/ci.yml)
 [![License](https://img.shields.io/crates/l/listenbrainz)](https://github.com/InputUsername/listenbrainz-rs/blob/main/LICENSE)
 
 ListenBrainz API bindings for Rust.

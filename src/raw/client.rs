@@ -1,3 +1,4 @@
+use attohttpc::header::AUTHORIZATION;
 use serde::Serialize;
 
 use super::endpoint::Endpoint;
@@ -19,6 +20,7 @@ const API_ROOT_URL: &str = "https://api.listenbrainz.org/1/";
 /// - [`Error::Api`]: the API returned a non-`2XX` status.
 /// - [`Error::Json`]: the request or response data could not be converted from or into JSON.
 /// - [`Error::Http`]: there was some other HTTP error while interacting with the API.
+#[derive(Debug)]
 pub struct Client {
     api_root_url: String,
 }
@@ -26,15 +28,19 @@ pub struct Client {
 impl Client {
     /// Construct a new client.
     pub fn new() -> Self {
-        Self {
-            api_root_url: API_ROOT_URL.to_string(),
-        }
+        Self::new_with_url(API_ROOT_URL)
     }
 
-    pub fn new_with_url(url: &str) -> Self {
+    /// Construct a new client with a custom API URL.
+    pub fn new_with_url(url: impl ToString) -> Self {
         Self {
             api_root_url: url.to_string(),
         }
+    }
+
+    /// Get the API URL of this client.
+    pub fn api_url(&self) -> &str {
+        &self.api_root_url
     }
 
     /// Helper method to perform a GET request against an endpoint
@@ -90,7 +96,7 @@ impl Client {
         let endpoint = format!("{}{}", self.api_root_url, endpoint);
 
         let response = attohttpc::post(endpoint)
-            .header("Authorization", &format!("Token {}", token))
+            .header(AUTHORIZATION, format!("Token {token}"))
             .json(&data)?
             .send()?;
 
@@ -98,10 +104,10 @@ impl Client {
     }
 
     /// Endpoint: [`submit-listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-submit-listens)
-    pub fn submit_listens(
+    pub fn submit_listens<Track: StrType, Artist: StrType, Release: StrType>(
         &self,
         token: &str,
-        data: SubmitListens,
+        data: SubmitListens<Track, Artist, Release>,
     ) -> Result<SubmitListensResponse, Error> {
         self.post(Endpoint::SubmitListens, token, data)
     }
@@ -110,16 +116,18 @@ impl Client {
     pub fn validate_token(&self, token: &str) -> Result<ValidateTokenResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::ValidateToken);
 
-        let response = attohttpc::get(endpoint).param("token", token).send()?;
+        let response = attohttpc::get(endpoint)
+            .header(AUTHORIZATION, format!("Token {token}"))
+            .send()?;
 
         ResponseType::from_response(response)
     }
 
     /// Endpoint: [`delete-listen`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-delete-listen)
-    pub fn delete_listen(
+    pub fn delete_listen<T: StrType>(
         &self,
         token: &str,
-        data: DeleteListen,
+        data: DeleteListen<T>,
     ) -> Result<DeleteListenResponse, Error> {
         self.post(Endpoint::DeleteListen, token, data)
     }
@@ -410,7 +418,7 @@ impl Client {
         user_name: &str,
         range: Option<&str>,
         force_recalculate: Option<bool>,
-    ) -> Result<StatsUserArtistMapResponse, Error> {
+    ) -> Result<Option<StatsUserArtistMapResponse>, Error> {
         let endpoint = format!(
             "{}{}",
             API_ROOT_URL,
@@ -428,7 +436,12 @@ impl Client {
 
         let response = request.send()?;
 
-        ResponseType::from_response(response)
+        // API returns 204 and an empty document if there are no statistics
+        if response.status() == 204 {
+            Ok(None)
+        } else {
+            ResponseType::from_response(response).map(Some)
+        }
     }
 
     /// Endpoint: [`stats/user/{user_name}/releases`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-stats-user-(user_name)-releases)
@@ -501,5 +514,11 @@ impl Client {
             .send()?;
 
         ResponseType::from_response(response)
+    }
+}
+
+impl Default for Client {
+    fn default() -> Self {
+        Self::new()
     }
 }
