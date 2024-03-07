@@ -9,14 +9,14 @@ use serde::Serialize;
 // --------- submit-listens
 
 /// Request type for [`Client::submit_listens`](super::Client::submit_listens).
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 pub struct SubmitListens<'a, Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
     pub listen_type: ListenType,
     pub payload: &'a [Payload<Track, Artist, Release>],
 }
 
 /// Type of the [`SubmitListens::listen_type`] field.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum ListenType {
     Single,
@@ -25,7 +25,7 @@ pub enum ListenType {
 }
 
 /// Type of the [`SubmitListens::payload`] field.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 pub struct Payload<Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub listened_at: Option<i64>,
@@ -35,7 +35,7 @@ pub struct Payload<Track: StrType, Artist: StrType = Track, Release: StrType = T
 /// Type of the [`Payload::track_metadata`] field.
 ///
 /// If [`release_name`](Self::release_name) will always be [None] and the type for `Release` cannot be inferred, set it to the [Empty] type.
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 pub struct TrackMetadata<Track: StrType, Artist: StrType = Track, Release: StrType = Track> {
     pub track_name: Track,
     pub artist_name: Artist,
@@ -50,7 +50,7 @@ pub struct TrackMetadata<Track: StrType, Artist: StrType = Track, Release: StrTy
 // --------- delete-listen
 
 /// Request type for [`Client::delete_listen`](super::Client::delete_listen).
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 pub struct DeleteListen<T: StrType> {
     pub listened_at: i64,
     pub recording_msid: T,
@@ -59,7 +59,7 @@ pub struct DeleteListen<T: StrType> {
 // --------- latest-import (POST)
 
 /// Request type for [`Client::update_latest_import`](super::Client::update_latest_import).
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone, PartialEq, Eq)]
 pub struct UpdateLatestImport {
     pub ts: i64,
 }
