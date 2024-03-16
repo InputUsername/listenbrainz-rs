@@ -141,14 +141,13 @@ impl Client {
         self.get(Endpoint::UserPlayingNow(user_name))
     }
 
-    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/production/dev/api/#get--1-user-(user_name)-listens)
+    /// Endpoint: [`user/{user_name}/listens`](https://listenbrainz.readthedocs.io/en/latest/users/api/core.html#get--1-user-(user_name)-listens)
     pub fn user_listens(
         &self,
         user_name: &str,
         min_ts: Option<i64>,
         max_ts: Option<i64>,
         count: Option<u64>,
-        time_range: Option<u64>,
     ) -> Result<UserListensResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserListens(user_name));
 
@@ -162,9 +161,6 @@ impl Client {
         }
         if let Some(count) = count {
             request = request.param("count", count);
-        }
-        if let Some(time_range) = time_range {
-            request = request.param("time_range", time_range);
         }
 
         let response = request.send()?;
