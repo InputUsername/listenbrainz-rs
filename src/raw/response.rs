@@ -490,3 +490,38 @@ response_type! {
         pub timestamp: String,
     }
 }
+
+// ---------- stats/release-group/(release_group_mbid)/listeners
+
+response_type! {
+    /// Response type for [`Client::stats_release_group_listeners`](super::Client::stats_release_group_listeners).
+    #[derive(Debug, Deserialize)]
+    pub struct StatsReleaseGroupListenersResponse {
+        pub payload: StatsReleaseGroupListenersPayload
+    }
+}
+
+/// Type of the [`StatsReleaseGroupListenersResponse::payload`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct StatsReleaseGroupListenersPayload {
+    pub artist_mbids: Vec<String>,
+    pub artist_name: String,
+    pub caa_id: Option<i64>,
+    pub caa_release_mbid: Option<String>,
+    pub from_ts: i64,
+    pub last_updated: i64,
+    pub listeners: Vec<StatsReleaseGroupListenersListeners>,
+    pub release_group_mbid: String,
+    pub release_group_name: String,
+    pub stats_range: String,
+    pub to_ts: i64,
+    pub total_listen_count: i64
+}
+
+/// Type of the [`StatsReleaseGroupListenersPayload::listeners`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct StatsReleaseGroupListenersListeners {
+    pub listen_count: u64,
+    pub username_name: String,
+}
+
