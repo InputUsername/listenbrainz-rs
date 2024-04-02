@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.8.0 (unreleased)
+
+- Implemented additional API endpoints:
+  - Statistics:
+    - `/1/stats/release-group/(release_group_mbid)/listeners` - `Client::release_group_listeners` ([#23], [@RustyNova016]).
+- Added MBID mapping to `UserListensResponse` models ([#24], [@RustyNova016]).
+- Added `Clone`, `PartialEq` and `Eq` derives for `raw` models ([#26], [@RustyNova016]).
+- Removed the `time_range` parameter from `Client::user_listens` ([#24]).
+- Updated attohttpc dependency from 0.24 to 0.28.
+
+[#23]: https://github.com/InputUsername/listenbrainz-rs/pull/23
+[#24]: https://github.com/InputUsername/listenbrainz-rs/pull/24
+[#26]: https://github.com/InputUsername/listenbrainz-rs/pull/26
+[@RustyNova016]: https://github.com/RustyNova016
+
 ## v0.7.0 (2023-02-12)
 
 - Raw request types are now generic over their string types ([#14], [@mgziminsky]):
