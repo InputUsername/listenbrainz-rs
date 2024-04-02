@@ -207,6 +207,7 @@ response_type! {
 pub struct UserListensPayload {
     pub count: u64,
     pub latest_listen_ts: i64,
+    pub oldest_listen_ts: i64,
     pub user_id: String,
     pub listens: Vec<UserListensListen>,
 }
@@ -228,6 +229,24 @@ pub struct UserListensTrackMetadata {
     pub track_name: String,
     pub release_name: Option<String>,
     pub additional_info: HashMap<String, serde_json::Value>,
+    pub mbid_mapping: Option<UserListensMBIDMapping>,
+}
+
+/// Type of the [`UserListensTrackMetadata::mbid_mapping`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct UserListensMBIDMapping {
+    pub artist_mbids: Option<Vec<String>>,
+    pub artists: Option<Vec<UserListensMappingArtist>>,
+    pub recording_mbid: String,
+    pub recording_name: Option<String>,
+}
+
+/// Type of the [`UserListensMBIDMapping::artists`] field.
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
+pub struct UserListensMappingArtist {
+    pub artist_mbid: String,
+    pub artist_credit_name: String,
+    pub join_phrase: String,
 }
 
 // --------- latest-import (GET)
