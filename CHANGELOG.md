@@ -3,17 +3,37 @@
 ## v0.8.0 (unreleased)
 
 - Implemented additional API endpoints:
+  - Core:
+    - `/1/user/(user_name)/similar-users` - `Client::user_similar_users`;
+    - `/1/user/(user_name)/similar-to/(other_user_name)` - `Client::user_similar_to`.
+  - Playlists:
+    - `/1/user/(playlist_user_name)/playlists` - `Client::user_playlists`;
+    - `/1/user/(playlist_user_name)/playlists/createdfor` - `Client::user_playlists_created_for`;
+    - `/1/user/(playlist_user_name)/playlists/collaborator` - `Client::user_playlists_collaborator`;
+    - `/1/playlist/(playlist_mbid)` - `Client::get_playlist` ([#19], [@Kernald]).
+    - `/1/playlist/create` - `Client::playlist_create`;
+    - `/1/playlist/(playlist_mbid)/delete` - `Client::playlist_delete`;
+    - `/1/playlist/(playlist_mbid)/copy` - `Client::playlist_copy`;
   - Statistics:
     - `/1/stats/release-group/(release_group_mbid)/listeners` - `Client::release_group_listeners` ([#23], [@RustyNova016]).
+  - Social:
+    - `/1/user/(user_name)/followers` - `Client::user_followers`;
+    - `/1/user/(user_name)/following` - `Client::user_following`;
+    - `/1/user/(user_name)/follow` - `Client::user_follow`;
+    - `/1/user/(user_name)/unfollow` - `Client::user_unfollow`.
+- Added types for playlists in MusicBrainz's [JSPF format].
 - Added MBID mapping to `UserListensResponse` models ([#24], [@RustyNova016]).
 - Added `Clone`, `PartialEq` and `Eq` derives for `raw` models ([#26], [@RustyNova016]).
-- Removed the `time_range` parameter from `Client::user_listens` ([#24]).
+- Removed the `time_range` parameter from `Client::user_listens` ([#24], [@RustyNova016]).
 - Updated attohttpc dependency from 0.24 to 0.28.
 - Pinned the minimum supported Rust version (MSRV) to 1.58.
 
+[JSPF format]: https://musicbrainz.org/doc/jspf
+[#19]: https://github.com/InputUsername/listenbrainz-rs/pull/19
 [#23]: https://github.com/InputUsername/listenbrainz-rs/pull/23
 [#24]: https://github.com/InputUsername/listenbrainz-rs/pull/24
 [#26]: https://github.com/InputUsername/listenbrainz-rs/pull/26
+[@Kernald]: https://github.com/Kernald
 [@RustyNova016]: https://github.com/RustyNova016
 
 ## v0.7.0 (2023-02-12)
