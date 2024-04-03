@@ -9,6 +9,7 @@
 - Added `Clone`, `PartialEq` and `Eq` derives for `raw` models ([#26], [@RustyNova016]).
 - Removed the `time_range` parameter from `Client::user_listens` ([#24]).
 - Updated attohttpc dependency from 0.24 to 0.28.
+- Pinned the minimum supported Rust version (MSRV) to 1.58.
 
 [#23]: https://github.com/InputUsername/listenbrainz-rs/pull/23
 [#24]: https://github.com/InputUsername/listenbrainz-rs/pull/24
