@@ -14,6 +14,12 @@ use serde::Deserialize;
 
 use crate::Error;
 
+// Sub modules
+pub mod core;
+
+// Reexport of the sub modules
+pub use crate::raw::response::core::*;
+
 /// Contains rate limiting information.
 ///
 /// ListenBrainz API rate limiting is described in the [API docs].
@@ -91,14 +97,14 @@ macro_rules! response_type {
         $(#[$meta])*
         pub struct $name {
             #[serde(skip)]
-            pub rate_limit: Option<RateLimit>,
+            pub rate_limit: Option<crate::raw::response::RateLimit>,
             $(pub $field: $field_ty),*
         }
 
-        impl ResponseType for $name {
-            fn from_response(response: Response) -> Result<Self, Error> {
-                let response = Error::try_from_error_response(response)?;
-                let rate_limit = RateLimit::from_headers(&response);
+        impl crate::raw::response::ResponseType for $name {
+            fn from_response(response: crate::raw::response::Response) -> Result<Self, crate::raw::response::Error> {
+                let response = crate::raw::response::Error::try_from_error_response(response)?;
+                let rate_limit = crate::raw::response::RateLimit::from_headers(&response);
                 let mut result: Self = response.json()?;
                 result.rate_limit = rate_limit;
                 Ok(result)
@@ -107,168 +113,8 @@ macro_rules! response_type {
     }
 }
 
-// --------- submit-listens
-
-response_type! {
-    /// Response type for [`Client::submit_listens`](super::Client::submit_listens).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct SubmitListensResponse {
-        pub status: String,
-    }
-}
-
-// --------- validate-token
-
-response_type! {
-    /// Response type for [`Client::validate_token`](super::Client::validate_token).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct ValidateTokenResponse {
-        pub code: u16,
-        pub message: String,
-
-        pub valid: bool,
-        pub user_name: Option<String>,
-    }
-}
-
-// --------- delete-listen
-
-response_type! {
-    /// Response type for [`Client::delete_listen`](super::Client::delete_listen).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct DeleteListenResponse {
-        pub status: String,
-    }
-}
-
-// --------- user/{user_name}/listen-count
-
-response_type! {
-    /// Response type for [`Client::user_listen_count`](super::Client::user_listen_count).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct UserListenCountResponse {
-        pub payload: UserListenCountPayload,
-    }
-}
-
-/// Type of the [`UserListenCountResponse::payload`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserListenCountPayload {
-    pub count: u64,
-}
-
-// -------- user/{user_name}/playing-now
-
-response_type! {
-    /// Response type for [`Client::user_playing_now`](super::Client::user_playing_now).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct UserPlayingNowResponse {
-        pub payload: UserPlayingNowPayload,
-    }
-}
-
-/// Type of the [`UserPlayingNowResponse::payload`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserPlayingNowPayload {
-    pub count: u8,
-    pub user_id: String,
-    pub listens: Vec<UserPlayingNowListen>,
-    pub playing_now: bool,
-}
-
-/// Type of the [`UserPlayingNowPayload::listens`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserPlayingNowListen {
-    pub track_metadata: UserPlayingNowTrackMetadata,
-    pub playing_now: bool,
-}
-
-/// Type of the [`UserPlayingNowListen::track_metadata`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserPlayingNowTrackMetadata {
-    pub artist_name: String,
-    pub track_name: String,
-    pub release_name: Option<String>,
-    pub additional_info: HashMap<String, serde_json::Value>,
-}
-
-// -------- user/{user_name}/listens
-
-response_type! {
-    /// Response type for [`Client::user_listens`](super::Client::user_listens).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct UserListensResponse {
-        pub payload: UserListensPayload,
-    }
-}
-
-/// Type of the [`UserListensResponse::payload`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserListensPayload {
-    pub count: u64,
-    pub latest_listen_ts: i64,
-    pub oldest_listen_ts: i64,
-    pub user_id: String,
-    pub listens: Vec<UserListensListen>,
-}
-
-/// Type of the [`UserListensPayload::listens`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserListensListen {
-    pub user_name: String,
-    pub inserted_at: i64,
-    pub listened_at: i64,
-    pub recording_msid: String,
-    pub track_metadata: UserListensTrackMetadata,
-}
-
-/// Type of the [`UserListensListen::track_metadata`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserListensTrackMetadata {
-    pub artist_name: String,
-    pub track_name: String,
-    pub release_name: Option<String>,
-    pub additional_info: HashMap<String, serde_json::Value>,
-    pub mbid_mapping: Option<UserListensMBIDMapping>,
-}
-
-/// Type of the [`UserListensTrackMetadata::mbid_mapping`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserListensMBIDMapping {
-    pub artist_mbids: Option<Vec<String>>,
-    pub artists: Option<Vec<UserListensMappingArtist>>,
-    pub recording_mbid: String,
-    pub recording_name: Option<String>,
-}
-
-/// Type of the [`UserListensMBIDMapping::artists`] field.
-#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-pub struct UserListensMappingArtist {
-    pub artist_mbid: String,
-    pub artist_credit_name: String,
-    pub join_phrase: String,
-}
-
-// --------- latest-import (GET)
-
-response_type! {
-    /// Response type for [`Client::get_latest_import`](super::Client::get_latest_import).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct GetLatestImportResponse {
-        pub latest_import: i64,
-        pub musicbrainz_id: String,
-    }
-}
-
-// --------- latest-import (POST)
-
-response_type! {
-    /// Response type for [`Client::update_latest_import`](super::Client::update_latest_import).
-    #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-    pub struct UpdateLatestImportResponse {
-        pub status: String,
-    }
-}
+// Let the childrens access the macro
+pub(super) use response_type;
 
 // --------- stats/sitewide/artists
 
