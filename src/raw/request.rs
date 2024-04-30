@@ -4,7 +4,9 @@
 
 use std::borrow::Borrow;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+
+use super::jspf::AdditionalMetadata;
 
 // --------- submit-listens
 
@@ -64,6 +66,81 @@ pub struct UpdateLatestImport {
     pub ts: i64,
 }
 
+// --------- playlist/{playlist_mbid}/item/delete
+
+/// Request type for [`Client::playlist_item_delete`](super::Client::playlist_item_delete).
+#[derive(Debug, Serialize)]
+pub struct PlaylistItemDelete {
+    pub index: u64,
+    pub count: u64,
+}
+
+// --------- playlist/{playlist_mbid}/item/move
+
+/// Request type for [`Client::playlist_item_move`](super::Client::playlist_item_move).
+#[derive(Debug, Serialize)]
+pub struct PlaylistItemMove<'a> {
+    pub mbid: &'a str,
+    pub from: u64,
+    pub to: u64,
+    pub count: u64,
+}
+
+// --------- playlist/create
+
+/// Request type for [`Client::playlist_create`](super::Client::playlist_create).
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct PlaylistCreate {
+    pub playlist: PlaylistCreatePlaylist
+}
+
+/// Inner type for [`PlaylistCreate`]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct PlaylistCreatePlaylist {
+    pub title: String,
+    pub annotation: Option<String>,
+    pub track: Vec<PlaylistCreatePlaylistTrack>,
+    pub extension: PlaylistCreatePlaylistExtension
+}
+
+/// A track of the playlist for [`PlaylistCreatePlaylist`]
+/// 
+/// The identifier part of the track must be a MusicBrainz URI:
+/// ```
+/// use listenbrainz::raw::request::PlaylistCreatePlaylistTrack;
+/// PlaylistCreatePlaylistTrack {
+///     identifier: "8f3471b5-7e6a-48da-86a9-c1c07a0f47ae".to_string() // ❌ Invalid!
+/// };
+/// 
+/// PlaylistCreatePlaylistTrack {
+///     identifier: "https://musicbrainz.org/recording/8f3471b5-7e6a-48da-86a9-c1c07a0f47ae".to_string() // ✔️ Valid!
+/// };
+/// ```
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct PlaylistCreatePlaylistTrack {
+    pub identifier: String
+}
+
+/// The extension of [`PlaylistCreatePlaylist`]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct PlaylistCreatePlaylistExtension {
+    #[serde(rename = "https://musicbrainz.org/doc/jspf#playlist")]
+    pub musicbrainz: PlaylistCreatePlaylistExtensionInner,
+}
+
+/// Inner part of [`PlaylistCreatePlaylistExtension`]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
+pub struct PlaylistCreatePlaylistExtensionInner {
+    pub created_for: Option<String>,
+    pub creator: Option<String>,
+    pub collaborators: Vec<String>,
+    pub copied_from: Option<String>,
+    pub copied_from_deleted: Option<bool>,
+    pub public: bool,
+    pub last_modified_at: Option<String>,
+    pub additional_metadata: Option<AdditionalMetadata>,
+}
+
 /// Type for use in generic contexts that want a string. Technically, only [Serialize] is required by the api,
 /// but the [Borrow] constraint makes working with values more convenient in non-write contexts.
 pub trait StrType: Borrow<str> + Serialize {}
@@ -90,24 +167,4 @@ impl Borrow<str> for Empty {
     fn borrow(&self) -> &str {
         unreachable!("Should never be used as a value")
     }
-}
-
-// --------- playlist/{playlist_mbid}/item/delete
-
-/// Request type for [`Client::playlist_item_delete`](super::Client::playlist_item_delete).
-#[derive(Debug, Serialize)]
-pub struct PlaylistItemDelete {
-    pub index: u64,
-    pub count: u64,
-}
-
-// --------- playlist/{playlist_mbid}/item/move
-
-/// Request type for [`Client::playlist_item_move`](super::Client::playlist_item_move).
-#[derive(Debug, Serialize)]
-pub struct PlaylistItemMove<'a> {
-    pub mbid: &'a str,
-    pub from: u64,
-    pub to: u64,
-    pub count: u64,
 }

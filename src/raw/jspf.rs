@@ -47,13 +47,13 @@ pub struct MusicBrainzPlaylistExtension {
 }
 
 /// Type of the [`MusicBrainzPlaylistExtension::additional_metadata`] field.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct AdditionalMetadata {
     pub algorithm_metadata: Option<AlgorithmMetadata>,
 }
 
 /// Type of the [`AdditionalMetadata::algorithm_metadata`] field.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct AlgorithmMetadata {
     pub source_patch: Option<String>,
 }
