@@ -357,6 +357,17 @@ impl Client {
 
         ResponseType::from_response(response)
     }
+
+    // ---------- Popularity Endpoints
+    /// Endpoint: [`popularity/top-recordings-for-artist`](https://listenbrainz.readthedocs.io/en/latest/users/api/popularity.html#get--1-popularity-top-recordings-for-artist-(artist_mbid))
+    pub fn popularity_top_recordings_for_artist(&self, artist_mbid: &str) -> Result<ListenbrainzResponse<PopularityTopRecordingsForArtistResponse>, Error>{
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::PopularityTopReleaseGroupsForArtist(artist_mbid));
+
+        let mut request = attohttpc::get(endpoint);
+        let response = request.send()?;
+        
+        ResponseType::from_response(response)
+    }
 }
 
 impl Default for Client {
