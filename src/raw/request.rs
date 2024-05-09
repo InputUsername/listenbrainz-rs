@@ -4,7 +4,7 @@
 
 use std::borrow::Borrow;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 // --------- submit-listens
 
@@ -89,5 +89,21 @@ pub enum Empty {}
 impl Borrow<str> for Empty {
     fn borrow(&self) -> &str {
         unreachable!("Should never be used as a value")
+    }
+}
+
+
+// ---------- Popularity Endpoints Requests
+
+// ---------- popularity/recording
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct PopularityRecordingRequest {
+    recording_mbids: Vec<String>
+}
+
+impl From<Vec<String>> for PopularityRecordingRequest {
+    fn from(value: Vec<String>) -> Self {
+        Self { recording_mbids: value }
     }
 }

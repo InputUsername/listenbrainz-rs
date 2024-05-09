@@ -17,6 +17,14 @@ pub enum Endpoint<'a> {
     StatsUserArtists(&'a str),
     StatsReleaseGroupListeners(&'a str),
     StatusGetDumpInfo,
+
+    // Popularity endpoints
+    PopularityTopRecordingsForArtist(&'a str),
+    PopularityTopReleaseGroupsForArtist(&'a str),
+    PopularityRecording,
+    PopularityArtist,
+    PopularityRelease,
+    PopularityReleaseGroup,
 }
 
 impl<'a> fmt::Display for Endpoint<'a> {
@@ -42,6 +50,14 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::StatsUserArtists(user) => return write!(f, "stats/user/{user}/artists"),
             Self::StatsReleaseGroupListeners(release_group_mbid) => return write!(f, "stats/release-group/{release_group_mbid}/listeners"),
             Self::StatusGetDumpInfo => "status/get-dump-info",
+
+            // Popularity endpoints
+            Self::PopularityTopRecordingsForArtist(artist) => return write!(f, "popularity/top-recordings-for-artist/{artist}"),
+            Self::PopularityTopReleaseGroupsForArtist(artist) => return write!(f, "popularity/top-release-groups-for-artist/{artist}"),
+            Self::PopularityRecording => "popularity/recording",
+            Self::PopularityArtist => "popularity/artist",
+            Self::PopularityRelease => "popularity/release",
+            Self::PopularityReleaseGroup => "popularity/release-group",
         };
         write!(f, "{s}")
     }

@@ -7,10 +7,11 @@
 #![allow(missing_docs)]
 
 use std::collections::HashMap;
+use std::ops::Deref;
 
 use attohttpc::Response;
 use serde::de::DeserializeOwned;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::Error;
 
@@ -21,7 +22,7 @@ use crate::Error;
 /// as the former is resilient against clients with incorrect clocks.
 ///
 /// [API docs]: https://listenbrainz.readthedocs.io/en/production/dev/api/#rate-limiting
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
 pub struct RateLimit {
     pub limit: u64,
     pub remaining: u64,
@@ -104,6 +105,35 @@ macro_rules! response_type {
                 Ok(result)
             }
         }
+    }
+}
+
+/// A generic response type for listenbrainz responses
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct ListenbrainzResponse<T>  {
+    pub rate_limit: Option<RateLimit>,
+    pub data: T
+}
+
+impl<T> ResponseType for ListenbrainzResponse<T> where T: DeserializeOwned {
+    fn from_response(response: Response) -> Result<Self, Error> {
+        let response = Error::try_from_error_response(response)?;
+
+        let rate_limit = RateLimit::from_headers(&response);
+        let mut inner_data: T = response.json()?;
+
+        Ok(Self {
+            rate_limit,
+            data: inner_data,
+        })
+    }
+}
+
+impl<T> Deref for ListenbrainzResponse<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.data
     }
 }
 
@@ -544,3 +574,79 @@ pub struct StatsReleaseGroupListenersListeners {
     pub username_name: String,
 }
 
+// ---------- Popularity Endpoints Responses
+
+// ---------- popularity/top-recordings-for-artist/(artist_mbid)
+pub type PopularityTopRecordingsForArtistResponse = Vec<PopularityTopRecordingsForArtistResponseItem>;
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct PopularityTopRecordingsForArtistResponseItem {
+    pub artist_mbids: Vec<String>,
+    pub artist_name: String,
+    pub caa_id: Option<i64>,
+    pub caa_release_mbid: Option<String>,
+    pub length: u64,
+    pub recording_mbid: String,
+    pub recording_name: String,
+    pub release_color: ReleaseColor,
+    pub release_mbid: String,
+    pub total_listen_count: u64,
+    pub total_user_count: u64
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct ReleaseColor {
+    blue: u8,
+    green: u8,
+    red: u8
+}
+
+// ---------- popularity/top-release-groups-for-artist/(artist_mbid)
+
+pub type PopularityTopReleaseGroupsForArtistResponse = Vec<PopularityTopRecordingsForArtistResponseItem>;
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct PopularityTopReleaseGroupsForArtistResponseItem {
+    pub artist: PopularityTopReleaseGroupsForArtistResponseItemArtist,
+    
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct PopularityTopReleaseGroupsForArtistResponseItemArtist {
+    artist_credit_id: u64,
+    //artists: Vec<???>,
+    name: String
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct PopularityTopReleaseGroupsForArtistResponseItemRelease {
+    caa_id: i64,
+    caa_release_mbid: String,
+    date: String, //TODO: Serialize into naive date
+    name: String,
+    //rels: Vec<???>,
+    //type: String
+}
+
+// ---------- popularity/recording
+
+pub type PopularityRecordingResponse = Vec<PopularityTopRecordingsForArtistResponseItem>;
+
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct PopularityRecordingResponseItem {
+    pub recording_mbid: String,
+    pub total_listen_count: u64,
+    pub total_user_count: u64
+}
+
+// ---------- popularity/artist
+
+// TODO
+
+// ---------- popularity/release
+
+// TODO
+
+// ---------- popularity/release-grou
+
+// TODO
