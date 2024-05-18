@@ -4,10 +4,19 @@ pub enum Endpoint<'a> {
     SubmitListens,
     ValidateToken,
     DeleteListen,
+    UserPlaylistsCollaborator(&'a str),
+    UserPlaylistsCreatedFor(&'a str),
+    UserSimilarUsers(&'a str),
     UserListenCount(&'a str),
     UserPlayingNow(&'a str),
+    UserSimilarTo(&'a str, &'a str),
+    UserPlaylists(&'a str),
     UserListens(&'a str),
     LatestImport,
+    Playlist(&'a str),
+    PlaylistCreate,
+    PlaylistDelete(&'a str),
+    PlaylistCopy(&'a str),
     StatsSitewideArtists,
     StatsUserListeningActivity(&'a str),
     StatsUserDailyActivity(&'a str),
@@ -17,32 +26,52 @@ pub enum Endpoint<'a> {
     StatsUserArtists(&'a str),
     StatsReleaseGroupListeners(&'a str),
     StatusGetDumpInfo,
+    UserFollowers(&'a str),
+    UserFollowing(&'a str),
+    UserUnfollow(&'a str),
+    UserFollow(&'a str),
 }
 
 impl<'a> fmt::Display for Endpoint<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = match self {
-            Self::SubmitListens => "submit-listens",
-            Self::ValidateToken => "validate-token",
-            Self::DeleteListen => "delete-listen",
-            Self::UserListenCount(user) => return write!(f, "user/{user}/listen-count"),
-            Self::UserPlayingNow(user) => return write!(f, "user/{user}/playing-now"),
-            Self::UserListens(user) => return write!(f, "user/{user}/listens"),
-            Self::LatestImport => "latest-import",
-            Self::StatsSitewideArtists => "stats/sitewide/artists",
+        match self {
+            Self::SubmitListens => write!(f, "submit-listens"),
+            Self::ValidateToken => write!(f, "validate-token"),
+            Self::DeleteListen => write!(f, "delete-listen"),
+            Self::UserPlaylistsCollaborator(user) => {
+                write!(f, "user/{}/playlists/collaborator", user)
+            }
+            Self::UserPlaylistsCreatedFor(user) => write!(f, "user/{}/playlists/createdfor", user),
+            Self::UserSimilarUsers(user) => write!(f, "user/{}/similar-users", user),
+            Self::UserListenCount(user) => write!(f, "user/{}/listen-count", user),
+            Self::UserPlayingNow(user) => write!(f, "user/{}/playing-now", user),
+            Self::UserSimilarTo(user, other_user) => {
+                write!(f, "user/{}/similar-to/{}", user, other_user)
+            }
+            Self::UserPlaylists(user) => write!(f, "user/{}/playlists", user),
+            Self::UserListens(user) => write!(f, "user/{}/listens", user),
+            Self::LatestImport => write!(f, "latest-import"),
+            Self::Playlist(playlist) => write!(f, "playlist/{}", playlist),
+            Self::PlaylistCreate => write!(f, "playlist/create"),
+            Self::PlaylistDelete(playlist) => write!(f, "playlist/{}/delete", playlist),
+            Self::PlaylistCopy(playlist) => write!(f, "playlist/{}/copy", playlist),
+            Self::StatsSitewideArtists => write!(f, "stats/sitewide/artists"),
             Self::StatsUserListeningActivity(user) => {
-                return write!(f, "stats/user/{user}/listening-activity")
+                write!(f, "stats/user/{}/listening-activity", user)
             }
             Self::StatsUserDailyActivity(user) => {
-                return write!(f, "stats/user/{user}/daily-activity")
+                write!(f, "stats/user/{}/daily-activity", user)
             }
-            Self::StatsUserRecordings(user) => return write!(f, "stats/user/{user}/recordings"),
-            Self::StatsUserArtistMap(user) => return write!(f, "stats/user/{user}/artist-map"),
-            Self::StatsUserReleases(user) => return write!(f, "stats/user/{user}/releases"),
-            Self::StatsUserArtists(user) => return write!(f, "stats/user/{user}/artists"),
+            Self::StatsUserRecordings(user) => write!(f, "stats/user/{}/recordings", user),
+            Self::StatsUserArtistMap(user) => write!(f, "stats/user/{}/artist-map", user),
+            Self::StatsUserReleases(user) => write!(f, "stats/user/{}/releases", user),
+            Self::StatsUserArtists(user) => write!(f, "stats/user/{}/artists", user),
             Self::StatsReleaseGroupListeners(release_group_mbid) => return write!(f, "stats/release-group/{release_group_mbid}/listeners"),
-            Self::StatusGetDumpInfo => "status/get-dump-info",
-        };
-        write!(f, "{s}")
+            Self::StatusGetDumpInfo => write!(f, "status/get-dump-info"),
+            Self::UserFollowers(user) => write!(f, "user/{}/followers", user),
+            Self::UserFollowing(user) => write!(f, "user/{}/following", user),
+            Self::UserUnfollow(user) => write!(f, "user/{}/unfollow", user),
+            Self::UserFollow(user) => write!(f, "user/{}/follow", user),
+        }
     }
 }

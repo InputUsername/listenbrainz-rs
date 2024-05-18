@@ -13,6 +13,7 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
 use crate::Error;
+use super::jspf;
 
 /// Contains rate limiting information.
 ///
@@ -141,6 +142,86 @@ response_type! {
     }
 }
 
+// --------- user/{user_name}/playlists/collaborator
+
+response_type! {
+    /// Response type for [`Client::user_playlists_collaborator`](super::Client::user_playlists_collaborator).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlaylistsCollaboratorResponse {
+        pub count: u64,
+        pub offset: u64,
+        pub playlist_count: u64,
+        pub playlists: Vec<jspf::Playlist>,
+    }
+}
+
+// --------- user/{user_name}/playlists/createdfor
+
+response_type! {
+    /// Response type for [`Client::user_playlists_created_for`](super::Client::user_playlists_created_for).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlaylistsCreatedForResponse {
+        pub count: u64,
+        pub offset: u64,
+        pub playlist_count: u64,
+        pub playlists: Vec<jspf::Playlist>,
+    }
+}
+
+// --------- users/{user_list}/recent-listens
+
+response_type! {
+    /// Response type for [`Client::users_recent_listens`](super::Client::users_recent_listens).
+    #[derive(Debug, Deserialize)]
+    pub struct UsersRecentListensResponse {
+        pub payload: UsersRecentListensPayload,
+    }
+}
+
+/// Type of the [`UsersRecentListensResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct UsersRecentListensPayload {
+    pub count: u64,
+    pub listens: Vec<UsersRecentListensListen>,
+    pub user_list: String,
+}
+
+/// Type of the [`UsersRecentListensPayload::listens`] field.
+#[derive(Debug, Deserialize)]
+pub struct UsersRecentListensListen {
+    pub user_name: String,
+    pub inserted_at: String,
+    pub listened_at: i64,
+    pub recording_msid: String,
+    pub track_metadata: UsersRecentListensTrackMetadata,
+}
+
+/// Type of the [`UsersRecentListensListen::track_metadata`] field.
+#[derive(Debug, Deserialize)]
+pub struct UsersRecentListensTrackMetadata {
+    pub artist_name: String,
+    pub track_name: String,
+    pub release_name: Option<String>,
+    pub additional_info: HashMap<String, serde_json::Value>,
+}
+
+// --------- user/{user_name}/similar-users
+
+response_type! {
+    /// Response type for [`Client::user_similar_users`](super::Client::user_similar_users).
+    #[derive(Debug, Deserialize)]
+    pub struct UserSimilarUsersResponse {
+        pub payload: Vec<UserSimilarUsersPayload>,
+    }
+}
+
+/// Type of the [`UserSimilarUsersResponse::payload`] field.
+#[derive(Debug, Deserialize)]
+pub struct UserSimilarUsersPayload {
+    pub user_name: String,
+    pub similarity: f64,
+}
+
 // --------- user/{user_name}/listen-count
 
 response_type! {
@@ -190,6 +271,29 @@ pub struct UserPlayingNowTrackMetadata {
     pub track_name: String,
     pub release_name: Option<String>,
     pub additional_info: HashMap<String, serde_json::Value>,
+}
+
+// -------- user/{user_name}/similar-to/{other_user_name}
+
+response_type! {
+    #[derive(Debug, Deserialize)]
+    pub struct UserSimilarToResponse {
+        pub user_name: String,
+        pub similarity: f64,
+    }
+}
+
+// -------- user/{user_name}/playlists
+
+response_type! {
+    /// Response type for [`Client::user_playlists`](super::Client::user_playlists).
+    #[derive(Debug, Deserialize)]
+    pub struct UserPlaylistsResponse {
+        pub count: u64,
+        pub offset: u64,
+        pub playlist_count: u64,
+        pub playlists: Vec<jspf::Playlist>,
+    }
 }
 
 // -------- user/{user_name}/listens
@@ -266,6 +370,48 @@ response_type! {
     /// Response type for [`Client::update_latest_import`](super::Client::update_latest_import).
     #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
     pub struct UpdateLatestImportResponse {
+        pub status: String,
+    }
+}
+
+// --------- playlist
+
+response_type! {
+    /// Response type for [`Client::playlist`](super::Client::get_playlist).
+    #[derive(Debug, Deserialize)]
+    pub struct GetPlaylistResponse {
+        pub playlist: jspf::PlaylistInfo,
+    }
+}
+
+// --------- playlist/create
+
+response_type! {
+    /// Response type for [`Client::playlist_create`](super::Client::playlist_create).
+    #[derive(Debug, Deserialize)]
+    pub struct PlaylistCreateResponse {
+        pub playlist_mbid: String,
+        pub status: String,
+    }
+}
+
+// --------- playlist/{playlist_mbid}/delete
+
+response_type! {
+    /// Response type for [`Client::playlist_delete`](super::Client::playlist_delete).
+    #[derive(Debug, Deserialize)]
+    pub struct PlaylistDeleteResponse {
+        pub status: String,
+    }
+}
+
+// --------- playlist/{playlist_mbid}/copy
+
+response_type! {
+    /// Response type for [`Client::playlist_copy`](super::Client::playlist_copy).
+    #[derive(Debug, Deserialize)]
+    pub struct PlaylistCopyResponse {
+        pub playlist_mbid: String,
         pub status: String,
     }
 }
@@ -544,3 +690,44 @@ pub struct StatsReleaseGroupListenersListeners {
     pub username_name: String,
 }
 
+// --------- user/{user_name}/followers
+
+response_type! {
+    /// Response type for [`Client::user_followers`](super::Client::user_followers).
+    #[derive(Debug, Deserialize)]
+    pub struct UserFollowersResponse {
+        pub followers: Vec<String>,
+        pub user: String,
+    }
+}
+
+// --------- user/{user_name}/following
+
+response_type! {
+    /// Response type for [`Client::user_following`](super::Client::user_following).
+    #[derive(Debug, Deserialize)]
+    pub struct UserFollowingResponse {
+        pub following: Vec<String>,
+        pub user: String,
+    }
+}
+
+// --------- user/{user_name}/unfollow
+
+response_type! {
+    /// Response type for [`Client::user_unfollow`](super::Client::user_unfollow).
+    #[derive(Debug, Deserialize)]
+    pub struct UserUnfollowResponse {
+        pub status: String,
+    }
+}
+
+// --------- user/{user_name}/follow
+
+response_type! {
+    /// Response type for [`Client::user_follow`](super::Client::user_follow).
+    #[derive(Debug, Deserialize)]
+    pub struct UserFollowResponse {
+        pub status: String,
+    }
+}
