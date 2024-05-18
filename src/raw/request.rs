@@ -90,6 +90,7 @@ impl Borrow<str> for Empty {
     fn borrow(&self) -> &str {
         unreachable!("Should never be used as a value")
     }
+}
 
 // --------- playlist/{playlist_mbid}/item/delete
 
