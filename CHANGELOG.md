@@ -23,7 +23,7 @@
     - `/1/user/(user_name)/unfollow` - `Client::user_unfollow`.
 - Added types for playlists in MusicBrainz's [JSPF format].
 - Added MBID mapping to `UserListensResponse` models ([#24], [@RustyNova016]).
-- Added `Clone`, `PartialEq` and `Eq` derives for `raw` models ([#26], [@RustyNova016]).
+- Derived `Clone`, `PartialEq`, `Eq` and `Serialize` for `raw` models ([#26], [#35], [@RustyNova016]).
 - Removed the `time_range` parameter from `Client::user_listens` ([#24], [@RustyNova016]).
 - Updated attohttpc dependency from 0.24 to 0.28.
 - Pinned the minimum supported Rust version (MSRV) to 1.58.
@@ -33,6 +33,7 @@
 [#23]: https://github.com/InputUsername/listenbrainz-rs/pull/23
 [#24]: https://github.com/InputUsername/listenbrainz-rs/pull/24
 [#26]: https://github.com/InputUsername/listenbrainz-rs/pull/26
+[#35]: https://github.com/InputUsername/listenbrainz-rs/pull/35
 [@Kernald]: https://github.com/Kernald
 [@RustyNova016]: https://github.com/RustyNova016
 
