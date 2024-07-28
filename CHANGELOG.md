@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.8.0 (unreleased)
+## v0.8.0 (2024-07-28)
 
 - Implemented additional API endpoints:
   - Core:
