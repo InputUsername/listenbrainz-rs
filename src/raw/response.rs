@@ -402,7 +402,7 @@ pub struct StatsSitewideArtistsPayload {
     pub to_ts: i64,
 }
 
-/// Type of the [`StatsSitewideArtistsTimeRange::artists`] field.
+/// Type of the [`StatsSitewideArtistsPayload::artists`] field.
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
 pub struct StatsSitewideArtistsArtist {
     pub artist_mbids: Option<Vec<String>>,
