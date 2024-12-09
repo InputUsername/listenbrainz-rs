@@ -20,7 +20,7 @@ jobs:
       - name: Install cargo-msrv
         run: cargo install cargo-msrv --all-features
       - name: Run cargo-msrv
-        run: cargo msrv --output-format json verify
+        run: cargo msrv verify --output-format json
       - name: Run cargo-msrv on verification failure
         if: ${{ failure() }}
-        run: cargo msrv --output-format json
+        run: cargo msrv find --output-format json
