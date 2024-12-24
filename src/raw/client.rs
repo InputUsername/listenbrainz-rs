@@ -139,7 +139,11 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
     ) -> Result<UserPlaylistsCollaboratorResponse, Error> {
-        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserPlaylistsCollaborator(user_name));
+        let endpoint = format!(
+            "{}{}",
+            self.api_root_url,
+            Endpoint::UserPlaylistsCollaborator(user_name)
+        );
 
         let mut request = attohttpc::get(endpoint);
 
@@ -166,7 +170,11 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
     ) -> Result<UserPlaylistsCollaboratorResponse, Error> {
-        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserPlaylistsCreatedFor(user_name));
+        let endpoint = format!(
+            "{}{}",
+            self.api_root_url,
+            Endpoint::UserPlaylistsCreatedFor(user_name)
+        );
 
         let mut request = attohttpc::get(endpoint);
 
@@ -217,7 +225,11 @@ impl Client {
         count: Option<u64>,
         offset: Option<u64>,
     ) -> Result<UserPlaylistsResponse, Error> {
-        let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserPlaylists(user_name));
+        let endpoint = format!(
+            "{}{}",
+            self.api_root_url,
+            Endpoint::UserPlaylists(user_name)
+        );
 
         let mut request = attohttpc::get(endpoint);
 
@@ -453,7 +465,6 @@ impl Client {
         self.get_stats(Endpoint::StatsUserArtists(user_name), count, offset, range)
     }
 
-    
     /// Endpoint: [`GET /1/stats/release-group/(release_group_mbid)/listeners`](https://listenbrainz.readthedocs.io/en/latest/users/api/statistics.html#get--1-stats-release-group-(release_group_mbid)-listeners)
     /// Get the top listeners for a release group, as well as getting the total number of listens for it
     pub fn stats_release_group_listeners(
@@ -498,7 +509,11 @@ impl Client {
     }
 
     /// Endpoint: [`user/{user_name}/unfollow`](https://listenbrainz.readthedocs.io/en/production/dev/api/#post--1-user-(user_name)-unfollow)
-    pub fn user_unfollow(&self, token: &str, user_name: &str) -> Result<UserUnfollowResponse, Error> {
+    pub fn user_unfollow(
+        &self,
+        token: &str,
+        user_name: &str,
+    ) -> Result<UserUnfollowResponse, Error> {
         let endpoint = format!("{}{}", self.api_root_url, Endpoint::UserUnfollow(user_name));
 
         let response = attohttpc::post(endpoint)

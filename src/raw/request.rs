@@ -71,7 +71,7 @@ pub struct UpdateLatestImport {
 /// Request type for [`Client::playlist_create`](super::Client::playlist_create).
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct PlaylistCreate {
-    pub playlist: PlaylistCreatePlaylist
+    pub playlist: PlaylistCreatePlaylist,
 }
 
 /// Inner type for [`PlaylistCreate`]
@@ -80,25 +80,25 @@ pub struct PlaylistCreatePlaylist {
     pub title: String,
     pub annotation: Option<String>,
     pub track: Vec<PlaylistCreatePlaylistTrack>,
-    pub extension: PlaylistCreatePlaylistExtension
+    pub extension: PlaylistCreatePlaylistExtension,
 }
 
 /// A track of the playlist for [`PlaylistCreatePlaylist`]
-/// 
+///
 /// The identifier part of the track must be a MusicBrainz URI:
 /// ```
 /// use listenbrainz::raw::request::PlaylistCreatePlaylistTrack;
 /// PlaylistCreatePlaylistTrack {
 ///     identifier: "8f3471b5-7e6a-48da-86a9-c1c07a0f47ae".to_string() // ❌ Invalid!
 /// };
-/// 
+///
 /// PlaylistCreatePlaylistTrack {
 ///     identifier: "https://musicbrainz.org/recording/8f3471b5-7e6a-48da-86a9-c1c07a0f47ae".to_string() // ✔️ Valid!
 /// };
 /// ```
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct PlaylistCreatePlaylistTrack {
-    pub identifier: String
+    pub identifier: String,
 }
 
 /// The extension of [`PlaylistCreatePlaylist`]

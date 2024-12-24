@@ -66,7 +66,9 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::StatsUserArtistMap(user) => write!(f, "stats/user/{}/artist-map", user),
             Self::StatsUserReleases(user) => write!(f, "stats/user/{}/releases", user),
             Self::StatsUserArtists(user) => write!(f, "stats/user/{}/artists", user),
-            Self::StatsReleaseGroupListeners(release_group_mbid) => return write!(f, "stats/release-group/{release_group_mbid}/listeners"),
+            Self::StatsReleaseGroupListeners(release_group_mbid) => {
+                return write!(f, "stats/release-group/{release_group_mbid}/listeners")
+            }
             Self::StatusGetDumpInfo => write!(f, "status/get-dump-info"),
             Self::UserFollowers(user) => write!(f, "user/{}/followers", user),
             Self::UserFollowing(user) => write!(f, "user/{}/following", user),
