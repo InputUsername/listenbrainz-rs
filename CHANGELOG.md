@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.8.1 (2024-12-27)
+
+- Improved CI workflows:
+  - Added a workflow to check formatting;
+  - Added a workflow to verify minimum supported Rust version (MSRV);
+- Bumped the MSRV from 1.58.0 to 1.71.1.
+- Fixed formatting.
+
 ## v0.8.0 (2024-07-28)
 
 - Implemented additional API endpoints:
