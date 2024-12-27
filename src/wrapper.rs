@@ -15,7 +15,7 @@ struct Auth {
 
 /// An ergonomic ListenBrainz client.
 ///
-/// As opposed to [`Client`](crate::raw::Client), this aims to be a convenient and high-level
+/// As opposed to [`Client`], this aims to be a convenient and high-level
 /// wrapper of the ListenBrainz API.
 #[derive(Debug)]
 pub struct ListenBrainz {
