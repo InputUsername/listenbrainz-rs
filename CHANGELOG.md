@@ -7,6 +7,7 @@
   - Added a workflow to verify minimum supported Rust version (MSRV);
 - Bumped the MSRV from 1.58.0 to 1.71.1.
 - Fixed formatting.
+- Bumped thiserror dependency from 1 to 2.
 
 ## v0.8.0 (2024-07-28)
 
