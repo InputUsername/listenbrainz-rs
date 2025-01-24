@@ -307,6 +307,9 @@ pub struct UserListensMBIDMapping {
     pub artists: Option<Vec<UserListensMappingArtist>>,
     pub recording_mbid: String,
     pub recording_name: Option<String>,
+    pub caa_id: Option<u64>,
+    pub caa_release_mbid: Option<String>,
+    pub release_mbid: Option<String>,
 }
 
 /// Type of the [`UserListensMBIDMapping::artists`] field.
