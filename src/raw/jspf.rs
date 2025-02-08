@@ -16,6 +16,7 @@ pub struct Playlist {
 /// Type of the [`Playlist::playlist`] field.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct PlaylistInfo {
+    pub annotation: Option<String>,
     pub extension: PlaylistExtension,
     pub creator: String,
     pub date: String,
