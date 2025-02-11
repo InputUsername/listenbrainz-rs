@@ -18,9 +18,11 @@ use crate::Error;
 
 // Sub modules
 pub mod core;
+pub mod playlists;
 
 // Reexport of the sub modules
 pub use crate::raw::response::core::*;
+pub use crate::raw::response::playlists::*;
 
 /// Contains rate limiting information.
 ///
@@ -117,48 +119,6 @@ macro_rules! response_type {
 
 // Let the childrens access the macro
 pub(super) use response_type;
-
-// --------- playlist
-
-response_type! {
-    /// Response type for [`Client::playlist`](super::Client::get_playlist).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct GetPlaylistResponse {
-        pub playlist: jspf::PlaylistInfo,
-    }
-}
-
-// --------- playlist/create
-
-response_type! {
-    /// Response type for [`Client::playlist_create`](super::Client::playlist_create).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct PlaylistCreateResponse {
-        pub playlist_mbid: String,
-        pub status: String,
-    }
-}
-
-// --------- playlist/{playlist_mbid}/delete
-
-response_type! {
-    /// Response type for [`Client::playlist_delete`](super::Client::playlist_delete).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct PlaylistDeleteResponse {
-        pub status: String,
-    }
-}
-
-// --------- playlist/{playlist_mbid}/copy
-
-response_type! {
-    /// Response type for [`Client::playlist_copy`](super::Client::playlist_copy).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct PlaylistCopyResponse {
-        pub playlist_mbid: String,
-        pub status: String,
-    }
-}
 
 // --------- stats/sitewide/artists
 

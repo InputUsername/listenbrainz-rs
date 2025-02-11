@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use serde::Serialize;
 
 use super::response_type;
-use crate::raw::jspf;
 use crate::raw::response::Deserialize;
 
 // --------- GET /1/search/users/
@@ -188,48 +187,6 @@ response_type! {
     #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
     pub struct DeleteListenResponse {
         pub status: String,
-    }
-}
-
-// --------- GET /1/user/(playlist_user_name)/playlists
-// https://listenbrainz.readthedocs.io/en/latest/users/api/core.html#get--1-user-(playlist_user_name)-playlists
-
-response_type! {
-    /// Response type for [`Client::user_playlists`](super::Client::user_playlists).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserPlaylistsResponse {
-        pub count: u64,
-        pub offset: u64,
-        pub playlist_count: u64,
-        pub playlists: Vec<jspf::Playlist>,
-    }
-}
-
-// --------- GET /1/user/(playlist_user_name)/playlists/createdfor
-// https://listenbrainz.readthedocs.io/en/latest/users/api/core.html#get--1-user-(playlist_user_name)-playlists-createdfor
-
-response_type! {
-    /// Response type for [`Client::user_playlists_created_for`](super::Client::user_playlists_created_for).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserPlaylistsCreatedForResponse {
-        pub count: u64,
-        pub offset: u64,
-        pub playlist_count: u64,
-        pub playlists: Vec<jspf::Playlist>,
-    }
-}
-
-// --------- GET /1/user/(playlist_user_name)/playlists/collaborator
-// https://listenbrainz.readthedocs.io/en/latest/users/api/core.html#get--1-user-(playlist_user_name)-playlists-collaborator
-
-response_type! {
-    /// Response type for [`Client::user_playlists_collaborator`](super::Client::user_playlists_collaborator).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserPlaylistsCollaboratorResponse {
-        pub count: u64,
-        pub offset: u64,
-        pub playlist_count: u64,
-        pub playlists: Vec<jspf::Playlist>,
     }
 }
 
