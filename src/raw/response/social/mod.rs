@@ -1,5 +1,3 @@
-// --------- user/{user_name}/followers
-
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -50,4 +48,3 @@ response_type! {
         pub status: String,
     }
 }
-

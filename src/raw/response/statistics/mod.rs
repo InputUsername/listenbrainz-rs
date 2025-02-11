@@ -49,7 +49,6 @@ response_type! {
     }
 }
 
-
 /// Type of the [`StatsUserReleasesResponse::payload`] field.
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
 pub struct StatsUserReleasesPayload {
