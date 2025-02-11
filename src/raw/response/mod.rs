@@ -9,7 +9,6 @@
 use attohttpc::Response;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
-use serde::Serialize;
 
 use crate::Error;
 
@@ -17,6 +16,7 @@ use crate::Error;
 pub mod art;
 pub mod core;
 pub mod metadata;
+pub mod misc;
 pub mod playlists;
 pub mod popularity;
 pub mod recommendations;
@@ -29,6 +29,7 @@ pub mod statistics;
 pub use crate::raw::response::art::*;
 pub use crate::raw::response::core::*;
 pub use crate::raw::response::metadata::*;
+pub use crate::raw::response::misc::*;
 pub use crate::raw::response::playlists::*;
 pub use crate::raw::response::popularity::*;
 pub use crate::raw::response::recommendations::*;
@@ -132,17 +133,3 @@ macro_rules! response_type {
 
 // Let the childrens access the macro
 pub(super) use response_type;
-
-// --------- status/get-dump-info
-
-response_type! {
-    /// Response type for [`Client::status_get_dump_info`](super::Client::status_get_dump_info).
-    #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
-    pub struct StatusGetDumpInfoResponse {
-        pub code: u16,
-        pub message: String,
-
-        pub id: i64,
-        pub timestamp: String,
-    }
-}
