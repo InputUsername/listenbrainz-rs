@@ -14,6 +14,7 @@ use serde::Serialize;
 use crate::Error;
 
 // Sub modules
+pub mod art;
 pub mod core;
 pub mod metadata;
 pub mod playlists;
@@ -24,6 +25,7 @@ pub mod social;
 pub mod statistics;
 
 // Reexport of the sub modules
+pub use crate::raw::response::art::*;
 pub use crate::raw::response::core::*;
 pub use crate::raw::response::metadata::*;
 pub use crate::raw::response::playlists::*;
