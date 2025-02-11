@@ -1,3 +1,4 @@
+
 //! Low-level response data models.
 //!
 //! Every response type has the `rate_limit` field, which contains rate limiting
@@ -19,10 +20,12 @@ use crate::Error;
 // Sub modules
 pub mod core;
 pub mod playlists;
+pub mod recordings;
 
 // Reexport of the sub modules
 pub use crate::raw::response::core::*;
 pub use crate::raw::response::playlists::*;
+pub use crate::raw::response::recordings::*;
 
 /// Contains rate limiting information.
 ///
