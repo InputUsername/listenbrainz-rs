@@ -1,5 +1,3 @@
-
-
 //! Low-level response data models.
 //!
 //! Every response type has the `rate_limit` field, which contains rate limiting
@@ -18,19 +16,21 @@ use crate::Error;
 
 // Sub modules
 pub mod core;
-pub mod playlists;
-pub mod recordings;
-pub mod statistics;
-pub mod popularity;
 pub mod metadata;
+pub mod playlists;
+pub mod popularity;
+pub mod recordings;
+pub mod social;
+pub mod statistics;
 
 // Reexport of the sub modules
 pub use crate::raw::response::core::*;
-pub use crate::raw::response::playlists::*;
-pub use crate::raw::response::recordings::*;
-pub use crate::raw::response::statistics::*;
-pub use crate::raw::response::popularity::*;
 pub use crate::raw::response::metadata::*;
+pub use crate::raw::response::playlists::*;
+pub use crate::raw::response::popularity::*;
+pub use crate::raw::response::recordings::*;
+pub use crate::raw::response::social::*;
+pub use crate::raw::response::statistics::*;
 
 /// Contains rate limiting information.
 ///
@@ -139,49 +139,5 @@ response_type! {
 
         pub id: i64,
         pub timestamp: String,
-    }
-}
-
-
-
-// --------- user/{user_name}/followers
-
-response_type! {
-    /// Response type for [`Client::user_followers`](super::Client::user_followers).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserFollowersResponse {
-        pub followers: Vec<String>,
-        pub user: String,
-    }
-}
-
-// --------- user/{user_name}/following
-
-response_type! {
-    /// Response type for [`Client::user_following`](super::Client::user_following).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserFollowingResponse {
-        pub following: Vec<String>,
-        pub user: String,
-    }
-}
-
-// --------- user/{user_name}/unfollow
-
-response_type! {
-    /// Response type for [`Client::user_unfollow`](super::Client::user_unfollow).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserUnfollowResponse {
-        pub status: String,
-    }
-}
-
-// --------- user/{user_name}/follow
-
-response_type! {
-    /// Response type for [`Client::user_follow`](super::Client::user_follow).
-    #[derive(Debug, Deserialize, Serialize)]
-    pub struct UserFollowResponse {
-        pub status: String,
     }
 }
