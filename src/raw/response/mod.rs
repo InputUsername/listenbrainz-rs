@@ -21,6 +21,7 @@ pub mod playlists;
 pub mod popularity;
 pub mod recommendations;
 pub mod recordings;
+pub mod settings;
 pub mod social;
 pub mod statistics;
 
@@ -32,6 +33,7 @@ pub use crate::raw::response::playlists::*;
 pub use crate::raw::response::popularity::*;
 pub use crate::raw::response::recommendations::*;
 pub use crate::raw::response::recordings::*;
+pub use crate::raw::response::settings::*;
 pub use crate::raw::response::social::*;
 pub use crate::raw::response::statistics::*;
 
