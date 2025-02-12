@@ -30,6 +30,7 @@ pub enum Endpoint<'a> {
     UserFollowing(&'a str),
     UserUnfollow(&'a str),
     UserFollow(&'a str),
+    ArtGrid,
 }
 
 impl<'a> fmt::Display for Endpoint<'a> {
@@ -74,6 +75,7 @@ impl<'a> fmt::Display for Endpoint<'a> {
             Self::UserFollowing(user) => write!(f, "user/{}/following", user),
             Self::UserUnfollow(user) => write!(f, "user/{}/unfollow", user),
             Self::UserFollow(user) => write!(f, "user/{}/follow", user),
+            Self::ArtGrid => write!(f, "art/grid"),
         }
     }
 }
