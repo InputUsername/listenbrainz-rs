@@ -35,7 +35,7 @@ pub struct PlaylistExtension {
 /// Type of the [`PlaylistExtension::musicbrainz`] field.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MusicBrainzPlaylistExtension {
-    pub created_for: String,
+    pub created_for: Option<String>,
     pub creator: String,
     #[serde(default)]
     pub collaborators: Vec<String>,
