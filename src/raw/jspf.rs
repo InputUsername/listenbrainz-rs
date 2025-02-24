@@ -22,7 +22,7 @@ pub struct PlaylistInfo {
     pub date: String,
     pub title: String,
     pub track: Vec<Track>,
-    pub identifier: String,
+    pub identifier: Option<String>,
 }
 
 /// Type of the [`PlaylistInfo::extension`] field.
@@ -63,7 +63,7 @@ pub struct AlgorithmMetadata {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Track {
     pub title: String,
-    pub identifier: String,
+    pub identifier: Vec<String>,
     pub creator: String,
     pub extension: TrackExtension,
     pub album: String,
