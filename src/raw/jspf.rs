@@ -44,7 +44,7 @@ pub struct MusicBrainzPlaylistExtension {
     pub copied_from_deleted: bool,
     pub public: bool,
     pub last_modified_at: String,
-    pub additional_metadata: AdditionalMetadata,
+    pub additional_metadata: Option<AdditionalMetadata>,
 }
 
 /// Type of the [`MusicBrainzPlaylistExtension::additional_metadata`] field.
