@@ -39,6 +39,16 @@
 //! ```
 //!
 //! [Maloja]: https://github.com/krateng/maloja
+//!
+//! # Features
+//!
+//! This crate allows you to control the TLS backend using features:
+//! - `tls-rustls` to use `rustls` with Web PKI roots (**default**)
+//! - `tls-rustls-native-roots` to use `rustls` with root certificates loaded from the rustls-native-certs crate
+//! - `tls-native` to use `native-tls` (requires Rust >= 1.80)
+//! - `tls-native-vendored` to use `native-tls` and activate the `vendored` feature
+//! These are analogous to [attohttpc](https://docs.rs/attohttpc/latest/attohttpc/#features), the
+//! underlying HTTP client.
 
 #![deny(
     missing_docs,
