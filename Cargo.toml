@@ -30,8 +30,8 @@ tls-native = ["attohttpc/tls-native"]
 # Set the TLS to native-tls, and use the feature "vendored" (Bumps MSRV to >= 1.80.0)
 tls-native-vendored = ["attohttpc/tls-native-vendored"]
 
-# Use rustls for the TLSwith webpki roots 
+# Use rustls for the TLS with webpki roots
 tls-rustls = ["attohttpc/tls-rustls-webpki-roots"]
 
-# Use rustls for the TLS with native roots 
+# Use rustls for the TLS with native roots
 tls-rustls-native-roots = ["attohttpc/tls-rustls-native-roots"]
