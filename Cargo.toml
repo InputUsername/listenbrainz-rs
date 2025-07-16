@@ -19,7 +19,7 @@ rust-version = "1.82.0"
 thiserror = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-attohttpc = { version = "0.29", default-features = false, features = ["json", "compress"] }
+attohttpc = { version = "0.30", default-features = false, features = ["json", "compress"] }
 
 [features]
 default = ["tls-rustls"]
