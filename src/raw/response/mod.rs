@@ -9,6 +9,7 @@
 use attohttpc::Response;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
+use serde::Serialize;
 
 use crate::Error;
 
@@ -45,7 +46,7 @@ pub use crate::raw::response::statistics::*;
 /// as the former is resilient against clients with incorrect clocks.
 ///
 /// [API docs]: https://listenbrainz.readthedocs.io/en/production/dev/api/#rate-limiting
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct RateLimit {
     pub limit: u64,
     pub remaining: u64,

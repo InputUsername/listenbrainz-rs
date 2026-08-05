@@ -533,6 +533,54 @@ impl Client {
 
         ResponseType::from_response(response)
     }
+
+    /// Endpoint: [`art/grid/`](https://listenbrainz.readthedocs.io/en/latest/users/api/art.html#post--1-art-grid-)
+    /// ```no_run
+    /// use listenbrainz::raw::Client;
+    /// use listenbrainz::raw::request::ArtGrid;
+    /// use listenbrainz::raw::request::ArtGridBackground;
+    ///
+    /// let grid = ArtGrid {
+    ///     background: ArtGridBackground::Transparent,
+    ///     image_size: 750,
+    ///     dimension: 4,
+    ///     skip_missing: false,
+    ///     show_caa: true,
+    ///     tiles: Some(vec![
+    ///         "0,1,4,5".to_string(),
+    ///         "10,11,14,15".to_string(),
+    ///         "2".to_string(),
+    ///         "3".to_string(),
+    ///         "6".to_string(),
+    ///         "7".to_string(),
+    ///         "8".to_string(),
+    ///         "9".to_string(),
+    ///         "12".to_string(),
+    ///         "13".to_string()
+    ///     ]),
+    ///     release_mbids: Some(vec![
+    ///         "d101e395-0c04-4237-a3d2-167b1d88056c".to_string(),
+    ///         "4211382c-39e8-4a72-a32d-e4046fd96356".to_string(),
+    ///         "6d895dfa-8688-4867-9730-2b98050dae04".to_string(),
+    ///         "773e54bb-3f43-4813-826c-ca762bfa8318".to_string(),
+    ///         "ec782dbe-9204-4ec3-bf50-576c7cf3dfb3".to_string(),
+    ///         "10dffffc-c2aa-4ddd-81fd-42b5e125f240".to_string(),
+    ///         "be5f714d-02eb-4c89-9a06-5e544f132604".to_string(),
+    ///         "3eee4ed1-b48e-4894-8a05-f535f16a4985".to_string()
+    ///     ]),
+    ///     release_group_mbids: None,
+    ///     cover_art_size: None
+    /// };
+    ///
+    /// println!("{:#?}", Client::new().art_grid(grid).unwrap());
+    /// ```
+    pub fn art_grid(&self, body: ArtGrid) -> Result<ArtGridResponse, Error> {
+        let endpoint = format!("{}{}", self.api_root_url, Endpoint::ArtGrid);
+
+        let response = attohttpc::post(endpoint).json(&body)?.send()?;
+
+        ResponseType::from_response(response)
+    }
 }
 
 impl Default for Client {
